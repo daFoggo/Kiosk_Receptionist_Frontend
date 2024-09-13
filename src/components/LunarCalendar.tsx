@@ -8,7 +8,7 @@ const LunarCalendar = () => {
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - today.getDay() + 1);
 
-  const weekDays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "CN"];
+  const weekDays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
 
   const renderCalendar = () => {
     return (

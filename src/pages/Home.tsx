@@ -5,14 +5,14 @@ import sampleBanner from "../assets/event_banner/sample_banner.jpg";
 
 const Home = () => {
   return (
-    <div className="flex flex-col gap-6 p-8 h-screen">
+    <div className="flex flex-col gap-8 p-8 h-screen">
       {/* banner */}
       <div className="h-auto">
         <EventBanner img={sampleBanner} />
       </div>
       
       {/* calendar and weather */}
-      <div className="flex flex-row gap-6">
+      <div className="flex flex-row gap-8">
         <div className="w-3/4">
           <LunarCalendar />
         </div>
