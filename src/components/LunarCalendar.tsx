@@ -8,16 +8,16 @@ const LunarCalendar = () => {
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - today.getDay() + 1);
 
-  const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+  const weekDays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "CN"];
 
   const renderCalendar = () => {
     return (
-      <div className="border border-gray-300 rounded-lg text-md">
-        <div className="grid grid-cols-7 bg-card_bg">
+      <div className="border border-gray-300 rounded-3xl text-2xl">
+        <div className="grid grid-cols-7 bg-card_bg rounded-t-3xl">
           {weekDays.map((day, index) => (
             <div
               key={`day-${index}`}
-              className="text-center text-[#143057] font-semibold p-1 border-r border-b border-gray-300 last:border-r-0"
+              className="text-3xl text-center text-[#143057] font-semibold p-5 border-r border-b border-gray-300 last:border-r-0"
             >
               {day}
             </div>
@@ -36,16 +36,16 @@ const LunarCalendar = () => {
             return (
               <div
                 key={`date-${index}`}
-                className={`border-r border-b border-gray-300 last:border-r-0 ${
+                className={`border-r  border-gray-300 last:border-r-0 ${
                   isToday
                     ? "bg-theme_lavender text-white"
-                    : "bg-white text-theme_lavender"
+                    : " text-theme_lavender"
                 }`}
               >
-                <div className="text-center p-2">
-                  <div className="font-semibold">{solarDate.day}</div>
+                <div className="text-center p-5">
+                  <div className="font-semibold text-3xl">{solarDate.day}</div>
                   <Text
-                    className={`text-[10px] ${
+                    className={`text-xl ${
                       isToday ? "text-white" : "text-theme_lavender"
                     }`}
                   >
@@ -60,7 +60,7 @@ const LunarCalendar = () => {
     );
   };
 
-  return <div>{renderCalendar()}</div>;
+  return <div className="h-full">{renderCalendar()}</div>;
 };
 
 export default LunarCalendar;
