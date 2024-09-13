@@ -12,12 +12,12 @@ const LunarCalendar = () => {
 
   const renderCalendar = () => {
     return (
-      <div className="border border-gray-300 rounded-3xl text-2xl">
-        <div className="grid grid-cols-7 bg-card_bg rounded-t-3xl">
+      <div className="border-2 border-gray-300 rounded-3xl text-2xl">
+        <div className="grid grid-cols-7 bg-card rounded-t-3xl">
           {weekDays.map((day, index) => (
             <div
               key={`day-${index}`}
-              className="text-3xl text-center text-[#143057] font-semibold p-5 border-r border-b border-gray-300 last:border-r-0"
+              className="text-3xl text-center text-theme-lavender font-semibold p-5 border-r border-b border-gray-300 last:border-r-0"
             >
               {day}
             </div>
@@ -38,15 +38,15 @@ const LunarCalendar = () => {
                 key={`date-${index}`}
                 className={`border-r  border-gray-300 last:border-r-0 ${
                   isToday
-                    ? "bg-theme_lavender text-white"
-                    : " text-theme_lavender"
+                    ? "bg-theme-lavender text-white"
+                    : " text-theme-lavender"
                 }`}
               >
                 <div className="text-center p-5">
                   <div className="font-semibold text-3xl">{solarDate.day}</div>
                   <Text
                     className={`text-xl ${
-                      isToday ? "text-white" : "text-theme_lavender"
+                      isToday ? "text-white" : "text-theme-lavender"
                     }`}
                   >
                     {lunarDate.day}

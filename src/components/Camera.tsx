@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { ipWebsocket } from "../utils/ip";
+import { Tooltip } from "antd";
 
 const Camera = () => {
   const cameraRef = useRef<Webcam>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [numberOfPersons, setNumberOfPersons] = useState(null);
-  
+
   // connect websocket
   useEffect(() => {
     if (ipWebsocket) {
@@ -66,18 +67,25 @@ const Camera = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Webcam
-        ref={cameraRef}
-        mirrored
-        screenshotFormat="image/jpeg"
-        className="rounded-md w-4/5 h-auto"
-      />
-      <p className="mt-4">
-        Status: {isConnected ? 'Connected' : 'Disconnected'}
-      </p>
-      <p className="mt-2">
-        Number of persons detected: {numberOfPersons !== null ? numberOfPersons : 'Loading...'}
+    <div className="relative flex flex-col items-center justify-center">
+      <div className="relative">
+        <Webcam
+          ref={cameraRef}
+          mirrored
+          screenshotFormat="image/jpeg"
+          className="rounded-2xl"
+        />
+        <Tooltip title={isConnected ? "Đã kết nối" : "Chưa kết nối"}>
+          <div
+            className={`absolute top-4 right-4  w-4 h-4 rounded-full ${
+              isConnected ? "bg-green-500" : "bg-red-500"
+            }`}
+          />
+        </Tooltip>
+      </div>
+      <p className="mt-2 text-3xl">
+        Number of persons detected:{" "}
+        {numberOfPersons !== null ? numberOfPersons : "Loading..."}
       </p>
     </div>
   );
