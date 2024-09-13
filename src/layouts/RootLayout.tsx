@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
-
+import Header from "../components/Header";
 const RootLayout = () => {
   return (
     <div>
-      <header>{/* Header content */}</header>
+      <header>
+        <Header />
+      </header>
       <main>
         <Outlet />
       </main>
