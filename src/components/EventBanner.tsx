@@ -3,7 +3,7 @@ const EventBanner = ({ img }: { img: string }) => {
     <img
       src={img}
       alt=""
-      className="bg-cover object-cover w-full h-auto rounded-md"
+      className="bg-cover object-cover w-full h-auto rounded-lg"
     />
   );
 };
