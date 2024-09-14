@@ -1,66 +1,81 @@
-import { Typography } from "antd";
 import { SolarDate } from "@nghiavuive/lunar_date_vi";
-
-const { Text } = Typography;
+import { Button } from "antd";
+import { CalendarOutlined } from "@ant-design/icons";
+import { ConfigProvider } from "antd";
+import { useState } from "react";
 
 const LunarCalendar = () => {
   const today = new Date();
   const startOfWeek = new Date(today);
+  const [showMonthCalendar, setShowMonthCalendar] = useState(false);
+  
   startOfWeek.setDate(today.getDate() - today.getDay() + 1);
 
-  const weekDays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
+  const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
   const renderCalendar = () => {
-    return (
-      <div className="border-2 border-gray-300 rounded-3xl text-2xl">
-        <div className="grid grid-cols-7 bg-card rounded-t-3xl">
-          {weekDays.map((day, index) => (
-            <div
-              key={`day-${index}`}
-              className="text-3xl text-center text-theme-lavender font-semibold p-5 border-r border-b border-gray-300 last:border-r-0"
-            >
-              {day}
-            </div>
-          ))}
+    return weekDays.map((day, index) => {
+      const currentDate = new Date(startOfWeek);
+      currentDate.setDate(startOfWeek.getDate() + index);
+
+      const solarDate = new SolarDate(currentDate);
+      const lunarDate = solarDate.toLunarDate();
+
+      const isToday = currentDate.toDateString() === today.toDateString();
+
+      return (
+        <div
+          key={index}
+          className={`flex flex-col items-center gap-3 py-3 ${
+            isToday ? "bg-[#e2e6fd]" : ""
+          } bg-card rounded-3xl`}
+        >
+          <div className="text-2xl font-semibold pb-4 border-b-4 border-gray-300">
+            {day}
+          </div>
+          <div
+            className={`text-3xl font-bold p-2 ${
+              isToday ? "text-white bg-theme-lavender rounded-full" : ""
+            }`}
+          >
+            {currentDate.getDate()}
+          </div>
+          <div className="text-2xl">{lunarDate.day}</div>
         </div>
-        <div className="grid grid-cols-7">
-          {weekDays.map((_, index) => {
-            const currentDate = new Date(startOfWeek);
-            currentDate.setDate(startOfWeek.getDate() + index);
-
-            const solarDate = new SolarDate(currentDate);
-            const lunarDate = solarDate.toLunarDate();
-
-            const isToday = currentDate.toDateString() === today.toDateString();
-
-            return (
-              <div
-                key={`date-${index}`}
-                className={`border-r  border-gray-300 last:border-r-0 ${
-                  isToday
-                    ? "bg-theme-lavender text-white"
-                    : " text-theme-lavender"
-                }`}
-              >
-                <div className="text-center p-5">
-                  <div className="font-semibold text-3xl">{solarDate.day}</div>
-                  <Text
-                    className={`text-xl ${
-                      isToday ? "text-white" : "text-theme-lavender"
-                    }`}
-                  >
-                    {lunarDate.day}
-                  </Text>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+      );
+    });
   };
 
-  return <div className="h-full">{renderCalendar()}</div>;
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-4xl font-bold">Lịch</h2>
+        <div className="flex items-center justify-between">
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorPrimary: "#6359e7",
+                  algorithm: true, 
+                },
+              },
+            }}
+          >
+            <Button
+              type="default"
+              size="large"
+              icon={<CalendarOutlined />}
+              iconPosition="end"
+              className="text-2xl font-sans font-semibold"
+            >
+              Tháng {today.getMonth() + 1}
+            </Button>
+          </ConfigProvider>
+        </div>
+      </div>
+      <div className="grid grid-cols-7 gap-6">{renderCalendar()}</div>
+    </div>
+  );
 };
 
 export default LunarCalendar;

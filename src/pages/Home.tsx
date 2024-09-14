@@ -18,7 +18,7 @@ const Home = () => {
         <div className="w-3/4">
           <LunarCalendar />
         </div>
-        <div className="w-1/4">
+        <div>
           <Weather />
         </div>
       </div>

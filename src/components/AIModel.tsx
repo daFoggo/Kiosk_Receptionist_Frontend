@@ -1,6 +1,6 @@
 const AIModel = () => {
   return (
-    <div className="bg-card_bg rounded-2xl relative overflow-hidden aspect-[9/16] h-full font-sans border-gray-300 border-2">
+    <div className="bg-card_bg rounded-2xl relative overflow-hidden aspect-[9/16] h-full font-sans shadow-md">
       {/* Overlay gradient */}
       <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#6359e7]/70 to-transparent z-10"></div>
       
