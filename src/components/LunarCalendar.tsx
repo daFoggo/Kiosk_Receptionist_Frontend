@@ -26,15 +26,15 @@ const LunarCalendar = () => {
       return (
         <div
           key={index}
-          className={`flex flex-col items-center gap-3 py-3 ${
+          className={`flex flex-col items-center gap-2 py-2 ${
             isToday ? "bg-[#e2e6fd]" : ""
           } bg-card rounded-3xl`}
         >
-          <div className="text-2xl font-semibold pb-4 border-b-4 border-gray-300">
+          <div className="text-2xl font-semibold pb-2 border-b-4 border-gray-300">
             {day}
           </div>
           <div
-            className={`text-3xl font-bold p-2 ${
+            className={`text-2xl font-bold p-1 ${
               isToday ? "text-white bg-theme-lavender rounded-full" : ""
             }`}
           >
@@ -47,9 +47,9 @@ const LunarCalendar = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-4 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-4xl font-bold">Lịch</h2>
+        <h2 className="text-3xl font-bold">Lịch</h2>
         <div className="flex items-center justify-between">
           <ConfigProvider
             theme={{
@@ -66,7 +66,7 @@ const LunarCalendar = () => {
               size="large"
               icon={<CalendarOutlined />}
               iconPosition="end"
-              className="text-2xl font-sans font-semibold"
+              className="text-xl font-sans font-semibold"
             >
               Tháng {today.getMonth() + 1}
             </Button>

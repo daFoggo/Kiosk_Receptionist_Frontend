@@ -44,47 +44,47 @@ const Weather = () => {
   const getWeatherIcon = (icon: string) => {
     switch (icon) {
       case "01d":
-        return <WiDaySunny className="text-6xl text-yellow-400" />;
+        return <WiDaySunny className="text-5xl text-yellow-400" />;
       case "02d":
       case "03d":
       case "04d":
-        return <WiCloudy className="text-6xl text-gray-400" />;
+        return <WiCloudy className="text-5xl text-gray-400" />;
       case "09d":
       case "10d":
-        return <WiDayRainWind className="text-6xl text-blue-400" />;
+        return <WiDayRainWind className="text-5xl text-blue-400" />;
       case "11d":
-        return <WiThunderstorm className="text-6xl text-gray-600" />;
+        return <WiThunderstorm className="text-5xl text-gray-600" />;
       case "13d":
-        return <WiDaySnow className="text-6xl text-white" />;
+        return <WiDaySnow className="text-5xl text-white" />;
       case "50d":
-        return <WiDayFog className="text-6xl text-gray-400" />;
+        return <WiDayFog className="text-5xl text-gray-400" />;
       default:
-        return <WiDaySunny className="text-6xl text-yellow-400" />;
+        return <WiDaySunny className="text-5xl text-yellow-400" />;
     }
   };
 
   return (
-    <div className="h-full rounded-3xl flex flex-col justify-center p-6 shadow-md aspect-square font-semibold bg-gradient-to-br from-white to-[#eff1fe]">
+    <div className="h-full rounded-3xl flex flex-col justify-center p-4 shadow-md aspect-square font-semibold bg-gradient-to-br from-white to-[#eff1fe]">
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
           {weatherData.icon ? getWeatherIcon(weatherData.icon) : null}
-          <p className="text-3xl text-heading">Hôm nay</p>
+          <p className="text-2xl text-heading">Hôm nay</p>
         </div>
         <div className="flex items-baseline gap-2">
-          <p className="text-7xl text-heading font-bold my-2">
+          <p className="text-6xl text-heading font-bold my-2">
             {weatherData.temperature
               ? Math.round(weatherData.temperature)
               : null}
             °
           </p>
-          <p className="text-2xl text-second font-bold">
+          <p className="text-xl text-second font-bold">
             {weatherData.feels_like
               ? Math.round(weatherData.feels_like)
               : null}
             °
           </p>
         </div>
-        <p className="text-3xl text-second">
+        <p className="text-2xl text-second">
           {weatherData.description
             ? weatherData.description.charAt(0).toUpperCase() +
               weatherData.description.slice(1)
