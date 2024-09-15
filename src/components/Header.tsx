@@ -10,7 +10,7 @@ const Header = () => {
         <h1 className="font-bold text-3xl text-heading font-clash">
           Học viện Công nghệ Bưu chính Viễn thông
         </h1>
-        <h1 className="font-bold text-3xl text-heading font-clash">
+        <h1 className="font-bold text-3xl text-heading font-clash tracking-wider">
           Viện Khoa học Kĩ thuật Bưu điện
         </h1>
       </div>

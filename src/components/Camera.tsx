@@ -115,8 +115,8 @@ const Camera = () => {
       {hasPermission === null ? (
         <p>Requesting camera permission...</p>
       ) : hasPermission === false ? (
-        <div>
-          <p>Camera access is required for this application.</p>
+        <div className="flex flex-col items-center">
+          <p>Cần cấp quyền truy cập camera</p>
           <button
             onClick={requestCameraPermission}
             className="mt-2 px-4 py-2 bg-theme-lavender text-white rounded-2xl"

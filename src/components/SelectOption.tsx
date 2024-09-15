@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 interface Option {
   label: string;
@@ -19,30 +20,58 @@ const SelectOption = () => {
     setSelectedOption(value);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { scale: 0, opacity: 0 },
+    visible: { scale: 1, opacity: 1 },
+  };
+
   return (
-    <div className="flex flex-col items-center shadow-md w-full h-auto p-4 bg-card rounded-2xl">
-      <p className="text-xl font-semibold pb-4 border-b-2 border-gray-300 w-full text-center">
-        Quý khách thuộc đối tượng là?
-      </p>
-      <div
-        className={`grid gap-4 mt-12 w-full ${
-          options.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"
-        }`}
+    <div className="flex flex-col items-center w-full max-w-md mx-auto space-y-6">
+      <motion.div
+        className="shadow-md w-full p-4 bg-white rounded-2xl"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <p className="text-xl font-semibold text-heading text-center">
+          Quý khách thuộc đối tượng là?
+        </p>
+      </motion.div>
+
+      <motion.div
+        className="w-full space-y-3"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
         {options.map((option) => (
-          <div
+          <motion.div
             key={option.value}
-            onClick={() => handleOptionClick(option.value)}
-            className={`cursor-pointer p-4 rounded-lg shadow-md flex items-center justify-center text-center border-2 font-semibold duration-300 ease-in-out ${
+            className={`p-3 rounded-lg cursor-pointer transition-colors shadow-sm ${
               selectedOption === option.value
                 ? "bg-theme-lavender text-white"
-                : "bg-white text-gray-700 "
-            } hover:bg-theme-lavender hover:text-white hover:scale-105`}
+                : "bg-white text-heading hover:bg-gray-100"
+            }`}
+            onClick={() => handleOptionClick(option.value)}
+            variants={itemVariants}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
           >
             {option.label}
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };
