@@ -77,14 +77,14 @@ const Weather = () => {
               : null}
             °
           </p>
-          <p className="text-xl text-second font-bold">
+          <p className="text-xl text-overlay font-bold">
             {weatherData.feels_like
               ? Math.round(weatherData.feels_like)
               : null}
             °
           </p>
         </div>
-        <p className="text-2xl text-second">
+        <p className="text-2xl text-overlay">
           {weatherData.description
             ? weatherData.description.charAt(0).toUpperCase() +
               weatherData.description.slice(1)

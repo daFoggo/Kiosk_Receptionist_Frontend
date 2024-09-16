@@ -44,7 +44,7 @@ const SelectOption = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="text-xl font-semibold text-heading text-center">
+        <p className="text-xl font-semibold text-primary-text text-center">
           Quý khách thuộc đối tượng là?
         </p>
       </motion.div>
@@ -58,10 +58,10 @@ const SelectOption = () => {
         {options.map((option) => (
           <motion.div
             key={option.value}
-            className={`p-3 rounded-lg cursor-pointer transition-colors shadow-sm ${
+            className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm ${
               selectedOption === option.value
-                ? "bg-theme-lavender text-white"
-                : "bg-white text-heading hover:bg-gray-100"
+                ? "bg-lavender text-white"
+                : "bg-base text-primary-text hover:bg-surface0"
             }`}
             onClick={() => handleOptionClick(option.value)}
             variants={itemVariants}

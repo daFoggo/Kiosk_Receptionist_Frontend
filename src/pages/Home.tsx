@@ -1,7 +1,6 @@
 import LunarCalendar from "../components/LunarCalendar";
 import Camera from "../components/Camera";
 import EventBanner from "../components/EventBanner";
-import sampleBanner from "../assets/event_banner/sample_banner.jpg";
 import Weather from "../components/Weather";
 import AIModel from "../components/AIModel";
 import AIChat from "../components/AIChat";
@@ -9,14 +8,13 @@ import SelectOption from "../components/SelectOption";
 
 const Home = () => {
   return (
-    <div className="flex flex-col gap-8 p-8 h-screen">
+    <div className="flex flex-col gap-6 px-6 py-3 h-screen">
       {/* banner */}
-      {/* <div className="h-auto">
-        <EventBanner img={sampleBanner} />
-      </div> */}
-
+      <div className="h-auto">
+        <EventBanner />
+      </div>
       {/* calendar and weather */}
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-row gap-6">
         <div className="w-3/4">
           <LunarCalendar />
         </div>
@@ -26,7 +24,7 @@ const Home = () => {
       </div>
 
       {/* main section */}
-      <div className="flex flex-row gap-8 h-1/2 mt-8">
+      <div className="flex flex-row gap-6 h-1/2">
         {/* AI model */}
         <div className="w-1/2 flex flex-col items-center aspect-video gap-6">
           <AIModel />

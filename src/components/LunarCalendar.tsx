@@ -28,14 +28,14 @@ const LunarCalendar = () => {
           key={index}
           className={`flex flex-col items-center gap-2 py-2 ${
             isToday ? "bg-[#e2e6fd]" : ""
-          } bg-card rounded-3xl`}
+          } bg-base rounded-3xl`}
         >
           <div className="text-2xl font-semibold pb-2 border-b-4 border-gray-300">
             {day}
           </div>
           <div
             className={`text-2xl font-bold p-1 ${
-              isToday ? "text-white bg-theme-lavender rounded-full" : ""
+              isToday ? "text-white bg-lavender rounded-full" : ""
             }`}
           >
             {currentDate.getDate()}
@@ -49,7 +49,7 @@ const LunarCalendar = () => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold">Lịch</h2>
+        <h2 className="text-3xl font-bold text-heading">Lịch</h2>
         <div className="flex items-center justify-between">
           <ConfigProvider
             theme={{

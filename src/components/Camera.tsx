@@ -119,7 +119,7 @@ const Camera = () => {
           <p>Cần cấp quyền truy cập camera</p>
           <button
             onClick={requestCameraPermission}
-            className="mt-2 px-4 py-2 bg-theme-lavender text-white rounded-2xl"
+            className="mt-2 px-4 py-2 bg-lavender text-white rounded-2xl"
           >
             Allow Camera Access
           </button>
@@ -156,12 +156,12 @@ const Camera = () => {
             components: {
               Table: {
                 fontFamily: "Inter",
-                headerBg: "#f5f7f9",
+                headerBg: "#bcc0cc",
                 fontSize: 14,
-                colorPrimary: "#6359e7",
+                colorPrimary: "#7287fd",
               },
               Button: {
-                colorPrimary: "#6359e7",
+                colorPrimary: "#7287fd",
                 algorithm: true,
               },
             },
