@@ -1,19 +1,44 @@
 import { SolarDate } from "@nghiavuive/lunar_date_vi";
-import { Button } from "antd";
-import { CalendarOutlined } from "@ant-design/icons";
 import { ConfigProvider } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const LunarCalendar = () => {
+  const [date, setDate] = useState<Date>(new Date());
   const today = new Date();
-  const startOfWeek = new Date(today);
-  const [showMonthCalendar, setShowMonthCalendar] = useState(false);
-  
-  startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+  const [startOfWeek, setStartOfWeek] = useState(new Date());
+
+  useEffect(() => {
+    const updatedStartOfWeek = new Date(date);
+    updatedStartOfWeek.setDate(date?.getDate() - date?.getDay() + 1);
+    setStartOfWeek(updatedStartOfWeek);
+  }, [date]);
 
   const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
+  const handleSelectDate = (selectedDate: Date | undefined) => {
+    const today = new Date();
+
+    if (selectedDate?.toDateString() === date?.toDateString()) {
+      setDate(today); 
+    } else {
+      setDate(selectedDate || today); 
+    }
+  };
+
   const renderCalendar = () => {
+    
     return weekDays.map((day, index) => {
       const currentDate = new Date(startOfWeek);
       currentDate.setDate(startOfWeek.getDate() + index);
@@ -26,7 +51,7 @@ const LunarCalendar = () => {
       return (
         <div
           key={index}
-          className={`flex flex-col items-center gap-2 py-2 ${
+          className={`flex flex-col items-center gap-2 py-2 font-sans ${
             isToday ? "bg-[#e2e6fd]" : ""
           } bg-base rounded-3xl`}
         >
@@ -40,14 +65,14 @@ const LunarCalendar = () => {
           >
             {currentDate.getDate()}
           </div>
-          <div className="text-2xl">{lunarDate.day}</div>
+          <div className="text-xs font-semibold text-overlay">{lunarDate.day} AL</div>
         </div>
       );
     });
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
+    <div className="bg-white p-4 rounded-lg shadow-md font-sans">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-heading">Lịch</h2>
         <div className="flex items-center justify-between">
@@ -56,20 +81,35 @@ const LunarCalendar = () => {
               components: {
                 Button: {
                   colorPrimary: "#6359e7",
-                  algorithm: true, 
+                  algorithm: true,
                 },
               },
             }}
           >
-            <Button
-              type="default"
-              size="large"
-              icon={<CalendarOutlined />}
-              iconPosition="end"
-              className="text-xl font-sans font-semibold"
-            >
-              Tháng {today.getMonth() + 1}
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-fit justify-start text-left font-sans",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date && format(date, "MMMM", { locale: vi }).charAt(0).toUpperCase() + format(date, "MMMM", { locale: vi }).slice(1)}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={handleSelectDate}
+                  initialFocus
+                  className="text-3xl"
+                  locale={vi}
+                />
+              </PopoverContent>
+            </Popover>
           </ConfigProvider>
         </div>
       </div>

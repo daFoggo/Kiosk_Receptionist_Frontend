@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { MdDateRange, MdOutlineAccessTime, MdLocationOn } from "react-icons/md";
-
+import { Badge } from "./ui/badge";
 
 const EventBanner = () => {
   const [event, setEvent] = useState({
-    title: "Lễ kỉ niệm 78 năm ngày thành lập Viện Khoa học Kỹ thuật Bưu điện",
-    date: "17/8/2024",
-    time: "Thời gian diễn ra",
-    location: "Tầng 5",
+    title: "Lễ kỉ niệm 58 năm ngày thành lập Viện Khoa học Kỹ thuật Bưu điện",
+    date: "17/9/2024",
+    time: "",
+    location: "Hội trường 2 - Tầng 2",
   });
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const EventBanner = () => {
   const getEventData = async () => {};
 
   return (
-    <div className="w-full bg-base p-4 rounded-3xl">
+    <div className="w-full bg-base p-4 rounded-3xl shadow-md shad">
       <div className="flex items-center gap-2 mb-4 text-2xl font-semibold">
         <MdEvent className="text-primary-text" />
         <h1 className="text-heading">Sự kiện hôm nay</h1>
@@ -26,27 +26,25 @@ const EventBanner = () => {
       <h1 className="text-3xl font-semibold text-lavender mb-2">
         {event?.title}
       </h1>
-      <div className="flex items-center gap-2 text-sub-text1 font-semibold">
+      <div className="flex items-center gap-2">
         {event?.date && (
-          <div className="flex items-center gap-2 text-lg bg-crust w-fit px-2 py-1 rounded-full">
-            <MdDateRange />
-            <p>{event?.date}</p>
-          </div>
+          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2">
+            <MdDateRange className="text-center" />
+            <p> {event?.date}</p>
+          </Badge>
         )}
         {event?.time && (
-          <div className="flex items-center gap-2 text-lg bg-crust w-fit px-2 py-1 rounded-full">
-            <MdOutlineAccessTime />
-            <p>{event?.time}</p>
-          </div>
+          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2">
+            <MdOutlineAccessTime className="text-center" />
+            <p> {event?.time}</p>
+          </Badge>
         )}
-        {
-          event?.location && (
-            <div className="flex items-center gap-2 text-lg bg-crust w-fit px-2 py-1 rounded-full">
-              <MdLocationOn />
-              <p>{event?.location}</p>
-            </div>
-          )
-        }
+        {event?.location && (
+          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2">
+            <MdLocationOn className="text-center" />
+            <p> {event?.location}</p>
+          </Badge>
+        )}
       </div>
     </div>
   );

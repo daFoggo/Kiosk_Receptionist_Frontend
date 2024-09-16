@@ -1,20 +1,23 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Button } from "antd";
+import { ConfigProvider } from "antd";
+import { SelectOptionProps } from "../types/ChatMockData";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-const SelectOption = () => {
+const SelectOption = ({
+  select,
+  onOptionSelect,
+  setIsScanning,
+}: {
+  select: SelectOptionProps;
+  onOptionSelect: (value: string) => void;
+  setIsScanning: (value: boolean) => void;
+}) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  const options: Option[] = [
-    { label: "Sinh viên", value: "sinhVien" },
-    { label: "Khách mời sự kiện", value: "khachMoi" },
-    { label: "Cán bộ viện", value: "canBo" },
-    { label: "Khác", value: "khac" },
-  ];
+  useEffect(() => {
+    setSelectedOption(null);
+  }, [select]);
 
   const handleOptionClick = (value: string) => {
     setSelectedOption(value);
@@ -37,15 +40,16 @@ const SelectOption = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-md mx-auto space-y-6">
+    <div className="flex flex-col items-center w-full mx-auto space-y-6">
       <motion.div
+        key={select?.question}
         className="shadow-md w-full p-4 bg-white rounded-2xl"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <p className="text-xl font-semibold text-primary-text text-center">
-          Quý khách thuộc đối tượng là?
+          {select?.question}
         </p>
       </motion.div>
 
@@ -55,22 +59,57 @@ const SelectOption = () => {
         initial="hidden"
         animate="visible"
       >
-        {options.map((option) => (
-          <motion.div
-            key={option.value}
-            className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm ${
-              selectedOption === option.value
-                ? "bg-lavender text-white"
-                : "bg-base text-primary-text hover:bg-surface0"
-            }`}
-            onClick={() => handleOptionClick(option.value)}
-            variants={itemVariants}
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
+        {select.options &&
+          select?.options.map((option) => (
+            <motion.div
+              key={option.value}
+              className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm ${
+                selectedOption === option.value
+                  ? "bg-lavender text-white"
+                  : "bg-base text-primary-text hover:bg-surface0"
+              }`}
+              onClick={() => handleOptionClick(option.value)}
+              variants={itemVariants}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {option.label}
+            </motion.div>
+          ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <ConfigProvider
+          theme={{
+            components: {
+              Button: {
+                colorPrimary: "#7287fd",
+                algorithm: true,
+                fontFamily: "Inter",
+                fontWeight: "bold",
+              },
+            },
+          }}
+        >
+          <Button
+            type="primary"
+            className="text"
+            size="large"
+            disabled={!selectedOption}
+            onClick={() => {
+              onOptionSelect(selectedOption as string);
+              if (selectedOption === "khach") {
+                setIsScanning(true);
+              }
+            }}
           >
-            {option.label}
-          </motion.div>
-        ))}
+            Xác nhận
+          </Button>
+        </ConfigProvider>
       </motion.div>
     </div>
   );

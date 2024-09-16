@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { ipWebsocket } from "../utils/ip";
-import { Tooltip, Table, ConfigProvider } from "antd";
+import { Table, ConfigProvider } from "antd";
+import { Badge } from "./ui/badge";
+import { IoPersonSharp } from "react-icons/io5";
 
-const Camera = () => {
+const Camera = ({
+  setCurrentRole,
+}: {
+  setCurrentRole: (role: string) => void;
+}) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const cameraRef = useRef<Webcam>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -12,7 +18,6 @@ const Camera = () => {
     nums_of_people: 0,
     person_datas: [],
   });
-  console.log(webcamData);
 
   const columns = [
     {
@@ -24,17 +29,6 @@ const Camera = () => {
       title: "Chức vụ",
       dataIndex: "role",
       key: "role",
-    },
-    {
-      title: "Vị trí",
-      dataIndex: "position",
-      key: "position",
-    },
-    {
-      title: "Phòng ban",
-      dataIndex: "department",
-      key: "department",
-      ellipsis: true,
     },
   ];
 
@@ -64,7 +58,10 @@ const Camera = () => {
         try {
           const data = JSON.parse(event.data);
           if (data) {
-            setWebcamData(data);
+            if (data.key === "webcam") {
+              setWebcamData(data?.value);
+              setCurrentRole(data?.value?.person_datas[0]?.role);
+            }
           }
         } catch (error) {
           console.error("Error parsing WebSocket message:", error);
@@ -81,10 +78,10 @@ const Camera = () => {
     }
   }, []);
 
-  // send frame every 5000ms
+  // send frame every 2000ms
   useEffect(() => {
     if (isConnected) {
-      const interval = setInterval(captureAndSendFrame, 5000);
+      const interval = setInterval(captureAndSendFrame, 2000);
       return () => clearInterval(interval);
     }
   }, [isConnected]);
@@ -121,7 +118,7 @@ const Camera = () => {
             onClick={requestCameraPermission}
             className="mt-2 px-4 py-2 bg-lavender text-white rounded-2xl"
           >
-            Allow Camera Access
+            Cho phép truy cập camera
           </button>
         </div>
       ) : (
@@ -133,48 +130,47 @@ const Camera = () => {
             className="rounded-2xl shadow-md w-full"
             onUserMediaError={() => setHasPermission(false)}
           />
-          <Tooltip
-            title={
-              isConnected
-                ? `Đã kết nối.\nSố người nhận diện được: ${webcamData.nums_of_people}`
-                : "Chưa kết nối"
-            }
-          >
+
+          <Badge className="bg-base text-lg text-sub-text1 font-semibold gap-2 absolute top-4 right-4 flex items-center">
+            <IoPersonSharp className="text-center" />
+            <p>{webcamData.nums_of_people}</p>
+
             <div
-              className={`absolute top-4 right-4  w-4 h-4 rounded-full flex items-center justify-center ${
+              className={`w-4 h-4 ${
                 isConnected ? "bg-green-500" : "bg-red-500"
-              }`}
-            >
-            </div>
-          </Tooltip>
+              } rounded-full`}
+            ></div>
+          </Badge>
         </div>
       )}
 
-      {webcamData.person_datas?.length > 0 && (
-        <ConfigProvider
-          theme={{
-            components: {
-              Table: {
-                fontFamily: "Inter",
-                headerBg: "#bcc0cc",
-                fontSize: 14,
-                colorPrimary: "#7287fd",
-              },
-              Button: {
-                colorPrimary: "#7287fd",
-                algorithm: true,
-              },
+      <ConfigProvider
+        theme={{
+          components: {
+            Table: {
+              fontFamily: "Inter",
+              headerBg: "#eff1f5",
+              fontSize: 14,
+              colorPrimary: "#7287fd",
             },
-          }}
-        >
-          <Table
-            columns={columns}
-            dataSource={webcamData.person_datas}
-            pagination={false}
-            className="shadow-md w-full"
-          />
-        </ConfigProvider>
-      )}
+            Button: {
+              colorPrimary: "#7287fd",
+              algorithm: true,
+            },
+          },
+        }}
+      >
+        <Table
+          columns={columns}
+          dataSource={webcamData.person_datas?.map((person, index) => ({
+            ...(person as object),
+            key: index,
+          }))}
+          pagination={false}
+          className="shadow-md w-full"
+          scroll={{ y: 100 }}
+        />
+      </ConfigProvider>
     </div>
   );
 };
