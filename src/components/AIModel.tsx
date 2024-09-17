@@ -72,10 +72,15 @@ const AIModel = ({ videoPath }: { videoPath: string }) => {
           playsInline
         ></video>
       ) : (
-        <img
-          src="src/assets/videos/sampleImage.jpg"
+        <video
+          key={"default"}
+          src={"src/assets/videos/1.mp4"}
           className="absolute inset-0 w-full h-full object-cover bg-center"
-        />
+          autoPlay
+          muted
+          playsInline
+          loop
+        ></video>
       )}
     </div>
   );
