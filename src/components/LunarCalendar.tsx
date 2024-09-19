@@ -1,8 +1,7 @@
 import { SolarDate } from "@nghiavuive/lunar_date_vi";
-import { ConfigProvider } from "antd";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale"
+import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -31,14 +30,13 @@ const LunarCalendar = () => {
     const today = new Date();
 
     if (selectedDate?.toDateString() === date?.toDateString()) {
-      setDate(today); 
+      setDate(today);
     } else {
-      setDate(selectedDate || today); 
+      setDate(selectedDate || today);
     }
   };
 
   const renderCalendar = () => {
-    
     return weekDays.map((day, index) => {
       const currentDate = new Date(startOfWeek);
       currentDate.setDate(startOfWeek.getDate() + index);
@@ -65,7 +63,9 @@ const LunarCalendar = () => {
           >
             {currentDate.getDate()}
           </div>
-          <div className="text-xs font-semibold text-overlay">{lunarDate.day} AL</div>
+          <div className="text-xs font-semibold text-overlay">
+            {lunarDate.day} AL
+          </div>
         </div>
       );
     });
@@ -76,41 +76,32 @@ const LunarCalendar = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-heading">Lịch</h2>
         <div className="flex items-center justify-between">
-          <ConfigProvider
-            theme={{
-              components: {
-                Button: {
-                  colorPrimary: "#6359e7",
-                  algorithm: true,
-                },
-              },
-            }}
-          >
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-fit justify-start text-left font-sans",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date && format(date, "MMMM", { locale: vi }).charAt(0).toUpperCase() + format(date, "MMMM", { locale: vi }).slice(1)}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={handleSelectDate}
-                  initialFocus
-                  className="text-3xl"
-                  locale={vi}
-                />
-              </PopoverContent>
-            </Popover>
-          </ConfigProvider>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-fit justify-start text-left font-sans",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date &&
+                  format(date, "MMMM", { locale: vi }).charAt(0).toUpperCase() +
+                    format(date, "MMMM", { locale: vi }).slice(1)}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={handleSelectDate}
+                initialFocus
+                className="text-3xl"
+                locale={vi}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div className="grid grid-cols-7 gap-6">{renderCalendar()}</div>

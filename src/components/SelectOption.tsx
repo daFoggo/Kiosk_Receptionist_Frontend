@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "antd";
-import { ConfigProvider } from "antd";
 import { SelectOptionProps } from "../types/ChatMockData";
+import { Button } from "./ui/button";
 
 const SelectOption = ({
   select,
@@ -83,33 +82,16 @@ const SelectOption = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <ConfigProvider
-          theme={{
-            components: {
-              Button: {
-                colorPrimary: "#7287fd",
-                algorithm: true,
-                fontFamily: "Inter",
-                fontWeight: "bold",
-              },
-            },
+        <Button
+          disabled={!selectedOption}
+          onClick={() => {
+            onOptionSelect(selectedOption as string);
+            if (selectedOption === "khach") {
+              setIsScanning(true);
+            }
           }}
-        >
-          <Button
-            type="primary"
-            className="text"
-            size="large"
-            disabled={!selectedOption}
-            onClick={() => {
-              onOptionSelect(selectedOption as string);
-              if (selectedOption === "khach") {
-                setIsScanning(true);
-              }
-            }}
-          >
-            Xác nhận
-          </Button>
-        </ConfigProvider>
+          className="bg-lavender text-white font-semibold cursor-pointer"
+        >Xác nhận</Button>
       </motion.div>
     </div>
   );
