@@ -21,7 +21,7 @@ const EventBanner = () => {
     <div className="w-full bg-base p-4 rounded-3xl shadow-md shad">
       <div className="flex items-center gap-2 mb-4 text-2xl font-semibold">
         <MdEvent className="text-primary-text" />
-        <h1 className="text-heading">Sự kiện hôm nay</h1>
+        <h1 className="text-heading">Sự kiện</h1>
       </div>
       <h1 className="text-3xl font-semibold text-lavender mb-2">
         {event?.title}

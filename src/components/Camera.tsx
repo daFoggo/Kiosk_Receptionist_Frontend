@@ -1,8 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Webcam from "react-webcam";
-import { Table, ConfigProvider } from "antd";
 import { Badge } from "./ui/badge";
 import { IoPersonSharp } from "react-icons/io5";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 const Camera = ({
   isConnected,
@@ -20,12 +27,10 @@ const Camera = ({
   const columns = [
     {
       title: "Họ tên",
-      dataIndex: "name",
       key: "name",
     },
     {
       title: "Chức vụ",
-      dataIndex: "role",
       key: "role",
     },
   ];
@@ -43,6 +48,8 @@ const Camera = ({
       setHasPermission(false);
     }
   };
+
+  console.log(webcamData);
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-6">
@@ -80,37 +87,25 @@ const Camera = ({
           </Badge>
         </div>
       )}
-
-      <ConfigProvider
-        theme={{
-          components: {
-            Table: {
-              fontFamily: "Inter",
-              headerBg: "#eff1f5",
-              fontSize: 14,
-              colorPrimary: "#7287fd",
-            },
-            Button: {
-              colorPrimary: "#7287fd",
-              algorithm: true,
-            },
-          },
-        }}
-      >
-        <Table
-          columns={columns}
-          dataSource={webcamData.person_datas?.map((person: any, index: any) => ({
-            ...(person as object),
-            key: index,
-          }))}
-          pagination={false}
-          className="shadow-md w-full"
-          scroll={{ y: 150 }}
-          style={{
-            height: "200px"
-          }}
-        />
-      </ConfigProvider>
+      <Table className="font-sans">
+        <TableHeader>
+          <TableRow>
+            {columns.map((column) => {
+              return <TableHead key={column.key} className="font-bold text-lg text-heading">{column.title}</TableHead>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody className="h-12 overflow-auto">
+          {webcamData?.person_datas?.map((person: any, index: number) => {
+            return (
+              <TableRow key={index}>
+                <TableCell>{person.name}</TableCell>
+                <TableCell>{person.role}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
   );
 };

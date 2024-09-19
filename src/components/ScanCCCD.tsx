@@ -9,7 +9,7 @@ const ScanCCCD = ({
   setCurrentMessage,
   cccdData,
   setCurrentVideoPath,
-  currentRole
+  currentRole,
 }: {
   setIsScanning: (value: boolean) => void;
   setCurrentMessage: (value: string) => void;
@@ -61,7 +61,7 @@ const ScanCCCD = ({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto font-sans">
-      <Card className="w-full">
+      <Card className="w-full shadow-md">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-semibold">
             Quý khách vui lòng đưa Căn cước công dân vào khe máy đọc bên dưới
@@ -69,7 +69,7 @@ const ScanCCCD = ({
         </CardHeader>
       </Card>
 
-      <Card className="w-full">
+      <Card className="w-full shadow-md">
         <CardHeader>
           <CardTitle className="text-3xl font-bold">Thông tin</CardTitle>
         </CardHeader>

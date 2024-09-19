@@ -18,6 +18,7 @@ const Home = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [currentVideoPath, setCurrentVideoPath] = useState<string>("");
+  const [cccdData, setCccdData] = useState<Record<string, string> | null>(null);
   const [currentSelect, setCurrentSelect] = useState<SelectOptionProps>({
     question: "",
     options: [],
@@ -28,7 +29,6 @@ const Home = () => {
     nums_of_people: 0,
     person_datas: [],
   });
-  const [cccdData, setCccdData] = useState<Record<string, string> | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
   const cameraRef = useRef<Webcam>(null);
@@ -61,6 +61,8 @@ const Home = () => {
 
             if (data.key === "cccd") {
               setCccdData(JSON.parse(data?.value));
+              setCurrentMessage("Cảm ơn quý khách đã xuất trình Căn cước công dân. Quý khách vui lòng cung cấp thêm hình ảnh và xác nhận thông tin");
+              setCurrentVideoPath("src/assets/videos/khach.mp4");
               setIsScanning(true);
             }
           }
@@ -79,6 +81,7 @@ const Home = () => {
     }
   }, []);
 
+  // gui frame moi 2s
   useEffect(() => {
     if (isConnected) {
       const interval = setInterval(captureAndSendFrame, 2000);
@@ -97,6 +100,14 @@ const Home = () => {
     }
   };
 
+  // default message
+  useEffect(() => {
+    setCurrentMessage(chatMockData[0].initialMessage);
+    setCurrentVideoPath(chatMockData[0].video_path);
+    setCurrentSelect(chatMockData[0].select);
+  }, []);
+
+  // disable mot so thao tac
   useEffect(() => {
     const disableZoom = (e: any) => {
       if (e.ctrlKey && (e.key === "+" || e.key === "-")) {
@@ -131,26 +142,9 @@ const Home = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setCurrentMessage(chatMockData[0].initialMessage);
-    setCurrentVideoPath(chatMockData[0].video_path);
-    setCurrentSelect(chatMockData[0].select);
-  }, []);
-
-  useEffect(() => {
-    if (currentRole) {
-      setCurrentMessage(
-        chatMockData[0].response[currentRole] || chatMockData[0].initialMessage
-      );
-      setCurrentVideoPath(
-        chatMockData[0].response_path[currentRole] || chatMockData[0].video_path
-      );
-    }
-  }, [currentRole]);
-
   const handleOptionSelect = (selectedValue: string) => {
-    const responseMessage = chatMockData[0].response[selectedValue];
-    const responseVideoPath = chatMockData[0].response_path[selectedValue];
+    const responseMessage = chatMockData[0]?.response[selectedValue];
+    const responseVideoPath = chatMockData[0]?.response_path[selectedValue];
     setCurrentMessage(responseMessage);
     setCurrentVideoPath(responseVideoPath);
   };
@@ -200,6 +194,7 @@ const Home = () => {
               setCurrentMessage={handleSetCurrentMessage}
               cccdData={cccdData}
               setCurrentVideoPath={setCurrentVideoPath}
+              currentRole={currentRole}
             />
           </div>
         ) : (

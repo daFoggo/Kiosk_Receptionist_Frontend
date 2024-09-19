@@ -19,7 +19,8 @@ export const chatMockData: ChatMockData[] = [
             sinhVien: "Chào bạn. Ngày hôm nay sinh viên có lịch học môn Triết học Mác Lenin và Kỹ năng tạo lập văn bản tại Tầng 5. Chúc bạn một ngày học tập vui vẻ và hiệu quả.",
             khachMoi: "Chào quý khách. Sự kiện lễ kỉ niệm 58 năm ngày thành lập Viện Khoa học Kỹ thuật Bưu điện sẽ tổ chức tại Hội trường 2, Tầng 2 ngày 17/9/2024. Rất hân hạnh được đón tiếp quý khách",
             canBo: "Chào bạn. Chúc bạn có một ngày làm việc hiệu quả.",
-            khach: "Chào quý khách. Quý khách vui lòng xuất trình căn cước công dân qua máy đọc để đăng ký thông tin",
+            khach: "Chào quý khách. Quý khách vui lòng xuất trình căn cước công dân qua máy đọc để đăng ký thông tin và cung cấp hình ảnh",
+            khach2: "Cảm ơn quý khách đã xuất trình Căn cước công dân. Quý khách vui lòng cung cấp thêm hình ảnh và xác nhận thông tin"
         },
         response_path : {
             sinhVien: "src/assets/videos/sinhVien.mp4",
