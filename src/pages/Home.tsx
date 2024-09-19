@@ -194,12 +194,14 @@ const Home = () => {
 
         {/* camera */}
         {isScanning ? (
-          <ScanCCCD
-            setIsScanning={handleSetIsScanning}
-            setCurrentMessage={handleSetCurrentMessage}
-            cccdData={cccdData}
-            setCurrentVideoPath={setCurrentVideoPath}
-          />
+          <div className="w-1/2">
+            <ScanCCCD
+              setIsScanning={handleSetIsScanning}
+              setCurrentMessage={handleSetCurrentMessage}
+              cccdData={cccdData}
+              setCurrentVideoPath={setCurrentVideoPath}
+            />
+          </div>
         ) : (
           <div className="w-1/2 flex flex-col items-center gap-6">
             <Camera

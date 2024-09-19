@@ -1,63 +1,25 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
+import { chatMockData } from "@/sampleData/chatMockData";
 const ScanCCCD = ({
   setIsScanning,
   setCurrentMessage,
   cccdData,
-  setCurrentVideoPath
+  setCurrentVideoPath,
+  currentRole
 }: {
   setIsScanning: (value: boolean) => void;
   setCurrentMessage: (value: string) => void;
   cccdData: Record<string, string> | null;
   setCurrentVideoPath: (value: string) => void;
+  chatMockData: any[];
+  currentRole: string;
 }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [countdown, setCountdown] = useState(5);
-
-  // useEffect(() => {
-  //   if (ipWebsocket) {
-  //     wsRef.current = new WebSocket(ipWebsocket);
-
-  //     wsRef.current.onopen = () => {
-  //       console.log("CCCD connected");
-  //       setIsConnected(true);
-  //     };
-
-  //     wsRef.current.onclose = () => {
-  //       console.log("CCCD disconnected");
-  //       setIsConnected(false);
-  //     };
-
-  //     wsRef.current.onmessage = (event) => {
-  //       try {
-  //         const data = JSON.parse(event.data);
-  //         if (cccdDataProps) {
-  //           console.log(cccdDataProps);
-  //           setCccdData(cccdDataProps);
-  //         } else {
-  //           if (data && data.key === "cccd") {
-  //             setCccdData(JSON.parse(data?.value));
-  //             console.log(data.value);
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.error("Error parsing WebSocket message:", error);
-  //       }
-  //     };
-
-  //     return () => {
-  //       if (wsRef.current) {
-  //         wsRef.current.close();
-  //       }
-  //     };
-  //   } else {
-  //     console.error("WebSocket IP is not defined");
-  //   }
-  // }, [setIsScanning]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -66,10 +28,10 @@ const ScanCCCD = ({
     } else if (isConfirmed && countdown === 0) {
       setIsScanning(false);
       setCurrentVideoPath("src/assets/videos/1.mp4");
-      setCurrentMessage("Chào mừng quý khách đến với Viện khoa Học kỹ thuật Bưu điện");
+      setCurrentMessage(chatMockData[0]?.response[currentRole] || chatMockData[0]?.initialMessage);
     }
     return () => clearTimeout(timer);
-  }, [isConfirmed, countdown, setIsScanning]);
+  }, [isConfirmed, countdown, setIsScanning, setCurrentVideoPath, setCurrentMessage, chatMockData, currentRole]);
 
   const cccdFields = [
     { key: "Identity Code", label: "Mã số CCCD" },
@@ -135,7 +97,7 @@ const ScanCCCD = ({
         <Button
           onClick={handleConfirm}
           className="bg-lavender text-white font-semibold hover:bg-lavender/90 shadow-md"
-          disabled={!isDataComplete || (isConfirmed && countdown === 0)}
+          // disabled={!isDataComplete || isConfirmed}
         >
           {isConfirmed ? `Đang trở về ${countdown}s` : "Xác nhận"}
         </Button>
