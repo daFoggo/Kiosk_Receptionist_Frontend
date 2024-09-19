@@ -21,6 +21,7 @@ const ScanCCCD = ({
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
+  // countdown quay lai va doi message
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isConfirmed && countdown > 0) {
@@ -41,12 +42,14 @@ const ScanCCCD = ({
     { key: "Hometown", label: "Quê quán" },
   ];
 
+  // xac nhan thong tin va cam on
   const handleConfirm = () => {
     if (!isConfirmed) {
       setCurrentMessage(
-        `Cảm ơn ${cccdData?.Gender === "Nam" ? "ông" : "bà"} ${
+        cccdData ? `Cảm ơn ${cccdData?.Gender === "Nam" ? "ông" : "bà"} ${
           cccdData?.Name
         } đã xác nhận thông tin`
+        : "Cảm ơn quý khách đã xác nhận thông tin"
       );
       setCurrentVideoPath("src/assets/videos/quetCCCD.mp4");
       setIsConfirmed(true);
@@ -97,7 +100,7 @@ const ScanCCCD = ({
         <Button
           onClick={handleConfirm}
           className="bg-lavender text-white font-semibold hover:bg-lavender/90 shadow-md"
-          // disabled={!isDataComplete || isConfirmed}
+          disabled={!isDataComplete || isConfirmed}
         >
           {isConfirmed ? `Đang trở về ${countdown}s` : "Xác nhận"}
         </Button>

@@ -6,6 +6,7 @@ const AIChat = ({ message }: { message: string }) => {
   const [hasSpoken, setHasSpoken] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // voice setup
   useEffect(() => {
     const setVietnameseVoice = () => {
       const synth = window.speechSynthesis;
@@ -24,6 +25,7 @@ const AIChat = ({ message }: { message: string }) => {
     setVietnameseVoice();
   }, []);
 
+  // speak message
   useEffect(() => {
     const speakMessage = (text: string) => {
       if (!voice) return;
@@ -32,8 +34,7 @@ const AIChat = ({ message }: { message: string }) => {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.voice = voice;
 
-      // Convert speech to audio file
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext || window.AudioContext)();
       const source = audioContext.createBufferSource();
       const audioData = new Uint8Array(utterance.text.length);
       utterance.text.split('').forEach((char, index) => {
@@ -47,9 +48,9 @@ const AIChat = ({ message }: { message: string }) => {
         
         if (audioRef.current) {
           audioRef.current.src = audioUrl;
-          audioRef.current.muted = true; // Start muted
+          audioRef.current.muted = true; 
           audioRef.current.play().then(() => {
-            audioRef.current!.muted = false; // Unmute after playback starts
+            audioRef.current!.muted = false; 
           }).catch(error => {
             console.error("Autoplay failed:", error);
           });

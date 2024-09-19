@@ -104,8 +104,11 @@ const Camera = ({
             key: index,
           }))}
           pagination={false}
-          className="shadow-md w-full custom-height"
-          scroll={{ y: 100 }}
+          className="shadow-md w-full"
+          scroll={{ y: 150 }}
+          style={{
+            height: "200px"
+          }}
         />
       </ConfigProvider>
     </div>

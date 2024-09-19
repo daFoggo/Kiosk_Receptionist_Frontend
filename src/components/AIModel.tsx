@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const AIModel = ({ videoPath }: { videoPath: string }) => {
   const [currentVideo, setCurrentVideo] = useState(videoPath || "src/assets/videos/1.mp4");
