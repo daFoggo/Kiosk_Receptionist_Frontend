@@ -11,6 +11,8 @@ import {
   TableRow,
 } from "./ui/table";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const Camera = ({
   isConnected,
   webcamData,
@@ -49,22 +51,18 @@ const Camera = ({
     }
   };
 
+  const CameraSkeleton = () => (
+    <div className="w-full">
+      <Skeleton className="w-full h-auto rounded-2xl aspect-video" />
+    </div>
+  );
+
   console.log(webcamData);
 
   return (
-    <div className="relative flex flex-col items-center justify-center gap-6">
-      {hasPermission === null ? (
-        <p>Requesting camera permission...</p>
-      ) : hasPermission === false ? (
-        <div className="flex flex-col items-center">
-          <p>Cần cấp quyền truy cập camera</p>
-          <button
-            onClick={requestCameraPermission}
-            className="mt-2 px-4 py-2 bg-lavender text-white rounded-2xl"
-          >
-            Cho phép truy cập camera
-          </button>
-        </div>
+    <div className="relative flex flex-col items-center justify-center gap-6 w-full">
+      {hasPermission === null || hasPermission === false ? (
+        <CameraSkeleton />
       ) : (
         <div className="relative">
           <Webcam
@@ -87,25 +85,34 @@ const Camera = ({
           </Badge>
         </div>
       )}
-      <Table className="font-sans">
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => {
-              return <TableHead key={column.key} className="font-bold text-lg text-heading">{column.title}</TableHead>;
-            })}
-          </TableRow>
-        </TableHeader>
-        <TableBody className="h-12 overflow-auto">
-          {webcamData?.person_datas?.map((person: any, index: number) => {
-            return (
-              <TableRow key={index}>
-                <TableCell>{person.name}</TableCell>
-                <TableCell>{person.role}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      <div className="w-full">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-base rounded-3xl">
+              {columns.map((column) => (
+                <TableHead
+                  key={column.key}
+                  className="font-bold text-lg text-heading text-left"
+                >
+                  {column.title}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+        </Table>
+        <div className="max-h-[calc(2*3rem)] overflow-y-auto">
+          <Table>
+            <TableBody>
+              {webcamData?.person_datas?.map((person: any, index: any) => (
+                <TableRow key={index}>
+                  <TableCell>{person.name}</TableCell>
+                  <TableCell>{person.role}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 };

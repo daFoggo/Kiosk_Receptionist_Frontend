@@ -81,9 +81,10 @@ const LunarCalendar = () => {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-fit justify-start text-left font-sans",
-                  !date && "text-muted-foreground"
-                )}
+                  "w-fit justify-start text-left font-sans font-semibold",
+                  !date && "text-muted-foreground",
+                )
+              }
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date &&
@@ -99,6 +100,9 @@ const LunarCalendar = () => {
                 initialFocus
                 className="text-3xl"
                 locale={vi}
+                classNames={{
+                  day_selected: "bg-lavender text-white",
+                }}
               />
             </PopoverContent>
           </Popover>

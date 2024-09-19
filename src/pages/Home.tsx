@@ -12,6 +12,7 @@ import ScanCCCD from "../components/ScanCCCD";
 import "./pageRestrictions.css";
 import { ipWebsocket } from "../utils/ip";
 import Webcam from "react-webcam";
+import lavenderWave from "../assets/background_layer/lavender_wave.png"
 
 const Home = () => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
@@ -61,8 +62,10 @@ const Home = () => {
 
             if (data.key === "cccd") {
               setCccdData(JSON.parse(data?.value));
-              setCurrentMessage("Cảm ơn quý khách đã xuất trình Căn cước công dân. Quý khách vui lòng cung cấp thêm hình ảnh và xác nhận thông tin");
-              setCurrentVideoPath("src/assets/videos/khach.mp4");
+              setCurrentMessage(
+                "Cảm ơn quý khách đã xuất trình Căn cước công dân. Quý khách vui lòng cung cấp thêm hình ảnh và xác nhận thông tin"
+              );
+              setCurrentVideoPath("src/assets/videos/khach2.mp4");
               setIsScanning(true);
             }
           }
@@ -162,7 +165,19 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 px-6 py-3 h-screen page-restrictions">
+    <div className="flex flex-col gap-6 px-6 py-3 h-screen page-restrictions relative min-h-screen overflow-hidden">
+      <div
+        className="absolute inset-x-0 bottom-0 -z-10"
+        style={{
+          backgroundImage: `url(${lavenderWave})`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "bottom",
+          backgroundSize: "100% auto",
+          height: "30%",
+          bottom: "-250px"
+        }}
+      />
+
       {/* banner */}
       <div className="h-auto">
         <EventBanner />

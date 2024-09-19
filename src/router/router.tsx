@@ -3,6 +3,7 @@ import RootLayout from "../layouts/RootLayout";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import CCCD from "../pages/CCCD";
+import Dashboard from "../pages/Dashboard";
 import routes from "./routerConfig";
 
 const routeLayout: RouteObject[] = [
@@ -21,6 +22,10 @@ const routeLayout: RouteObject[] = [
             {
                 path: routes.cccd,
                 element: <CCCD />,
+            },
+            {
+                path: routes.dashboard,
+                element: <Dashboard />,
             }
         ]
     }
