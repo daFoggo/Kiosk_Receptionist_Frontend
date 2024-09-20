@@ -3,6 +3,8 @@ import { userDataColumns } from "@/utils/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { UserData } from "@/types/UserData";
+import { ipGetData } from "@/utils/ip";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState<UserData[]>([]);
@@ -12,7 +14,14 @@ const Dashboard = () => {
   }, []);
 
   const getUserData = async () => {
-    const response = await axios.get("");
+    try {
+      const response = await axios.get(ipGetData);
+      setUserData(response.data);
+      toast.success("Lấy dữ liệu thành công");
+    } catch (error) {
+      toast.error("Lấy dữ liệu thất bại");
+      console.error("Error getting user data:", error);
+    }
   };
 
   return (

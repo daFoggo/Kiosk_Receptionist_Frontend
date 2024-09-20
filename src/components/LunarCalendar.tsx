@@ -72,7 +72,7 @@ const LunarCalendar = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md font-sans">
+    <div className="bg-white p-4 rounded-3xl font-sans border ">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-heading">Lịch</h2>
         <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ const LunarCalendar = () => {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-fit justify-start text-left font-sans font-semibold",
+                  "w-fit justify-start text-left font-sans font-semibold ",
                   !date && "text-muted-foreground",
                 )
               }

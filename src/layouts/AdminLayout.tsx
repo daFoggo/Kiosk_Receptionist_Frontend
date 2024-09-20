@@ -7,7 +7,7 @@ const AdminLayout = () => {
       <header>
         <SecondHeader />
       </header>
-      <main className="mb-2 mx-4 bg-white rounded-2xl flex-grow p-4">
+      <main className="mb-2 mx-4 bg-white rounded-2xl flex-grow p-4 border">
         <Outlet />
       </main>
     </div>

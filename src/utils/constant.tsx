@@ -25,6 +25,10 @@ export const userDataColumns: ColumnDef<UserData>[] = [
     header: "Mã căn cước",
   },
   {
+    accessorKey: "role",
+    header: "Vai trò",
+  },
+  {
     accessorKey: "dob",
     header: "Ngày sinh",
   },

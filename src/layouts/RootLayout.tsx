@@ -1,13 +1,21 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import { Toaster } from "@/components/ui/sonner"
 const RootLayout = () => {
   return (
-    <div>
+    <div className="no-scrollbar">
       <header>
         <Header />
       </header>
       <main>
         <Outlet />
+        <Toaster toastOptions={{
+          style: {
+            fontSize: "1.5rem",
+            backgroundColor: "white",
+            color: "#7287fd"
+          },
+        }} position="top-center"/>
       </main>
     </div>
   );

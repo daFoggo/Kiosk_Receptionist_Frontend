@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { IoPersonSharp } from "react-icons/io5";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./ui/table";
-
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
 
 const Camera = ({
   isConnected,
@@ -25,17 +18,6 @@ const Camera = ({
   isConnected: boolean;
 }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-
-  const columns = [
-    {
-      title: "Họ tên",
-      key: "name",
-    },
-    {
-      title: "Chức vụ",
-      key: "role",
-    },
-  ];
 
   useEffect(() => {
     requestCameraPermission();
@@ -57,7 +39,18 @@ const Camera = ({
     </div>
   );
 
-  console.log(webcamData);
+  const convertRole = (role: string) => {
+    switch (role) {
+      case "sinhVien":
+        return "Sinh viên";
+      case "canbo":
+        return "Cán bộ";
+      case "khach":
+        return "Khách";
+      default:
+        return "Khách";
+    }
+  };
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-6 w-full">
@@ -69,11 +62,11 @@ const Camera = ({
             ref={cameraRef}
             mirrored
             screenshotFormat="image/jpeg"
-            className="rounded-2xl shadow-md w-full"
+            className="rounded-2xl  w-full"
             onUserMediaError={() => setHasPermission(false)}
           />
 
-          <Badge className="bg-base text-lg text-sub-text1 font-semibold gap-2 absolute top-4 right-4 flex items-center">
+          <Badge className="absolute top-4 right-4 flex items-center gap-2 text-lg font-semibold text-white backdrop-blur-md bg-white/10 border border-white/50 px-3 py-1.5 rounded-full">
             <IoPersonSharp className="text-center" />
             <p>{webcamData.nums_of_people}</p>
 
@@ -85,33 +78,29 @@ const Camera = ({
           </Badge>
         </div>
       )}
-      <div className="w-full">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-base rounded-3xl">
-              {columns.map((column) => (
-                <TableHead
-                  key={column.key}
-                  className="font-bold text-lg text-heading text-left"
-                >
-                  {column.title}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-        </Table>
-        <div className="max-h-[calc(2*3rem)] overflow-y-auto">
-          <Table>
-            <TableBody>
-              {webcamData?.person_datas?.map((person: any, index: any) => (
-                <TableRow key={index}>
-                  <TableCell>{person.name}</TableCell>
-                  <TableCell>{person.role}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+      <div className="w-full flex flex-wrap gap-2">
+        {webcamData?.person_datas?.map((person: any, index: any) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <Badge variant="secondary" className="p-1 pr-3">
+              <Avatar className="h-8 w-8 mr-2">
+                <AvatarFallback>
+                  <IoPersonSharp />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col items-start">
+                <span className="text-sm font-semibold">{person.name}</span>
+                <span className="text-xs text-overlay">
+                  {convertRole(person.role)}
+                </span>
+              </div>
+            </Badge>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

@@ -45,7 +45,7 @@ const ScanCCCD = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("sinhVien");
+  const [selectedRole, setSelectedRole] = useState("");
   const webcamRef = useRef<Webcam>(null);
 
   const cccdFields = [
@@ -112,13 +112,13 @@ const ScanCCCD = ({
         const response = await axios.post(ipUploadData, formattedData);
         console.log(response.data);
         setProcessProgress(100);
-        toast.success("Xác nhận thông tin thành công");
+        toast.success("Đã xác nhận thông tin thành công");
 
         handleConfirm();
       }
     } catch (error) {
       console.error("Error processing and uploading data:", error);
-      toast.error("Có lỗi xảy ra khi xác nhận thông tin");
+      toast.error("Có lỗi trong quá trình xác nhận thông tin");
     } finally {
       setIsProcessing(false);
       setIsDialogOpen(false);
@@ -154,16 +154,16 @@ const ScanCCCD = ({
           screenshotQuality={1}
         />
       </div>
-      <Card className="w-full shadow-md">
+      <Card className="w-full rounded-2xl border ">
         <CardHeader className="flex flex-row items-center justify-between gap-2">
-          <img src={iconCCCD} alt="" className="w-24 bg-base rounded-xl p-2" />
+          <img src={iconCCCD} alt="" className="w-24 bg-base rounded-2xl p-2" />
           <h1 className="text-xl font-semibold text-justify">
             Quý khách vui lòng đưa Căn cước công dân vào khe máy đọc bên dưới
           </h1>
         </CardHeader>
       </Card>
 
-      <Card className="w-full shadow-md">
+      <Card className="w-full rounded-2xl border ">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-heading">
             Thông tin
@@ -180,7 +180,7 @@ const ScanCCCD = ({
             >
               Vai trò
             </Label>
-            <Select value={selectedRole} onValueChange={setSelectedRole}>
+            <Select value={selectedRole} onValueChange={setSelectedRole} required>
               <SelectTrigger className="md:col-span-2 bg-crust text-base-content">
                 <SelectValue placeholder="Chọn vai trò" />
               </SelectTrigger>
@@ -219,8 +219,8 @@ const ScanCCCD = ({
           <AlertDialogTrigger asChild>
             <Button
               variant="default"
-              disabled={!isDataComplete || isConfirmed || isProcessing}
-              className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 shadow-md"
+              disabled={selectedRole === "" || !isDataComplete || isConfirmed || isProcessing}
+              className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border rounded-xl"
               onClick={() => setIsDialogOpen(true)}
             >
               {isProcessing
@@ -248,7 +248,7 @@ const ScanCCCD = ({
               <Button
                 onClick={captureAndUpload}
                 disabled={isConfirmed || isProcessing}
-                className="bg-lavender text-white font-semibold hover:bg-lavender/90"
+                className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border rounded-xl"
               >
                 Xác nhận
               </Button>

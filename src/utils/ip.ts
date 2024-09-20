@@ -4,4 +4,4 @@ export const ipStream = import.meta.env.VITE_STREAM_IP;
 export const ipHTTP = import.meta.env.VITE_HTTP_IP;
 
 export const ipUploadData = ipHTTP + "post-personal-img";
-
+export const ipGetData = ipHTTP + "get-all-data";

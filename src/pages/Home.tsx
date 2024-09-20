@@ -165,7 +165,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 px-6 py-3 h-screen page-restrictions relative min-h-screen overflow-hidden">
+    <div className="flex flex-col gap-6 px-6 py-3 h-screen page-restrictions relative min-h-screen overflow-hidden no-scrollbar">
       <div
         className="absolute inset-x-0 bottom-0 -z-10"
         style={{
@@ -174,7 +174,7 @@ const Home = () => {
           backgroundPosition: "bottom",
           backgroundSize: "100% auto",
           height: "30%",
-          bottom: "-250px"
+          bottom: "-150px"
         }}
       />
 

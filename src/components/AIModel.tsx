@@ -19,7 +19,7 @@ const AIModel = ({ videoPath }: { videoPath: string }) => {
   };
 
   return (
-    <div className="bg-base_bg rounded-2xl relative overflow-hidden aspect-[9/16] h-[80%] w-full font-sans shadow-md">
+    <div className="bg-base_bg rounded-2xl relative overflow-hidden aspect-[9/16] h-[80%] w-full font-sans ">
       <video
         key={currentVideo}
         src={currentVideo}
