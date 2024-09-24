@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import SecondHeader from "@/components/SecondHeader";
 
-const AdminLayout = () => {
+const DashboardLayout = () => {
   return (
     <div className="bg-base min-h-screen flex flex-col">
       <header>
@@ -14,4 +14,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default DashboardLayout;

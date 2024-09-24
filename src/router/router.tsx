@@ -1,10 +1,12 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
-import AdminLayout from "../layouts/AdminLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import CCCD from "../pages/CCCD";
 import Dashboard from "../pages/Dashboard";
+import Login from "../pages/Login";
+import Upload from "../components/Upload";
 import routes from "./routerConfig";
 
 const routeLayout: RouteObject[] = [
@@ -28,14 +30,23 @@ const routeLayout: RouteObject[] = [
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <DashboardLayout />,
     children: [
         {
             path: routes.dashboard,
             element: <Dashboard />,
+        },
+        {
+          path: routes.upload,
+          element: <Upload />
         }
     ]
   },
+  {
+    path: "/admin/" + routes.login,
+    element: <Login/>
+  }
+
 ];
 
 const router = createBrowserRouter(routeLayout);

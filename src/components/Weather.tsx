@@ -64,7 +64,7 @@ const Weather = () => {
   };
 
   return (
-    <div className="h-full rounded-3xl flex flex-col justify-center p-4  border aspect-square font-semibold bg-gradient-to-br from-white to-[#eff1fe]">
+    <div className="h-full rounded-3xl flex flex-col justify-center p-4  border shadow-sm aspect-square font-semibold bg-gradient-to-br from-white to-[#eff1fe]">
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full">
           {weatherData.icon ? getWeatherIcon(weatherData.icon) : null}

@@ -174,7 +174,7 @@ const Home = () => {
           backgroundPosition: "bottom",
           backgroundSize: "100% auto",
           height: "30%",
-          bottom: "-150px"
+          bottom: "-200px"
         }}
       />
 

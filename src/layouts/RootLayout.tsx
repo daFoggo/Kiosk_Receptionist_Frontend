@@ -7,7 +7,7 @@ const RootLayout = () => {
       <header>
         <Header />
       </header>
-      <main>
+      <main className="no-scrollbar">
         <Outlet />
         <Toaster toastOptions={{
           style: {

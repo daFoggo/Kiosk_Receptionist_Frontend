@@ -66,7 +66,7 @@ const Camera = ({
             onUserMediaError={() => setHasPermission(false)}
           />
 
-          <Badge className="absolute top-4 right-4 flex items-center gap-2 text-lg font-semibold text-white backdrop-blur-md bg-white/10 border border-white/50 px-3 py-1.5 rounded-full">
+          <Badge className="absolute top-4 right-4 flex items-center gap-2 text-lg font-semibold text-white backdrop-blur-md bg-surface2 hover:bg-surface2/50 border border-white/50 px-3 py-1.5 rounded-full">
             <IoPersonSharp className="text-center" />
             <p>{webcamData.nums_of_people}</p>
 
@@ -87,14 +87,14 @@ const Camera = ({
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Badge variant="secondary" className="p-1 pr-3">
-              <Avatar className="h-8 w-8 mr-2">
+              <Avatar className="h-6 w-6 mr-2">
                 <AvatarFallback>
                   <IoPersonSharp />
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start">
-                <span className="text-sm font-semibold">{person.name}</span>
-                <span className="text-xs text-overlay">
+                <span className="text-xs font-semibold">{person.name}</span>
+                <span className="text-[0.6rem] text-overlay">
                   {convertRole(person.role)}
                 </span>
               </div>

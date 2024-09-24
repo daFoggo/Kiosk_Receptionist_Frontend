@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { UserData } from "@/types/UserData";
 import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Carousel,
   CarouselContent,
@@ -15,6 +17,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+// user table dashboard column
 export const userDataColumns: ColumnDef<UserData>[] = [
   {
     accessorKey: "name",
@@ -41,32 +44,38 @@ export const userDataColumns: ColumnDef<UserData>[] = [
     header: "Dữ liệu ảnh",
     cell: ({ row }) => {
       const imageData: string[] = row.getValue("image_data");
-      
+      const [isOpen, setIsOpen] = useState(false);
+
       return (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm">
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)}>
               <Eye className="h-4 w-4" />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto">
-            <Carousel className="w-full max-w-xs">
-              <CarouselContent>
-                {imageData.map((base64, index) => (
-                  <CarouselItem key={index}>
-                    <img
-                      src={`data:image/jpeg;base64,${base64}`}
-                      alt={`Image ${index + 1}`}
-                      className="w-full h-auto"
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </PopoverContent>
-        </Popover>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogTitle className="text-center">
+              Dữ liệu ảnh của {row.getValue("name")}
+            </DialogTitle>
+            <div className="flex items-center justify-center h-full">
+              <Carousel className="w-full max-w-xs">
+                <CarouselContent>
+                  {imageData?.map((base64, index) => (
+                    <CarouselItem key={index}>
+                      <img
+                        src={`data:image/jpeg;base64,${base64}`}
+                        alt={`Image ${index + 1}`}
+                        className="w-full h-auto"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
+          </DialogContent>
+        </Dialog>
       );
     },
   },

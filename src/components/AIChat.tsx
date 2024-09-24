@@ -41,7 +41,7 @@ const AIChat = ({ message }: { message: string }) => {
 
   return (
     <motion.div
-      className="bg-lavender w-full p-4 rounded-2xl border "
+      className="bg-lavender w-full p-4 rounded-2xl border shadow-sm"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}

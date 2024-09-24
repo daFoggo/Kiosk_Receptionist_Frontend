@@ -42,7 +42,7 @@ const SelectOption = ({
     <div className="flex flex-col items-center w-full mx-auto space-y-6">
       <motion.div
         key={select?.question}
-        className=" w-full p-4 bg-white rounded-2xl border"
+        className=" w-full p-4 bg-white rounded-2xl border shadow-sm"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -62,7 +62,7 @@ const SelectOption = ({
           select?.options.map((option) => (
             <motion.div
               key={option.value}
-              className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm border ${
+              className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm border  ${
                 selectedOption === option.value
                   ? "bg-lavender text-white"
                   : "bg-base text-primary-text hover:bg-surface0"
@@ -90,7 +90,7 @@ const SelectOption = ({
               setIsScanning(true);
             }
           }}
-          className="bg-lavender text-white py-6 px-8 text-xl border rounded-xl font-semibold cursor-pointer"
+          className="bg-lavender text-white py-6 px-8 text-xl border shadow-sm rounded-xl font-semibold cursor-pointer"
         >Xác nhận</Button>
       </motion.div>
     </div>

@@ -18,7 +18,7 @@ const EventBanner = () => {
   const getEventData = async () => {};
 
   return (
-    <div className="w-full bg-base p-4 rounded-3xl border ">
+    <div className="w-full bg-base p-4 rounded-3xl border shadow-sm ">
       <div className="flex items-center gap-2 mb-4 text-2xl font-semibold">
         <MdEvent className="text-primary-text" />
         <h1 className="text-heading">Sự kiện</h1>
@@ -28,19 +28,19 @@ const EventBanner = () => {
       </h1>
       <div className="flex items-center gap-2">
         {event?.date && (
-          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2">
+          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2 hover:bg-crust/50">
             <MdDateRange className="text-center" />
             <p> {event?.date}</p>
           </Badge>
         )}
         {event?.time && (
-          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2">
+          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2 hover:bg-crust/50">
             <MdOutlineAccessTime className="text-center" />
             <p> {event?.time}</p>
           </Badge>
         )}
         {event?.location && (
-          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2">
+          <Badge className="bg-crust text-lg text-sub-text1 font-semibold gap-2 hover:bg-crust/50">
             <MdLocationOn className="text-center" />
             <p> {event?.location}</p>
           </Badge>

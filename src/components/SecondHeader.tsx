@@ -1,42 +1,51 @@
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import logoPtit from "../assets/logo/logo-ptit.png";
 import logoRipt from "../assets/logo/logo-ript.png";
 
-const SecondHeader = () => {
+export default function SecondHeader() {
   return (
-    <div className="w-full">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem className="text-sm">
-            <div className="px-6 py-3 flex items-center gap-6 font-sans font-bold text-heading">
-              <img src={logoPtit} alt="PTIT Logo" className="h-6 w-auto" />
-              <img src={logoRipt} alt="RIPT Logo" className="h-6 w-auto" />
-              <div className="flex flex-col justify-center text-center items-center">
-                <h1 className="text-[#c94a46]">
-                  Học viện Công nghệ Bưu chính Viễn thông
-                </h1>
-                <h1 className="tracking-wider">
-                  Viện Khoa học Kỹ thuật Bưu điện
-                </h1>
+    <header className="w-full">
+      <div className="px-6 py-3">
+        <NavigationMenu>
+          <NavigationMenuList className="w-full flex items-center gap-4">
+            <NavigationMenuItem className="flex-1">
+              <div className="flex items-center gap-3">
+                <img src={logoPtit} alt="PTIT Logo" className="h-6 w-auto" />
+                <img src={logoRipt} alt="RIPT Logo" className="h-6 w-auto" />
+                <div className="flex flex-col justify-center text-center">
+                  <h1 className="text-[#c94a46] text-sm font-bold">
+                    Học viện Công nghệ Bưu chính Viễn thông
+                  </h1>
+                  <h2 className="text-sm font-bold tracking-wider">
+                    Viện Khoa học Kỹ thuật Bưu điện
+                  </h2>
+                </div>
               </div>
-            </div>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-    </div>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/admin/dashboard"
+                className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground disabled:opacity-50 disabled:pointer-events-none hover:bg-white py-2 px-4"
+              >
+                Dashboard
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/admin/upload"
+                className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground disabled:opacity-50 disabled:pointer-events-none hover:bg-white py-2 px-4"
+              >
+                Cập nhật lịch tuần
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
+    </header>
   );
-};
-
-export default SecondHeader;
+}

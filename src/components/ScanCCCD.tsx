@@ -154,7 +154,7 @@ const ScanCCCD = ({
           screenshotQuality={1}
         />
       </div>
-      <Card className="w-full rounded-2xl border ">
+      <Card className="w-full rounded-2xl border shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between gap-2">
           <img src={iconCCCD} alt="" className="w-24 bg-base rounded-2xl p-2" />
           <h1 className="text-xl font-semibold text-justify">
@@ -163,7 +163,7 @@ const ScanCCCD = ({
         </CardHeader>
       </Card>
 
-      <Card className="w-full rounded-2xl border ">
+      <Card className="w-full rounded-2xl border shadow-sm ">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-heading">
             Thông tin
@@ -220,7 +220,7 @@ const ScanCCCD = ({
             <Button
               variant="default"
               disabled={selectedRole === "" || !isDataComplete || isConfirmed || isProcessing}
-              className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border rounded-xl"
+              className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
               onClick={() => setIsDialogOpen(true)}
             >
               {isProcessing
@@ -248,7 +248,7 @@ const ScanCCCD = ({
               <Button
                 onClick={captureAndUpload}
                 disabled={isConfirmed || isProcessing}
-                className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border rounded-xl"
+                className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
               >
                 Xác nhận
               </Button>
