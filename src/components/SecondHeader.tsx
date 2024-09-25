@@ -32,7 +32,7 @@ export default function SecondHeader() {
                 href="/admin/dashboard"
                 className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground disabled:opacity-50 disabled:pointer-events-none hover:bg-white py-2 px-4"
               >
-                Dashboard
+                Quản lý thông tin
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>

@@ -104,7 +104,6 @@ const ScanCCCD = ({
             Name: cccdData["Name"],
             DOB: cccdData["DOB"],
             Gender: cccdData["Gender"],
-            Hometown: cccdData["Hometown"],
           },
           role: selectedRole,
         };

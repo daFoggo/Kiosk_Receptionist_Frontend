@@ -7,6 +7,7 @@ import CCCD from "../pages/CCCD";
 import Dashboard from "../pages/Dashboard";
 import Login from "../pages/Login";
 import Upload from "../components/Upload";
+import ImageUpload from "../pages/ImageUpload";
 import routes from "./routerConfig";
 
 const routeLayout: RouteObject[] = [
@@ -45,8 +46,11 @@ const routeLayout: RouteObject[] = [
   {
     path: "/admin/" + routes.login,
     element: <Login/>
+  },
+  {
+    path: routes.imageUpload,
+    element: <ImageUpload />
   }
-
 ];
 
 const router = createBrowserRouter(routeLayout);

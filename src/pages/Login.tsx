@@ -1,4 +1,3 @@
-import { BotMessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +18,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ParticlesBackground from "@/components/ui/particles-background";
 import { Toaster } from "sonner";
+import { motion } from "framer-motion";
+import ThirdHeader from "@/components/ThirdHeader";
 
 // zod validation
 const formSchema = z.object({
@@ -26,7 +27,7 @@ const formSchema = z.object({
   password: z.string().min(3).max(50),
 });
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>("");
 
@@ -59,24 +60,21 @@ const Login = () => {
       toast.error("Đăng nhập thất bại");
     }
   };
-  
 
   return (
     <div className="min-h-screen flex flex-col relative">
+      <ThirdHeader
+        title="Kiosk Manager"
+        subText="Hệ thống quản lý thông tin Kiosk"
+      />
       <ParticlesBackground />
-      <header className="px-6 py-3 flex gap-2 items-center font-clash text-2xl relative z-10">
-        <div className="bg-base p-2 rounded-lg w-max h-max">
-          <BotMessageSquare />
-        </div>
-        <div className="flex flex-col text-left">
-          <h1>Kiosk Manager</h1>
-          <p className="text-xs font-sans font-semibold">
-            Quản lý thông tin Kiosk
-          </p>
-        </div>
-      </header>
       <main className="flex-grow flex items-center justify-center relative z-10">
-        <div className="p-8 border rounded-2xl w-full max-w-md shadow-sm bg-white bg-opacity-90">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="p-8 border rounded-2xl w-full max-w-md shadow-sm bg-white bg-opacity-90"
+        >
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -128,13 +126,9 @@ const Login = () => {
               <Button type="submit">Đăng nhập</Button>
             </form>
           </Form>
-        </div>
+        </motion.div>
       </main>
-      <Toaster
-        position="top-center"
-      />
+      <Toaster position="top-center" />
     </div>
   );
-};
-
-export default Login;
+}

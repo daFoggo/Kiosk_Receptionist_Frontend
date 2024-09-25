@@ -101,7 +101,7 @@ const LunarCalendar = () => {
                 className="text-3xl"
                 locale={vi}
                 classNames={{
-                  day_selected: "bg-lavender text-white",
+                  day_selected: "bg-lavender text-white hover:bg-lavender hover:text-white",
                 }}
               />
             </PopoverContent>

@@ -5,6 +5,7 @@ const routes = {
     dashboard: 'dashboard',
     login: 'login',
     upload: 'upload',
+    imageUpload: 'image-upload',
 }
 
 export default routes;
