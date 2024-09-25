@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { motion } from "framer-motion";
-import { MoveRight, Upload, X } from "lucide-react";
+import { Loader2, MoveRight, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -142,6 +142,7 @@ const InfoFormStep = ({
   handleSubmit,
   errors,
   setCurrentStep,
+  isSubmitting,
 }: any) => (
   <>
     <DialogHeader>
@@ -326,7 +327,16 @@ const InfoFormStep = ({
         >
           Quay lại
         </Button>
-        <Button type="submit">Xác nhận</Button>
+        <Button type="submit" disabled={isSubmitting} onClick={handleSubmit}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Đang xử lý
+            </>
+          ) : (
+            "Xác nhận"
+          )}
+        </Button>
       </div>
     </form>
   </>
@@ -337,6 +347,7 @@ export default function ImageUpload() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -424,13 +435,16 @@ export default function ImageUpload() {
         };
 
         try {
+          setIsSubmitting(true);
           const response = await axios.post(ipUploadData, formattedData);
           console.log(response.data);
           toast.success("Đã tải ảnh thành công");
+          localStorage.setItem("isUploaded", "true");
         } catch (error) {
           console.error("Error submitting form:", error);
           toast.error("Đã xảy ra lỗi khi tải ảnh");
         } finally {
+          setIsSubmitting(false);
           setIsDialogOpen(false);
           setCurrentStep(1);
           setUploadedImages([]);
@@ -448,50 +462,73 @@ export default function ImageUpload() {
       <ThirdHeader title="Kiosk Receptionist" subText="" />
       <ParticlesBackground />
       <main className="flex-grow relative z-10 flex justify-center items-center p-1 sm:p-0">
-        <div className="flex flex-col items-center justify-center gap-6">
-          <div className="flex flex-col text-center">
-            <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-2 sm:mb-4">
-              Tải lên hình ảnh của bạn
+        {localStorage.getItem("isUploaded") ? (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="bg-white rounded-lg p-4 sm:p-8 flex flex-col items-center gap-4"
+          >
+            <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center">
+              Cảm ơn bạn sự giúp đỡ của bạn
             </h1>
-            <p className="font-medium text-sm  md:text-lg max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-              Mỗi hình ảnh của bạn sẽ giúp chúng tôi cải thiện được khả năng
-              nhận diện của trợ lý ảo
+            <p className="font-medium text-sm sm:text-lg text-center">
+              Đóng góp của bạn sẽ giúp chúng mình hoàn thiện sản phẩm tốt hơn
             </p>
+          </motion.div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col text-center"
+            >
+              <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-2 sm:mb-4">
+                Tải lên hình ảnh của bạn
+              </h1>
+              <p className="font-medium text-sm  md:text-lg max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                Mỗi hình ảnh của bạn sẽ giúp chúng tôi cải thiện được khả năng
+                nhận diện của trợ lý ảo
+              </p>
+            </motion.div>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: -1 }}
+                  whileTap={{ scale: 0.9 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <Button className="flex items-center gap-2 justify-between px-6 py-3">
+                    <p>Bắt đầu tải ảnh</p>
+                    <MoveRight />
+                  </Button>
+                </motion.div>
+              </DialogTrigger>
+              <DialogContent className="max-w-[98%] rounded-xl sm:rounded-2xl sm:max-w-[35%]">
+                {currentStep === 1 ? (
+                  <ImageUploadStep
+                    uploadedImages={uploadedImages}
+                    handleDragOver={handleDragOver}
+                    handleDrop={handleDrop}
+                    handleFileInput={handleFileInput}
+                    removeImage={removeImage}
+                    setCurrentStep={setCurrentStep}
+                    setIsDialogOpen={setIsDialogOpen}
+                  />
+                ) : (
+                  <InfoFormStep
+                    control={control}
+                    handleSubmit={handleSubmit(onSubmit)}
+                    errors={errors}
+                    setCurrentStep={setCurrentStep}
+                    isSubmitting={isSubmitting}
+                  />
+                )}
+              </DialogContent>
+            </Dialog>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <motion.div
-                whileHover={{ scale: 1.1, rotate: -1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Button className="flex items-center gap-2 justify-between px-6 py-3">
-                  <p>Bắt đầu tải ảnh</p>
-                  <MoveRight />
-                </Button>
-              </motion.div>
-            </DialogTrigger>
-            <DialogContent className="max-w-[98%] rounded-xl sm:rounded-2xl sm:max-w-[40%]">
-              {currentStep === 1 ? (
-                <ImageUploadStep
-                  uploadedImages={uploadedImages}
-                  handleDragOver={handleDragOver}
-                  handleDrop={handleDrop}
-                  handleFileInput={handleFileInput}
-                  removeImage={removeImage}
-                  setCurrentStep={setCurrentStep}
-                  setIsDialogOpen={setIsDialogOpen}
-                />
-              ) : (
-                <InfoFormStep
-                  control={control}
-                  handleSubmit={handleSubmit(onSubmit)}
-                  errors={errors}
-                  setCurrentStep={setCurrentStep}
-                />
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
+        )}
         <Toaster position="top-center" />
       </main>
     </div>
