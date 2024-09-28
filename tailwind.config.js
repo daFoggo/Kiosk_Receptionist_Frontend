@@ -8,6 +8,7 @@ export default {
         sans: ["Inter", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
         clash: ["ClashDisplay", "sans-serif"],
+        grotesk: ["Space Grotesk", "sans-serif"],
       },
       colors: {
         lavender: "#7287fd",

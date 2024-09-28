@@ -1,4 +1,4 @@
-export type UserData = {
+export type IdentifyData = {
     id: Number,
     name: string,
     identity_code: string,

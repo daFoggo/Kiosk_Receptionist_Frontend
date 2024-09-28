@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { UserData } from "@/types/UserData";
+import { IdentifyData } from "@/types/IdentifyData";
 import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +16,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { format } from "date-fns";
+import { Pencil, Trash2 } from "lucide-react";
 
-// user table dashboard column
-export const userDataColumns: ColumnDef<UserData>[] = [
+// identify data  column
+export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
   {
     accessorKey: "name",
     header: "Họ và tên",

@@ -53,7 +53,6 @@ const ScanCCCD = ({
     { key: "Name", label: "Họ và tên" },
     { key: "DOB", label: "Ngày sinh" },
     { key: "Gender", label: "Giới tính" },
-    { key: "Hometown", label: "Quê quán" },
   ];
 
   useEffect(() => {

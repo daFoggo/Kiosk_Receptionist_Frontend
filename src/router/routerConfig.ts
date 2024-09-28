@@ -2,10 +2,11 @@ const routes = {
     home: '',
     about: 'about',
     cccd: 'cccd',
-    dashboard: 'dashboard',
+    identifyData: 'identify-data',
     login: 'login',
-    upload: 'upload',
+    weekCalendar: 'week-calendar-manage',
     imageUpload: 'image-upload',
+    eventManage: 'event-manage',
 }
 
 export default routes;

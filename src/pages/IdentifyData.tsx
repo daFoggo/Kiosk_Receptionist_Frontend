@@ -1,14 +1,14 @@
 import { DataTable } from "@/components/ui/data-table";
-import { userDataColumns } from "@/utils/constant";
+import { identifyDataColumns } from "@/utils/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { UserData } from "@/types/UserData";
-import { ipGetData } from "@/utils/ip";
+import type { IdentifyData } from "@/types/IdentifyData";
+import { ipIdentifyData } from "@/utils/ip";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
-  const [userData, setUserData] = useState<UserData[]>([]);
+const IdentifyData = () => {
+  const [identifyData, setIdentifyData] = useState<IdentifyData[]>([]);
   const navigate = useNavigate();
 
   // check token to redirect
@@ -25,12 +25,12 @@ const Dashboard = () => {
 
   const getUserData = async () => {
     try {
-      const response = await axios.get(ipGetData, {
+      const response = await axios.get(ipIdentifyData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, 
         },
       });
-      setUserData(response.data[0]);
+      setIdentifyData(response.data[0]);
       toast.success("Lấy dữ liệu thành công");
     } catch (error) {
       toast.error("Lấy dữ liệu thất bại");
@@ -41,11 +41,11 @@ const Dashboard = () => {
   return (
     <div>
       <div className="flex flex-col gap-2">
-        <h1 className="font-bold font-sans text-2xl">Thông tin người dùng</h1>
-        <DataTable columns={userDataColumns} data={userData} />
+        <h1 className="font-bold font-sans text-2xl">Thông tin nhận diện</h1>
+        <DataTable columns={identifyDataColumns} data={identifyData} />
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default IdentifyData;

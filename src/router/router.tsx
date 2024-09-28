@@ -4,11 +4,12 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import CCCD from "../pages/CCCD";
-import Dashboard from "../pages/Dashboard";
+import IdentifyData from "../pages/IdentifyData";
 import Login from "../pages/Login";
-import Upload from "../components/Upload";
+import WeekCalendarManage from "../pages/WeekCalendarManage";
 import ImageUpload from "../pages/ImageUpload";
 import routes from "./routerConfig";
+import EventManage from "../pages/EventManage";
 
 const routeLayout: RouteObject[] = [
   {
@@ -34,12 +35,16 @@ const routeLayout: RouteObject[] = [
     element: <DashboardLayout />,
     children: [
         {
-            path: routes.dashboard,
-            element: <Dashboard />,
+            path: routes.identifyData,
+            element: <IdentifyData />,
         },
         {
-          path: routes.upload,
-          element: <Upload />
+          path: routes.weekCalendar,
+          element: <WeekCalendarManage />
+        },
+        {
+          path: routes.eventManage,
+          element: <EventManage />
         }
     ]
   },
