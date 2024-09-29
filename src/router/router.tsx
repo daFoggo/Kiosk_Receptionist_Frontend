@@ -6,7 +6,7 @@ import About from "../pages/About";
 import CCCD from "../pages/CCCD";
 import IdentifyData from "../pages/IdentifyData";
 import Login from "../pages/Login";
-import WeekCalendarManage from "../pages/WeekCalendarManage";
+import WeeklyCalendarManage from "../pages/WeeklyCalendarManage";
 import ImageUpload from "../pages/ImageUpload";
 import routes from "./routerConfig";
 import EventManage from "../pages/EventManage";
@@ -40,7 +40,7 @@ const routeLayout: RouteObject[] = [
         },
         {
           path: routes.weekCalendar,
-          element: <WeekCalendarManage />
+          element: <WeeklyCalendarManage />
         },
         {
           path: routes.eventManage,

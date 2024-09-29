@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { isAfter, parseISO } from "date-fns";
-import { formatInTimeZone, toZonedTime, fromZonedTime } from 'date-fns-tz';
+import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { vi } from "date-fns/locale";
 import { DataTable } from "@/components/ui/data-table";
 import { useForm } from "react-hook-form";
@@ -88,7 +88,7 @@ const EventManage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleEditEvent = (event: EventData) => {
+  const handleEditEvent = (event: any) => {
     setEditingEvent(event);
     form.reset({
       name: event.name,
@@ -99,7 +99,7 @@ const EventManage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDeleteEvent = async (event: EventData) => {
+  const handleDeleteEvent = async (event: any) => {
     try {
       await axios.delete(`${ipDeleteEvent}/${event.id}`, {
         headers: {
@@ -151,6 +151,7 @@ const EventManage = () => {
       toast.error("Cập nhật sự kiện thất bại");
     }
   };
+
   const eventDataColumns = [
     {
       accessorKey: "id",
@@ -197,7 +198,7 @@ const EventManage = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="w-[90%] rounded-xl sm:w-full">
           <DialogHeader>
             <DialogTitle>
               {editingEvent ? "Chỉnh sửa sự kiện" : "Thêm sự kiện mới"}

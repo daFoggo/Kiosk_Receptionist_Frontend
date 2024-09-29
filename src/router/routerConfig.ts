@@ -4,7 +4,7 @@ const routes = {
     cccd: 'cccd',
     identifyData: 'identify-data',
     login: 'login',
-    weekCalendar: 'week-calendar-manage',
+    weekCalendar: 'weekly-calendar-manage',
     imageUpload: 'image-upload',
     eventManage: 'event-manage',
 }

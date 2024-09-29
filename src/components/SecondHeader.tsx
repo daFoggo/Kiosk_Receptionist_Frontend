@@ -24,7 +24,7 @@ const MenuItems = () => (
     </NavigationMenuItem>
     <NavigationMenuItem className="flex items-center gap-2 py-2 px-3 rounded-md justify-between hover:bg-accent hover:text-accent-foreground">
       <NavigationMenuLink
-        href="/admin/week-calendar-manage"
+        href="/admin/weekly-calendar-manage"
         className="font-semibold rounded-md"
       >
         Quản lý lịch tuần
