@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { parseISO } from "date-fns";
-import { vi } from "date-fns/locale";
 import { DataTable } from "@/components/ui/data-table";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -25,7 +23,6 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import type { CalendarData } from "@/types/CalendarData";
-import { format } from "date-fns";
 import scheduleMock from "../sampleData/schedule.json";
 
 interface FormData {

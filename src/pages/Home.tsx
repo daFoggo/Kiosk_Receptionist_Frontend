@@ -12,7 +12,8 @@ import ScanCCCD from "../components/ScanCCCD";
 import "./pageRestrictions.css";
 import { ipWebsocket } from "../utils/ip";
 import Webcam from "react-webcam";
-import lavenderWave from "../assets/background_layer/lavender_wave.png"
+import WeeklyCalendar from "@/components/WeeklyCalendar";
+import lavenderWave from "../assets/background_layer/lavender_wave.png";
 
 const Home = () => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
@@ -174,13 +175,18 @@ const Home = () => {
           backgroundPosition: "bottom",
           backgroundSize: "100% auto",
           height: "30%",
-          bottom: "-200px"
+          bottom: "-200px",
         }}
       />
 
       {/* banner */}
-      <div className="h-auto">
-        <EventBanner />
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-2">
+          <EventBanner />
+        </div>
+        <div className="col-span-1">
+          <WeeklyCalendar />
+        </div>
       </div>
 
       {/* calendar and weather */}

@@ -7,7 +7,6 @@ import { ipGetEvents } from "@/utils/ip";
 import axios from "axios";
 import { tempToken } from "@/utils/ip";
 import { CalendarHeart, Clock, ClockArrowDown, ClockArrowUp } from "lucide-react";
-import { EventData } from "@/types/EventData";
 
 type Event = {
   id: number;
@@ -75,14 +74,15 @@ const EventBanner = () => {
   };
 
   return (
-    <div className="w-full bg-base p-4 rounded-3xl border shadow-sm ">
-      <div className="flex items-center gap-2 mb-4 text-2xl font-semibold">
+    <div className="h-full flex flex-col bg-base p-4 rounded-2xl border shadow-sm">
+      <div className="flex items-center gap-2 mb-4 text-xl font-semibold">
         <MdEvent className="text-primary-text" />
         <h1 className="text-heading">Sự kiện</h1>
       </div>
-      <h1 className="text-3xl font-semibold text-lavender mb-2">
+      <h1 className="text-2xl font-semibold text-lavender mb-4">
         {event?.name}
       </h1>
+      <div className="flex-grow"></div>
       <div className="flex items-center gap-2">
         {areDatesSame(event?.start_time, event?.end_time) ? (
           <>

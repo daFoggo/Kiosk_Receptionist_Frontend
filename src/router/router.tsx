@@ -45,7 +45,7 @@ const routeLayout: RouteObject[] = [
         {
           path: routes.eventManage,
           element: <EventManage />
-        }
+        },
     ]
   },
   {

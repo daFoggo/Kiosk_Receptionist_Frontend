@@ -13,7 +13,8 @@ const RootLayout = () => {
           style: {
             fontSize: "1.5rem",
             backgroundColor: "white",
-            color: "#7287fd"
+            color: "#7287fd",
+            borderColor: "#7287fd",
           },
         }} position="top-center"/>
       </main>
