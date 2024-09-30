@@ -348,6 +348,7 @@ export default function ImageUpload() {
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userName, setUserName] = useState("");
 
   const {
     control,
@@ -432,7 +433,7 @@ export default function ImageUpload() {
         try {
           setIsSubmitting(true);
           const response = await axios.post(ipUploadData, formattedData);
-          console.log(response.data);
+          setUserName(formattedData.cccd.Name);
           toast.success("Đã tải ảnh thành công");
           localStorage.setItem("isUploaded", "true");
         } catch (error) {
@@ -465,10 +466,10 @@ export default function ImageUpload() {
             className="bg-white rounded-lg p-4 sm:p-8 flex flex-col items-center gap-4"
           >
             <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center">
-              Cảm ơn sự giúp đỡ của bạn
+              Cảm ơn {userName} đã đóng góp 
             </h1>
             <p className="font-medium text-sm sm:text-lg text-center">
-              Đóng góp của bạn sẽ giúp chúng mình hoàn thiện sản phẩm tốt hơn
+              Sự giúp đỡ của bạn sẽ giúp chúng mình hoàn thiện sản phẩm tốt hơn
             </p>
           </motion.div>
         ) : (
@@ -482,7 +483,7 @@ export default function ImageUpload() {
                 Tải lên hình ảnh của bạn
               </h1>
               <p className="font-medium text-sm  md:text-lg max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                Mỗi hình ảnh của bạn sẽ giúp chúng tôi cải thiện được khả năng
+                Mỗi hình ảnh của bạn sẽ giúp chúng mình cải thiện được khả năng
                 nhận diện của trợ lý ảo
               </p>
             </motion.div>
