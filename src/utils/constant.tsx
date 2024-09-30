@@ -32,6 +32,18 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
   {
     accessorKey: "role",
     header: "Vai trò",
+    cell: ({ row }) => {
+      const role = row.getValue("role");
+      if (role === "sinhVien") {
+        return "Sinh viên";
+      } else if (role === "canBo") {
+        return "Cán bộ";
+      } else if (role === "khachMoi") {
+        return "Khách mời";
+      } else {
+        return "Khác";
+      }
+    }
   },
   {
     accessorKey: "dob",
@@ -68,6 +80,7 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
                         src={base64}
                         alt={`Image ${index + 1}`}
                         className="w-full h-auto"
+                        loading="lazy"
                       />
                     </CarouselItem>
                   ))}

@@ -12,46 +12,46 @@ import routes from "./routerConfig";
 import EventManage from "../pages/EventManage";
 
 const routeLayout: RouteObject[] = [
-  {
-    path: "/",
-    element: <RootLayout />,
-    children: [
-      {
-        path: routes.home,
-        element: <Home />,
-      },
-      {
-        path: routes.about,
-        element: <About />,
-      },
-      {
-        path: routes.cccd,
-        element: <CCCD />,
-      },
-    ],
-  },
-  {
-    path: "/admin",
-    element: <DashboardLayout />,
-    children: [
-        {
-            path: routes.identifyData,
-            element: <IdentifyData />,
-        },
-        {
-          path: routes.weekCalendar,
-          element: <WeeklyCalendarManage />
-        },
-        {
-          path: routes.eventManage,
-          element: <EventManage />
-        },
-    ]
-  },
-  {
-    path: "/admin/" + routes.login,
-    element: <Login/>
-  },
+  // {
+  //   path: "/",
+  //   element: <RootLayout />,
+  //   children: [
+  //     {
+  //       path: routes.home,
+  //       element: <Home />,
+  //     },
+  //     {
+  //       path: routes.about,
+  //       element: <About />,
+  //     },
+  //     {
+  //       path: routes.cccd,
+  //       element: <CCCD />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "/admin",
+  //   element: <DashboardLayout />,
+  //   children: [
+  //       {
+  //           path: routes.identifyData,
+  //           element: <IdentifyData />,
+  //       },
+  //       {
+  //         path: routes.weekCalendar,
+  //         element: <WeeklyCalendarManage />
+  //       },
+  //       {
+  //         path: routes.eventManage,
+  //         element: <EventManage />
+  //       },
+  //   ]
+  // },
+  // {
+  //   path: "/admin/" + routes.login,
+  //   element: <Login/>
+  // },
   {
     path: routes.imageUpload,
     element: <ImageUpload />
