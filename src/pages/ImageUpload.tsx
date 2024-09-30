@@ -417,14 +417,9 @@ export default function ImageUpload() {
           uploadedImages.map(convertToBase64)
         );
 
-        // convert to python dict
-        const b64ImgObject: { [key: string]: string } = {};
-        uploadedImages.forEach((image, index) => {
-          b64ImgObject[`image_${index + 1}`] = base64Images[index];
-        });
 
         const formattedData = {
-          b64_img: b64ImgObject,
+          b64_img: base64Images,
           cccd: {
             "Identity Code": data.identity_code,
             Name: data.name,
@@ -470,7 +465,7 @@ export default function ImageUpload() {
             className="bg-white rounded-lg p-4 sm:p-8 flex flex-col items-center gap-4"
           >
             <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center">
-              Cảm ơn bạn sự giúp đỡ của bạn
+              Cảm ơn sự giúp đỡ của bạn
             </h1>
             <p className="font-medium text-sm sm:text-lg text-center">
               Đóng góp của bạn sẽ giúp chúng mình hoàn thiện sản phẩm tốt hơn

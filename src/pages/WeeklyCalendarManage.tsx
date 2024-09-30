@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import type { CalendarData } from "@/types/CalendarData";
 import scheduleMock from "../sampleData/schedule.json";
+import { ipPostCalendar, ipGetCalendar } from "@/utils/ip";
 
 interface FormData {
   file: FileList;
@@ -41,21 +42,32 @@ const WeeklyCalendarManage = () => {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để tiếp tục");
+      navigate("/admin/login"); 
+      return;
+    }
     getCalendarData();
   }, [navigate]);
 
   const getCalendarData = async () => {
     try {
-      setCalendarData(scheduleMock);
+      const response = await axios.get(ipGetCalendar);
+
+      console.log(response.data);
+      setCalendarData(response.data[0]);
+      toast.success("Lấy dữ liệu lịch tuần thành công");
     } catch (error) {
       toast.error("Lấy dữ liệu lịch tuần thất bại");
       console.log(error);
     }
   };
 
+
   const handleAddCalendar = (event: any) => {
     setIsDialogOpen(true);
-  };
+  }
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -73,7 +85,9 @@ const WeeklyCalendarManage = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await axios.post('YOUR_API_ENDPOINT', formData, {
+      console.log(file);
+
+      const response = await axios.post(ipPostCalendar, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

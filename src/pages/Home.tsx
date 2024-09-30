@@ -179,16 +179,6 @@ const Home = () => {
         }}
       />
 
-      {/* banner */}
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2">
-          <EventBanner />
-        </div>
-        <div className="col-span-1">
-          <WeeklyCalendar />
-        </div>
-      </div>
-
       {/* calendar and weather */}
       <div className="flex flex-row gap-6">
         <div className="w-3/4">
@@ -196,6 +186,16 @@ const Home = () => {
         </div>
         <div>
           <Weather />
+        </div>
+      </div>
+      
+      {/* banner */}
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-2">
+          <EventBanner />
+        </div>
+        <div className="col-span-1">
+          <WeeklyCalendar />
         </div>
       </div>
 

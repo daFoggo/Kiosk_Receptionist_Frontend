@@ -50,7 +50,7 @@ export default function Login() {
       const response = await axios.post(ipLogin, values);
       localStorage.setItem("token", response.data["access_token"]);
       toast.success("Đăng nhập thành công");
-      navigate("/admin/dashboard");
+      navigate("/admin/identify-data");
     } catch (error: any) {
       if (error.response.status === 401) {
         setError("Tên đăng nhập hoặc mật khẩu không đúng");

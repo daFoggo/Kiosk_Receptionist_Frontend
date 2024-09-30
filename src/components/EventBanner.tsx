@@ -33,7 +33,7 @@ const EventBanner = () => {
     try {
       const response = await axios.get(ipGetEvents, {
         headers: {
-          Authorization: `Bearer ${tempToken}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 

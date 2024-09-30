@@ -59,6 +59,12 @@ const EventManage = () => {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để tiếp tục");
+      navigate("/admin/login"); 
+      return;
+    }
     getEventData();
   }, [navigate]);
 
@@ -66,7 +72,7 @@ const EventManage = () => {
     try {
       const response = await axios.get(ipGetEvents, {
         headers: {
-          Authorization: `Bearer ${tempToken}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       setEventData(response.data);
@@ -103,7 +109,7 @@ const EventManage = () => {
     try {
       await axios.delete(`${ipDeleteEvent}/${event.id}`, {
         headers: {
-          Authorization: `Bearer ${tempToken}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       toast.success("Xóa sự kiện thành công");
@@ -132,14 +138,14 @@ const EventManage = () => {
       if (editingEvent) {
         await axios.put(`${ipPutEvent}/${editingEvent.id}`, adjustedData, {
           headers: {
-            Authorization: `Bearer ${tempToken}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         toast.success("Cập nhật sự kiện thành công");
       } else {
         await axios.post(ipCreateEvent, adjustedData, {
           headers: {
-            Authorization: `Bearer ${tempToken}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         toast.success("Thêm sự kiện thành công");

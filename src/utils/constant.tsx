@@ -42,10 +42,10 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
     header: "Giới tính",
   },
   {
-    accessorKey: "image_data",
+    accessorKey: "b64",
     header: "Dữ liệu ảnh",
     cell: ({ row }) => {
-      const imageData: string[] = row.getValue("image_data");
+      const imageData: string[] = row.getValue("b64");
       const [isOpen, setIsOpen] = useState(false);
 
       return (
@@ -65,7 +65,7 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
                   {imageData?.map((base64, index) => (
                     <CarouselItem key={index}>
                       <img
-                        src={`data:image/jpeg;base64,${base64}`}
+                        src={base64}
                         alt={`Image ${index + 1}`}
                         className="w-full h-auto"
                       />
