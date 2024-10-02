@@ -23,14 +23,13 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import type { CalendarData } from "@/types/CalendarData";
-import scheduleMock from "../sampleData/schedule.json";
 import { ipPostCalendar, ipGetCalendar } from "@/utils/ip";
 
 interface FormData {
   file: FileList;
 }
 
-const WeeklyCalendarManage = () => {
+const StudentCalendarManage = () => {
   const [calendarData, setCalendarData] = useState<CalendarData[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -184,4 +183,4 @@ const WeeklyCalendarManage = () => {
   );
 };
 
-export default WeeklyCalendarManage;
+export default StudentCalendarManage;

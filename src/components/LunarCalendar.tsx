@@ -57,7 +57,7 @@ const LunarCalendar = () => {
             {day}
           </div>
           <div
-            className={`text-2xl font-bold p-1 ${
+            className={`text-2xl font-bold px-2 py-1 text-center ${
               isToday ? "text-white bg-lavender rounded-full" : ""
             }`}
           >

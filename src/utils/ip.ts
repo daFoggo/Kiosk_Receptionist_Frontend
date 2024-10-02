@@ -14,4 +14,4 @@ export const ipCreateEvent = ipHTTP + "create-event";
 export const ipGetEvents = ipHTTP + "get-events";
 export const ipPutEvent = ipHTTP + "put-event";
 export const ipDeleteEvent = ipHTTP + "delete-event";
-
+export const ipChatTele = ipTest + "contact";

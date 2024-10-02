@@ -14,11 +14,13 @@ import { ipWebsocket } from "../utils/ip";
 import Webcam from "react-webcam";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import lavenderWave from "../assets/background_layer/lavender_wave.png";
+import Contact from "@/components/Contact";
 
 const Home = () => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [isConnected, setIsConnected] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
+  const [isContacting, setIsContacting] = useState(true);
   const [currentVideoPath, setCurrentVideoPath] = useState<string>("");
   const [cccdData, setCccdData] = useState<Record<string, string> | null>(null);
   const [currentSelect, setCurrentSelect] = useState<SelectOptionProps>({
@@ -161,6 +163,10 @@ const Home = () => {
     setIsScanning(value);
   };
 
+  const handleSetIsContacting = (value: boolean) => {
+    setIsContacting(value);
+  };
+
   const handleSetCurrentMessage = (value: string) => {
     setCurrentMessage(value);
   };
@@ -188,7 +194,7 @@ const Home = () => {
           <Weather />
         </div>
       </div>
-      
+
       {/* banner */}
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-2">
@@ -212,11 +218,16 @@ const Home = () => {
           <div className="w-1/2">
             <ScanCCCD
               setIsScanning={handleSetIsScanning}
+              setIsContacting={handleSetIsContacting}
               setCurrentMessage={handleSetCurrentMessage}
               cccdData={cccdData}
               setCurrentVideoPath={setCurrentVideoPath}
               currentRole={currentRole}
             />
+          </div>
+        ) : isContacting ? (
+          <div className="w-1/2">
+            <Contact cccdData={cccdData} />
           </div>
         ) : (
           <div className="w-1/2 flex flex-col items-center gap-6">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
 import { toast } from "sonner";
@@ -29,19 +29,19 @@ import {
 
 const ScanCCCD = ({
   setIsScanning,
+  setIsContacting,
   setCurrentMessage,
   cccdData,
   setCurrentVideoPath,
-  currentRole,
 }: {
   setIsScanning: (value: boolean) => void;
+  setIsContacting: (value: boolean) => void;
   setCurrentMessage: (value: string) => void;
   cccdData: Record<string, string> | null;
   setCurrentVideoPath: (value: string) => void;
   currentRole: string;
 }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const [countdown, setCountdown] = useState(5);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -55,29 +55,7 @@ const ScanCCCD = ({
     { key: "Gender", label: "Giới tính" },
   ];
 
-  useEffect(() => {
-    let timer: any;
-    if (isConfirmed && countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    } else if (isConfirmed && countdown === 0) {
-      setIsScanning(false);
-      setCurrentVideoPath("src/assets/videos/1.mp4");
-      setCurrentMessage(
-        chatMockData[0]?.response[currentRole] ||
-          chatMockData[0]?.initialMessage
-      );
-    }
-    return () => clearTimeout(timer);
-  }, [
-    isConfirmed,
-    countdown,
-    setIsScanning,
-    setCurrentVideoPath,
-    setCurrentMessage,
-    chatMockData,
-    currentRole,
-  ]);
-
+  // chup anh trong 3s va gui data
   const captureAndUpload = async () => {
     setIsProcessing(true);
     setProcessProgress(0);
@@ -129,12 +107,13 @@ const ScanCCCD = ({
       //   ? `Cảm ơn ${cccdData?.Gender === "Nam" ? "ông" : "bà"} ${
       //       cccdData?.Name
       //     } đã xác nhận thông tin`
-      //   : 
-        "Cảm ơn quý khách đã xác nhận thông tin"
+      //   :
+      "Cảm ơn quý khách đã xác nhận thông tin"
     );
     setCurrentVideoPath("src/assets/videos/quetCCCD.mp4");
     setIsConfirmed(true);
-    setCountdown(5);
+    setIsScanning(false);
+    setIsContacting(true);
   };
 
   const isDataComplete =
@@ -178,8 +157,12 @@ const ScanCCCD = ({
             >
               Vai trò
             </Label>
-            <Select value={selectedRole} onValueChange={setSelectedRole} required>
-              <SelectTrigger className="md:col-span-2 bg-crust text-base-content">
+            <Select
+              value={selectedRole}
+              onValueChange={setSelectedRole}
+              required
+            >
+              <SelectTrigger className="md:col-span-2 bg-crust text-base-content" asChild>
                 <SelectValue placeholder="Chọn vai trò" />
               </SelectTrigger>
               <SelectContent>
@@ -217,14 +200,17 @@ const ScanCCCD = ({
           <AlertDialogTrigger asChild>
             <Button
               variant="default"
-              disabled={selectedRole === "" || !isDataComplete || isConfirmed || isProcessing}
+              disabled={
+                selectedRole === "" ||
+                !isDataComplete ||
+                isConfirmed ||
+                isProcessing
+              }
               className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
               onClick={() => setIsDialogOpen(true)}
             >
               {isProcessing
                 ? `Đang xử lý thông tin ${processProgress}%`
-                : isConfirmed
-                ? `Đang trở về ${countdown}s`
                 : "Xác nhận"}
             </Button>
           </AlertDialogTrigger>

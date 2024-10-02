@@ -16,8 +16,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { format } from "date-fns";
-import { Pencil, Trash2 } from "lucide-react";
 
 // identify data  column
 export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
@@ -32,6 +30,20 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
   {
     accessorKey: "role",
     header: "Vai trò",
+    cell: ({ row }) => {
+      let role = row.getValue("role");
+      console.log(role)
+      switch (role) {
+        case "sinhVien":
+          return "Sinh viên";
+        case "canBo":
+          return "Cán bộ";
+        case "khachMoi":
+          return "Khách mời";
+        default:
+          return "Khác";
+      }
+    },
   },
   {
     accessorKey: "dob",
@@ -40,6 +52,10 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
   {
     accessorKey: "gender",
     header: "Giới tính",
+    cell: ({ row }) => {
+      const gender = row.getValue("gender") as String;
+      return gender.charAt(0).toUpperCase() + gender.slice(1);
+    },
   },
   {
     accessorKey: "b64",

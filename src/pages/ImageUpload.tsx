@@ -271,7 +271,7 @@ const InfoFormStep = ({
             rules={{ required: "Năm sinh là bắt buộc" }}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger>
+                <SelectTrigger> 
                   <SelectValue placeholder="Năm" />
                 </SelectTrigger>
                 <SelectContent>
@@ -304,7 +304,7 @@ const InfoFormStep = ({
             rules={{ required: "Giới tính là bắt buộc" }}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger>
+                <SelectTrigger> 
                   <SelectValue placeholder="Chọn giới tính" />
                 </SelectTrigger>
                 <SelectContent>
@@ -488,7 +488,7 @@ export default function ImageUpload() {
               </p>
             </motion.div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
+              <DialogTrigger>
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: -1 }}
                   whileTap={{ scale: 0.9 }}

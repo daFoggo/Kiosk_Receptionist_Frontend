@@ -11,7 +11,6 @@ import {
   FileText,
   X,
   ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { toast } from "sonner";
 import mockSchedule from "../sampleData/schedule.json";
@@ -36,6 +35,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import { ipGetCalendar } from "@/utils/ip";
 
 const WeeklyCalendar = () => {
   const [calendar, setCalendar] = useState<CalendarData>({
@@ -55,7 +56,8 @@ const WeeklyCalendar = () => {
 
   const getCalendarData = async () => {
     try {
-      setFullCalendar(mockSchedule);
+      const response = await axios.get(ipGetCalendar);
+      setFullCalendar(response.data);
       setCalendar(mockSchedule[0]);
     } catch (error) {
       toast.error("Lấy dữ liệu lịch tuần thất bại");
@@ -98,7 +100,7 @@ const WeeklyCalendar = () => {
           <span>{calendar?.time}</span>
         </Badge>
         <Sheet>
-          <SheetTrigger>
+          <SheetTrigger asChild>
             <Button
               variant="ghost"
               className="font-semibold text-sub-text1 text-lg rounded-full hover:bg-crust/50 mt-auto flex items-center justify-between"

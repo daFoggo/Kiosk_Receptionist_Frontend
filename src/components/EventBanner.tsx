@@ -75,7 +75,7 @@ const EventBanner = () => {
 
   return (
     <div className="h-full flex flex-col bg-base p-4 rounded-2xl border shadow-sm">
-      <div className="flex items-center gap-2 mb-4 text-xl font-semibold">
+      <div className="flex items-center gap-2 mb-4 text-xl font-bold">
         <MdEvent className="text-primary-text" />
         <h1 className="text-heading">Sự kiện</h1>
       </div>
