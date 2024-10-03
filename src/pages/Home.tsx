@@ -90,7 +90,7 @@ const Home = () => {
   // gui frame moi 2s
   useEffect(() => {
     if (isConnected) {
-      const interval = setInterval(captureAndSendFrame, 2000);
+      const interval = setInterval(captureAndSendFrame, 1000);
       return () => clearInterval(interval);
     }
   }, [isConnected]);
@@ -125,26 +125,12 @@ const Home = () => {
       e.preventDefault();
     };
 
-    const disableScroll = (e: any) => {
-      e.preventDefault();
-    };
-
-    const disableTouchScroll = (e: any) => {
-      e.preventDefault();
-    };
-
     document.addEventListener("keydown", disableZoom);
     document.addEventListener("contextmenu", disableRightClick);
-    document.addEventListener("wheel", disableScroll, { passive: false });
-    document.addEventListener("touchmove", disableTouchScroll, {
-      passive: false,
-    });
 
     return () => {
       document.removeEventListener("keydown", disableZoom);
       document.removeEventListener("contextmenu", disableRightClick);
-      document.removeEventListener("wheel", disableScroll);
-      document.removeEventListener("touchmove", disableTouchScroll);
     };
   }, []);
 
@@ -182,7 +168,7 @@ const Home = () => {
           backgroundPosition: "bottom",
           backgroundSize: "100% auto",
           height: "100%",
-          bottom: "100px"
+          bottom: "50px"
         }}
       />
 

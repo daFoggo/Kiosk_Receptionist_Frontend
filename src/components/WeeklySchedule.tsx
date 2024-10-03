@@ -13,6 +13,10 @@ interface WeeklyScheduleProps {
   tasks: CalendarData[];
 }
 
+interface TaskCardProps {
+  task: CalendarData;
+}
+
 const daysOfWeek = [
   "Thứ 2",
   "Thứ 3",
@@ -23,7 +27,7 @@ const daysOfWeek = [
   "Chủ nhật",
 ];
 
-const TaskCard: React.FC<{ task: CalendarData }> = ({ task }) => {
+const TaskCard = ({ task }: TaskCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -72,17 +76,19 @@ const TaskCard: React.FC<{ task: CalendarData }> = ({ task }) => {
   );
 };
 
-const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ tasks }) => {
+const WeeklySchedule = ({ tasks }: WeeklyScheduleProps) => {
   const groupTasksByDay = (tasks: CalendarData[]) => {
     const groupedTasks: { [key: string]: CalendarData[] } = {};
 
-    daysOfWeek.forEach((day) => {
-      groupedTasks[day] = [];
-    });
-
     tasks.forEach((task) => {
       const date = new Date(task.iso_datetime.toString());
-      const day = daysOfWeek[date.getDay()];
+      const dayIndex = date.getDay() - 1; 
+      const adjustedDayIndex = dayIndex === -1 ? 6 : dayIndex; 
+      const day = daysOfWeek[adjustedDayIndex];
+      
+      if (!groupedTasks[day]) {
+        groupedTasks[day] = [];
+      }
       groupedTasks[day].push(task);
     });
 
@@ -90,24 +96,19 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ tasks }) => {
   };
 
   const groupedTasks = groupTasksByDay(tasks);
+  const daysWithTasks = daysOfWeek.filter(day => groupedTasks[day]?.length > 0);
 
   return (
     <div className="flex flex-col gap-4">
-      {daysOfWeek.map((day) => (
+      {daysWithTasks.map((day) => (
         <Card key={day} className="w-full border">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">{day}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            {groupedTasks[day].length > 0 ? (
-              groupedTasks[day].map((task, index) => (
-                <TaskCard key={index} task={task} />
-              ))
-            ) : (
-              <p className="text-sm text-sub-text1">
-                Không có công việc
-              </p>
-            )}
+            {groupedTasks[day].map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))}
           </CardContent>
         </Card>
       ))}

@@ -131,13 +131,11 @@ const ScanCCCD = ({
           screenshotQuality={1}
         />
       </div>
-      <Card className="w-full rounded-2xl border shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
-          <img src={iconCCCD} alt="" className="w-24 bg-base rounded-2xl p-2" />
-          <h1 className="text-xl font-semibold text-justify">
-            Quý khách vui lòng đưa Căn cước công dân vào khe máy đọc bên dưới
-          </h1>
-        </CardHeader>
+      <Card className="w-full rounded-2xl border shadow-sm flex flex-row items-center justify-between gap-2 p-4">
+        <img src={iconCCCD} alt="" className="w-16 bg-base rounded-lg p-2" />
+        <h1 className=" font-semibold text-justify">
+          Quý khách vui lòng đưa Căn cước công dân vào khe máy đọc bên dưới
+        </h1>
       </Card>
 
       <Card className="w-full rounded-2xl border shadow-sm ">
