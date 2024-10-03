@@ -1,6 +1,5 @@
 export type CalendarData = {
-    date: String,
-    time: String,
+    iso_datetime: String,
     name: String,
     location: String,
     attendees: String,

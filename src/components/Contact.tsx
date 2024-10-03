@@ -70,7 +70,6 @@ const DEPARTMENTS = [
     label: "Phòng ứng dụng và chuyển giao công nghệ số",
   },
   { value: "phongNcptcns", label: "Phòng nghiên cứu phát triển công nghệ số" },
-  { value: "cs2", label: "Cơ sở 2 của Viện tại TP.Hồ Chí Minh" },
 ];
 
 const Contact = ({
@@ -123,7 +122,9 @@ const Contact = ({
     },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (
+    data: FormData,
+  ) => {
     try {
       const { appointmentHour, appointmentMinute, ...restData } = data;
       const appointmentTime = `${appointmentHour}:${appointmentMinute}`;
@@ -285,6 +286,7 @@ const Contact = ({
           <FormField
             control={form.control}
             name="department"
+            rules={{ required: "Vui lòng chọn phòng ban" }}
             render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-semibold text-lg">
@@ -359,7 +361,7 @@ const Contact = ({
           <Button
             type="submit"
             className="w-full text-lg font-semibold bg-lavender hover:bg-lavender/90"
-            disabled={isNavigating}
+            disabled={isNavigating || !form.formState.isValid}
           >
             {isNavigating ? `Đang chuyển hướng (${countdown}s)` : "Liên hệ"}
           </Button>

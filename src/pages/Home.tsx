@@ -13,14 +13,14 @@ import "./pageRestrictions.css";
 import { ipWebsocket } from "../utils/ip";
 import Webcam from "react-webcam";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
-import lavenderWave from "../assets/background_layer/lavender_wave.png";
 import Contact from "@/components/Contact";
+import wavyLavender from "../assets/background_layer/lavender_wave.svg";
 
 const Home = () => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [isConnected, setIsConnected] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
-  const [isContacting, setIsContacting] = useState(true);
+  const [isContacting, setIsContacting] = useState(false);
   const [currentVideoPath, setCurrentVideoPath] = useState<string>("");
   const [cccdData, setCccdData] = useState<Record<string, string> | null>(null);
   const [currentSelect, setCurrentSelect] = useState<SelectOptionProps>({
@@ -172,16 +172,17 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 px-6 py-3 h-screen page-restrictions relative min-h-screen overflow-hidden no-scrollbar">
+    <div className="flex flex-col gap-6 px-6 py-3 page-restrictions relative overflow-hidden h-screen no-scrollbar">
+      {/* background */}
       <div
         className="absolute inset-x-0 bottom-0 -z-10"
         style={{
-          backgroundImage: `url(${lavenderWave})`,
+          backgroundImage: `url(${wavyLavender})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "bottom",
           backgroundSize: "100% auto",
-          height: "30%",
-          bottom: "-200px",
+          height: "100%",
+          bottom: "100px"
         }}
       />
 

@@ -20,10 +20,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import type { CalendarData } from "@/types/CalendarData";
-import scheduleMock from "../sampleData/schedule.json";
 import { ipPostCalendar, ipGetCalendar } from "@/utils/ip";
 
 interface FormData {
@@ -45,7 +44,7 @@ const WeeklyCalendarManage = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Vui lòng đăng nhập để tiếp tục");
-      navigate("/admin/login"); 
+      navigate("/admin/login");
       return;
     }
     getCalendarData();
@@ -64,46 +63,48 @@ const WeeklyCalendarManage = () => {
     }
   };
 
-
   const handleAddCalendar = () => {
     setIsDialogOpen(true);
-  }
+  };
 
   const onSubmit = async (data: FormData) => {
     try {
       const file = data.file[0];
       if (!file) {
-        toast.error('Vui lòng chọn một tệp để tải lên');
+        toast.error("Vui lòng chọn một tệp để tải lên");
         return;
       }
 
-      if (file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        toast.error('Chỉ chấp nhận tệp .docx');
+      if (
+        file.type !==
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
+        toast.error("Chỉ chấp nhận tệp .docx");
         return;
       }
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
       console.log(file);
 
       const response = await axios.post(ipPostCalendar, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
       if (response.status !== 200) {
-        throw new Error('Tải lên thất bại');
+        throw new Error("Tải lên thất bại");
       }
 
-      toast.success('Tệp đã được tải lên thành công');
+      toast.success("Tệp đã được tải lên thành công");
       setIsDialogOpen(false);
 
       getCalendarData();
     } catch (error) {
-      console.error('Upload error:', error);
-      toast.error('Đã xảy ra lỗi khi tải lên tệp');
+      console.error("Upload error:", error);
+      toast.error("Đã xảy ra lỗi khi tải lên tệp");
     }
   };
 
@@ -113,14 +114,20 @@ const WeeklyCalendarManage = () => {
       header: "Công việc",
     },
     {
-      accessorKey: "date",
-      header: "Ngày",
+      accessorKey: "iso_datetime",
+      header: "Thời gian",
+      cell: ({ row }: any) => {
+        return (
+          new Date(row.getValue("iso_datetime").toString()).toLocaleDateString("vi-VN") +
+          " " +
+          new Date(row.getValue("iso_datetime").toString()).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        );
+      },
     },
-    {
-      accessorKey: "time",
-      header: "Thời gian",    
-
-    },  
     {
       accessorKey: "location",
       header: "Địa điểm",
@@ -150,9 +157,7 @@ const WeeklyCalendarManage = () => {
         <DialogContent className="w-[90%] rounded-xl sm:w-full">
           <DialogHeader>
             <DialogTitle>Tải lên lịch tuần mới</DialogTitle>
-            <DialogDescription>
-              Chỉ chấp nhận tệp .docx.
-            </DialogDescription>
+            <DialogDescription>Chỉ chấp nhận tệp .docx.</DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

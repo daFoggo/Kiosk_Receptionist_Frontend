@@ -13,7 +13,6 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
-import mockSchedule from "../sampleData/schedule.json";
 import { CalendarData } from "@/types/CalendarData";
 import {
   Sheet,
@@ -26,29 +25,19 @@ import {
 } from "@/components/ui/sheet";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { motion, AnimatePresence } from "framer-motion";
+import WeeklySchedule from "./WeeklySchedule";
 import axios from "axios";
 import { ipGetCalendar } from "@/utils/ip";
 
 const WeeklyCalendar = () => {
   const [calendar, setCalendar] = useState<CalendarData>({
-    date: "",
-    time: "",
+    iso_datetime: "",
     name: "",
     location: "",
     attendees: "",
     preparation: "",
   });
   const [fullCalendar, setFullCalendar] = useState<CalendarData[]>([]);
-  const [showWeeklySchedule, setShowWeeklySchedule] = useState(false);
 
   useEffect(() => {
     getCalendarData();
@@ -57,12 +46,55 @@ const WeeklyCalendar = () => {
   const getCalendarData = async () => {
     try {
       const response = await axios.get(ipGetCalendar);
-      setFullCalendar(response.data[0]);
-      setCalendar(response.data[0][0]);
+      const calendarData = response.data[0];
+      const nextWork = findUpcomingWork(calendarData);
+      setFullCalendar(calendarData);
+      setCalendar(nextWork);
     } catch (error) {
       toast.error("Lấy dữ liệu lịch tuần thất bại");
       console.error(error);
     }
+  };
+
+  // set lich sap toi
+  const findUpcomingWork = (works: CalendarData[]): CalendarData => {
+    const currentTime = new Date();
+    const todayStart = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      0,
+      0,
+      0,
+      0
+    ).getTime();
+
+    const todayEnd = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      23,
+      59,
+      59,
+      999
+    ).getTime();
+
+    const todayEvents = works.filter((work: CalendarData) => {
+      const workTime = new Date(work.iso_datetime.toString()).getTime();
+      return workTime >= todayStart && workTime <= todayEnd;
+    });
+
+    if (todayEvents.length === 0) {
+      return works[0];
+    }
+
+    const currentTimeMillis = currentTime.getTime();
+    const upcomingEvent = todayEvents.find((work: CalendarData) => {
+      const workTime = new Date(work.iso_datetime.toString()).getTime();
+      return workTime > currentTimeMillis;
+    });
+
+    return upcomingEvent || todayEvents[todayEvents.length - 1];
   };
 
   const renderField = (
@@ -97,7 +129,16 @@ const WeeklyCalendar = () => {
           className="text-lg font-semibold px-3 py-1 bg-crust"
         >
           <Clock className="mr-2 h-4 w-4" />
-          <span>{calendar?.time}</span>
+          <span>
+            {new Date(calendar?.iso_datetime.toString()).toLocaleTimeString(
+              "en-US",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              }
+            )}
+          </span>
         </Badge>
         <Sheet>
           <SheetTrigger>
@@ -112,23 +153,30 @@ const WeeklyCalendar = () => {
           <SheetContent className="sm:max-w-4xl [&>button]:hidden">
             <SheetHeader>
               <div className="flex justify-between items-center text-center mb-6">
-                <SheetTitle className="text-3xl text-heading">Chi tiết công tác</SheetTitle>
+                <SheetTitle className="text-3xl text-heading">
+                  Chi tiết công tác
+                </SheetTitle>
                 <SheetClose>
                   <Button variant="ghost" className="text-sub-text1">
                     <X />
                   </Button>
                 </SheetClose>
               </div>
-              <SheetDescription className="space-y-6 mt-6">
+              <SheetDescription className="space-y-6 mt-6 border-b-2 pb-6">
                 {renderField(
                   <CalendarDays className="h-6 w-6" />,
-                  "Ngày:",
-                  calendar?.date as string
-                )}
-                {renderField(
-                  <Clock className="h-6 w-6" />,
                   "Thời gian:",
-                  calendar?.time as string
+                  new Date(
+                    calendar?.iso_datetime.toString()
+                  ).toLocaleDateString("vi-VN") +
+                    " " +
+                    new Date(
+                      calendar?.iso_datetime.toString()
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })
                 )}
                 {renderField(
                   <MapPin className="h-6 w-6" />,
@@ -148,61 +196,8 @@ const WeeklyCalendar = () => {
               </SheetDescription>
             </SheetHeader>
             <div className="mt-6">
-              <Button
-                onClick={() => setShowWeeklySchedule(!showWeeklySchedule)}
-                variant="outline"
-                className="w-full justify-between"
-              >
-                <span className="text-lg text-sub-text1">Toàn bộ công tác trong tuần</span>
-                <motion.div
-                  animate={{ rotate: showWeeklySchedule ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ChevronDown />
-                </motion.div>
-              </Button>
-              <AnimatePresence>
-                {showWeeklySchedule && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-4 overflow-hidden"
-                  >
-                    <div className="overflow-x-auto">
-                      <div className="inline-block min-w-full align-middle">
-                        <div className="overflow-hidden">
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead className="whitespace-nowrap">Ngày</TableHead>
-                                <TableHead className="whitespace-nowrap">Thời gian</TableHead>
-                                <TableHead className="whitespace-nowrap">Nội dung</TableHead>
-                                <TableHead className="whitespace-nowrap">Địa điểm</TableHead>
-                                <TableHead className="whitespace-nowrap">Thành phần</TableHead>
-                                <TableHead className="whitespace-nowrap">Chuẩn bị</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {fullCalendar.map((event, index) => (
-                                <TableRow key={index}>
-                                  <TableCell className="whitespace-nowrap">{event.date}</TableCell>
-                                  <TableCell className="whitespace-nowrap">{event.time}</TableCell>
-                                  <TableCell>{event.name}</TableCell>
-                                  <TableCell>{event.location}</TableCell>
-                                  <TableCell>{event.attendees}</TableCell>
-                                  <TableCell>{event.preparation}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                <h1 className="text-2xl font-bold text-heading mb-4">Toàn bộ lịch công tác</h1>
+                <WeeklySchedule tasks={fullCalendar}></WeeklySchedule>
             </div>
           </SheetContent>
         </Sheet>
