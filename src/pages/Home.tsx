@@ -227,7 +227,12 @@ const Home = () => {
           </div>
         ) : isContacting ? (
           <div className="w-1/2">
-            <Contact cccdData={cccdData} setIsScanning={setIsScanning} setIsContacting={setIsContacting} />
+            <Contact
+              cccdData={cccdData}
+              setIsScanning={setIsScanning}
+              setIsContacting={setIsContacting}
+              setCurrentMessage={handleSetCurrentMessage}
+            />
           </div>
         ) : (
           <div className="w-1/2 flex flex-col items-center gap-6">

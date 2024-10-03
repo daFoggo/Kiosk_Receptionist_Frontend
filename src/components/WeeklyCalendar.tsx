@@ -57,8 +57,8 @@ const WeeklyCalendar = () => {
   const getCalendarData = async () => {
     try {
       const response = await axios.get(ipGetCalendar);
-      setFullCalendar(response.data);
-      setCalendar(mockSchedule[0]);
+      setFullCalendar(response.data[0]);
+      setCalendar(response.data[0][0]);
     } catch (error) {
       toast.error("Lấy dữ liệu lịch tuần thất bại");
       console.error(error);

@@ -77,15 +77,20 @@ const Contact = ({
   cccdData,
   setIsScanning,
   setIsContacting,
+  setCurrentMessage,
 }: {
   cccdData: Record<string, string> | null;
   setIsScanning: (value: boolean) => void;
   setIsContacting: (value: boolean) => void;
+  setCurrentMessage: (value: string) => void;
 }) => {
   const [isNavigating, setIsNavigating] = useState(false);
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(5);
 
   const navigateBack = () => {
+    setCurrentMessage(
+      "Thông tin của quý khách đã được tiếp nhận. Quý khách vui lòng chờ trong vài phút"
+    );
     setIsNavigating(true);
     const timer = setInterval(() => {
       setCountdown((prevCount) => {
@@ -130,11 +135,10 @@ const Contact = ({
       if (response.data) {
         toast.success("Đã gửi thông tin thành công!");
       }
+      navigateBack();
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Có lỗi xảy ra khi gửi thông tin!");
-    } finally {
-      navigateBack();
     }
   };
 
@@ -179,24 +183,24 @@ const Contact = ({
           <h1 className="text-2xl font-bold mb-4">Liên hệ với phòng ban</h1>
 
           <div className="flex justify-between items-center">
-              <FormField
-                control={form.control}
-                name="isAppointment"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 mb-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-lavender data-[state=checked]:border-lavender"
-                      />
-                    </FormControl>
-                    <FormLabel className="font-semibold text-lg">
-                      Có lịch hẹn
-                    </FormLabel>
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="isAppointment"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-3 space-y-0 mb-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="data-[state=checked]:bg-lavender data-[state=checked]:border-lavender"
+                    />
+                  </FormControl>
+                  <FormLabel className="font-semibold text-lg">
+                    Có lịch hẹn
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
             <div className="flex items-center gap-3">
               <FormLabel className="font-semibold text-lg self-start">
                 Thời gian hẹn
@@ -218,14 +222,22 @@ const Contact = ({
                       <SelectContent>
                         <SelectGroup>
                           {MORNING_HOURS.map((hour) => (
-                            <SelectItem key={hour} value={hour} className="text-lg">
+                            <SelectItem
+                              key={hour}
+                              value={hour}
+                              className="text-lg"
+                            >
                               {hour}
                             </SelectItem>
                           ))}
                         </SelectGroup>
                         <SelectGroup>
                           {AFTERNOON_HOURS.map((hour) => (
-                            <SelectItem key={hour} value={hour} className="text-lg">
+                            <SelectItem
+                              key={hour}
+                              value={hour}
+                              className="text-lg"
+                            >
                               {hour}
                             </SelectItem>
                           ))}
@@ -253,7 +265,11 @@ const Contact = ({
                       <SelectContent>
                         <SelectGroup>
                           {MINUTES.map((minute) => (
-                            <SelectItem key={minute} value={minute} className="text-lg">
+                            <SelectItem
+                              key={minute}
+                              value={minute}
+                              className="text-lg"
+                            >
                               {minute}
                             </SelectItem>
                           ))}
