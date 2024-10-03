@@ -100,7 +100,7 @@ const WeeklyCalendar = () => {
           <span>{calendar?.time}</span>
         </Badge>
         <Sheet>
-          <SheetTrigger asChild>
+          <SheetTrigger>
             <Button
               variant="ghost"
               className="font-semibold text-sub-text1 text-lg rounded-full hover:bg-crust/50 mt-auto flex items-center justify-between"

@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
             </Button>
           )}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="outline" className="ml-auto">
                 Các cột <ChevronDown className="ml-2 h-4 w-4" />
               </Button>

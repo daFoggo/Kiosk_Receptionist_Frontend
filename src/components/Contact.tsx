@@ -1,3 +1,10 @@
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Cake, IdCardIcon } from "lucide-react";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { TbGenderBigender } from "react-icons/tb";
+import axios from "axios";
 import {
   Form,
   FormField,
@@ -6,44 +13,99 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "./ui/input";
-import { Label } from "@radix-ui/react-label";
-import { toast } from "sonner";
-import { Cake, IdCardIcon } from "lucide-react";
-import { TbGenderBigender } from "react-icons/tb";
-import { Checkbox } from "./ui/checkbox";
-import { useForm } from "react-hook-form";
 import {
   Select,
   SelectContent,
   SelectGroup,
-  SelectLabel,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
-import axios from "axios";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { ipChatTele } from "@/utils/ip";
+import { TimePickerInput } from "@/components/ui/time-picker-input";
+import { MORNING_HOURS, AFTERNOON_HOURS, MINUTES } from "@/data/TimeSelect";
+
+const timeZone = "Asia/Ho_Chi_Minh";
+
+interface CCCDInfo {
+  identityCode: string;
+  name: string;
+  dob: string;
+  gender: string;
+}
 
 interface FormData {
   isAppointment: boolean;
+  appointmentHour: string;
+  appointmentMinute: string;
   department: string;
   phoneNumber: string;
   note: string;
-  cccdInfo: {
-    identityCode: string;
-    name: string;
-    dob: string;
-    gender: string;
-  };
+  cccdInfo: CCCDInfo;
 }
 
-const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
+const DEPARTMENTS = [
+  { value: "bld", label: "Ban lãnh đạo" },
+  { value: "phongTh", label: "Phòng tổng hợp" },
+  {
+    value: "phongKhcnvkhcd",
+    label: "Phòng Khoa học công nghệ và Kế hoạch kinh doanh",
+  },
+  { value: "phongTvtk", label: "Phòng tư vấn thiết kế" },
+  {
+    value: "phongNckyvdvvt",
+    label: "Phòng nghiên cứu kỹ thuật và dịch vụ viễn thông",
+  },
+  {
+    value: "phongDlkdvtccl",
+    label: "Phòng đo lường kiểm định và tiêu chuẩn chất lượng",
+  },
+  {
+    value: "phongUdvcgcns",
+    label: "Phòng ứng dụng và chuyển giao công nghệ số",
+  },
+  { value: "phongNcptcns", label: "Phòng nghiên cứu phát triển công nghệ số" },
+  { value: "cs2", label: "Cơ sở 2 của Viện tại TP.Hồ Chí Minh" },
+];
+
+const Contact = ({
+  cccdData,
+  setIsScanning,
+  setIsContacting,
+}: {
+  cccdData: Record<string, string> | null;
+  setIsScanning: (value: boolean) => void;
+  setIsContacting: (value: boolean) => void;
+}) => {
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+
+  const navigateBack = () => {
+    setIsNavigating(true);
+    const timer = setInterval(() => {
+      setCountdown((prevCount) => {
+        if (prevCount <= 1) {
+          clearInterval(timer);
+          setIsScanning(false);
+          setIsContacting(false);
+          setIsNavigating(false);
+          return 0;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
+  };
+
   const form = useForm<FormData>({
     defaultValues: {
       isAppointment: false,
+      appointmentHour: "08",
+      appointmentMinute: "00",
       department: "",
       phoneNumber: "",
       note: "",
@@ -58,12 +120,21 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const resposne = await axios.post(ipChatTele, data);
-      console.log(resposne);
-      toast.success("Đã gửi thông tin thành công!");
+      const { appointmentHour, appointmentMinute, ...restData } = data;
+      const appointmentTime = `${appointmentHour}:${appointmentMinute}`;
+      const formDataToSubmit = {
+        ...restData,
+        appointmentTime,
+      };
+      const response = await axios.post(ipChatTele, formDataToSubmit);
+      if (response.data) {
+        toast.success("Đã gửi thông tin thành công!");
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Có lỗi xảy ra khi gửi thông tin!");
+    } finally {
+      navigateBack();
     }
   };
 
@@ -71,26 +142,24 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
     icon: React.ReactNode,
     label: string,
     value: string | undefined
-  ) => {
-    return (
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 min-w-[150px] text-sub-text1">
-          {icon}
-          <Label className="text-xl font-semibold">{label}</Label>
-        </div>
-        <Input value={value || ""} readOnly className="text-lg" tabIndex={-1} />
+  ) => (
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 min-w-[150px] text-sub-text1">
+        {icon}
+        <Label className="text-xl font-semibold">{label}</Label>
       </div>
-    );
-  };
+      <Input value={value || ""} readOnly className="text-lg" tabIndex={-1} />
+    </div>
+  );
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full items-center h-auto"
+        className="flex flex-col gap-6 w-full"
       >
-        <div className="flex flex-col gap-2 p-4 bg-base shadow-sm border rounded-xl w-full">
-          <h1 className="text-2xl font-bold mb-4">
+        <div className="bg-base shadow-sm border rounded-xl p-4 flex flex-col gap-2">
+          <h1 className="text-2xl font-bold mb-2">
             Thông tin khách {cccdData?.["Name"] || ""}
           </h1>
           {renderField(
@@ -106,32 +175,102 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-4 p-4 shadow-sm border rounded-xl w-full">
+        <div className="shadow-sm border rounded-xl p-4">
           <h1 className="text-2xl font-bold mb-4">Liên hệ với phòng ban</h1>
-          <FormField
-            control={form.control}
-            name="isAppointment"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className=" data-[state=checked]:bg-lavender data-[state=checked]:border-lavender"
-                  />
-                </FormControl>
-                <FormLabel className="font-semibold text-lg">
-                  Có lịch hẹn
-                </FormLabel>
-              </FormItem>
-            )}
-          />
+
+          <div className="flex justify-between items-center">
+              <FormField
+                control={form.control}
+                name="isAppointment"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 mb-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-lavender data-[state=checked]:border-lavender"
+                      />
+                    </FormControl>
+                    <FormLabel className="font-semibold text-lg">
+                      Có lịch hẹn
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+            <div className="flex items-center gap-3">
+              <FormLabel className="font-semibold text-lg self-start">
+                Thời gian hẹn
+              </FormLabel>
+              <FormField
+                control={form.control}
+                name="appointmentHour"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="text-lg w-fit">
+                          <SelectValue placeholder="Giờ" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {MORNING_HOURS.map((hour) => (
+                            <SelectItem key={hour} value={hour} className="text-lg">
+                              {hour}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                        <SelectGroup>
+                          {AFTERNOON_HOURS.map((hour) => (
+                            <SelectItem key={hour} value={hour} className="text-lg">
+                              {hour}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <span>:</span>
+              <FormField
+                control={form.control}
+                name="appointmentMinute"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="text-lg w-fit">
+                          <SelectValue placeholder="Phút" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {MINUTES.map((minute) => (
+                            <SelectItem key={minute} value={minute} className="text-lg">
+                              {minute}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           <FormField
             control={form.control}
             name="department"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mb-4">
                 <FormLabel className="font-semibold text-lg">
                   Phòng ban
                 </FormLabel>
@@ -139,43 +278,22 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <FormControl className="text-lg">
-                    <SelectTrigger>
+                  <FormControl>
+                    <SelectTrigger className="text-lg">
                       <SelectValue placeholder="Chọn phòng ban" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel className="text-lg">
-                        Các phòng ban
-                      </SelectLabel>
-                      <SelectItem value="bld" className="text-lg">
-                        Ban lãnh đạo
-                      </SelectItem>
-                      <SelectItem value="phongTh" className="text-lg">
-                        Phòng tổng hợp
-                      </SelectItem>
-                      <SelectItem value="phongKhcnvkhcd" className="text-lg">
-                        Phòng Khoa học công nghệ và Kế hoạch kinh doanh
-                      </SelectItem>
-                      <SelectItem value="phongTvtk" className="text-lg">
-                        Phòng tư vấn thiết kế
-                      </SelectItem>
-                      <SelectItem value="phongNckyvdvvt" className="text-lg">
-                        Phòng nghiên cứu kỹ thuật và dịch vụ viễn thông
-                      </SelectItem>
-                      <SelectItem value="phongDlkdvtccl" className="text-lg">
-                        Phòng đo lường kiểm định và tiêu chuẩn chất lượng
-                      </SelectItem>
-                      <SelectItem value="phongUdvcgcns" className="text-lg">
-                        Phòng ứng dụng và chuyển giao công nghệ số
-                      </SelectItem>
-                      <SelectItem value="phongNcptcns" className="text-lg">
-                        Phòng nghiên cứu phát triển công nghệ số
-                      </SelectItem>
-                      <SelectItem value="cs2" className="text-lg">
-                        Cơ sở 2 của Viện tại TP.Hồ Chí Minh
-                      </SelectItem>
+                      {DEPARTMENTS.map((dept) => (
+                        <SelectItem
+                          key={dept.value}
+                          value={dept.value}
+                          className="text-lg"
+                        >
+                          {dept.label}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -188,14 +306,14 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
             control={form.control}
             name="phoneNumber"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mb-4">
                 <FormLabel className="font-semibold text-lg">
                   Số điện thoại
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Nhập số điện thoại"
                     {...field}
+                    placeholder="Nhập số điện thoại"
                     className="text-lg"
                   />
                 </FormControl>
@@ -208,13 +326,13 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
             control={form.control}
             name="note"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mb-4">
                 <FormLabel className="font-semibold text-lg">Ghi chú</FormLabel>
                 <FormControl>
                   <Textarea
+                    {...field}
                     placeholder="Ghi chú"
                     className="text-lg"
-                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -224,9 +342,10 @@ const Contact = ({ cccdData }: { cccdData: Record<string, string> | null }) => {
 
           <Button
             type="submit"
-            className="w-full text-lg font-semibold hover:bg-lavender/90 bg-lavender"
+            className="w-full text-lg font-semibold bg-lavender hover:bg-lavender/90"
+            disabled={isNavigating}
           >
-            Liên hệ
+            {isNavigating ? `Đang chuyển hướng (${countdown}s)` : "Liên hệ"}
           </Button>
         </div>
       </form>

@@ -162,7 +162,7 @@ const ScanCCCD = ({
               onValueChange={setSelectedRole}
               required
             >
-              <SelectTrigger className="md:col-span-2 bg-crust text-base-content" asChild>
+              <SelectTrigger className="md:col-span-2 bg-crust text-base-content">
                 <SelectValue placeholder="Chọn vai trò" />
               </SelectTrigger>
               <SelectContent>
