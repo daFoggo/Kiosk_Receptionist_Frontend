@@ -90,7 +90,7 @@ const SelectOption = ({
               setIsScanning(true);
             }
           }}
-          className="bg-lavender text-white py-6 px-8 text-xl border shadow-sm rounded-xl font-semibold cursor-pointer"
+          className="bg-lavender text-white py-6 px-8 text-xl border shadow-sm rounded-xl font-semibold cursor-pointer hover:bg-lavender/90"
         >Xác nhận</Button>
       </motion.div>
     </div>

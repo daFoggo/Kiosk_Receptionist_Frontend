@@ -125,12 +125,28 @@ const Home = () => {
       e.preventDefault();
     };
 
+    const disableScroll = (e: any) => {
+      e.preventDefault();
+    };
+
+    const disableTouchScroll = (e: any) => {
+      e.preventDefault();
+    };
+
+
+
     document.addEventListener("keydown", disableZoom);
     document.addEventListener("contextmenu", disableRightClick);
+    document.addEventListener("wheel", disableScroll, { passive: false });
+    document.addEventListener("touchmove", disableTouchScroll, {
+      passive: false,
+    });
 
     return () => {
       document.removeEventListener("keydown", disableZoom);
       document.removeEventListener("contextmenu", disableRightClick);
+      document.removeEventListener("wheel", disableScroll);
+      document.removeEventListener("touchmove", disableTouchScroll);
     };
   }, []);
 

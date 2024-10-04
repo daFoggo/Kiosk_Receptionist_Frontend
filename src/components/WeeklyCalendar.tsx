@@ -195,9 +195,12 @@ const WeeklyCalendar = () => {
                 )}
               </SheetDescription>
             </SheetHeader>
-            <div className="mt-6">
+            <div className="mt-6 h-full">
                 <h1 className="text-2xl font-bold text-heading mb-4">Toàn bộ lịch công tác</h1>
+                <div className="overflow-auto h-[80%]">
+
                 <WeeklySchedule tasks={fullCalendar}></WeeklySchedule>
+                </div>
             </div>
           </SheetContent>
         </Sheet>

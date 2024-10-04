@@ -32,21 +32,21 @@ const TaskCard = ({ task }: TaskCardProps) => {
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-      <Card>
-        <CardHeader className="p-4">
+      <Card className="border-0 shadow-none">
+        <CardHeader className="p-2">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-sm font-medium">{task.name}</CardTitle>
+            <CardTitle className="text-lg font-semibold">{task.name}</CardTitle>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-9 p-0">
+              <Button variant="ghost" size="sm" className="w-6 h-6 p-0">
                 {isOpen ? (
-                  <ChevronUp className="h-4 w-4" />
+                  <ChevronUp className="h-3 w-3" />
                 ) : (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-3 w-3" />
                 )}
               </Button>
             </CollapsibleTrigger>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm font-semibold text-sub-text2">
             {new Date(task.iso_datetime.toString()).toLocaleTimeString(
               "vi-VN",
               { hour: "2-digit", minute: "2-digit" }
@@ -54,18 +54,18 @@ const TaskCard = ({ task }: TaskCardProps) => {
           </p>
         </CardHeader>
         <CollapsibleContent>
-          <CardContent className="p-3 pt-0">
+          <CardContent className="p-2 pt-0 text-sub-text1">
             <div className="grid gap-1">
-              <div className="flex items-center text-sm">
-                <MapPin className="mr-2 h-4 w-4" />
+              <div className="flex items-center font-semibold">
+                <MapPin className="mr-1 h-3 w-3" />
                 {task.location}
               </div>
-              <div className="flex items-center text-sm">
-                <Users className="mr-2 h-4 w-4" />
+              <div className="flex items-center font-semibold">
+                <Users className="mr-1 h-3 w-3" />
                 {task.attendees}
               </div>
-              <div className="flex items-center text-sm">
-                <FileText className="mr-2 h-4 w-4" />
+              <div className="flex items-center font-semibold">
+                <FileText className="mr-1 h-3 w-3" />
                 {task.preparation}
               </div>
             </div>
@@ -99,16 +99,18 @@ const WeeklySchedule = ({ tasks }: WeeklyScheduleProps) => {
   const daysWithTasks = daysOfWeek.filter(day => groupedTasks[day]?.length > 0);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full overflow-auto pr-2">
       {daysWithTasks.map((day) => (
-        <Card key={day} className="w-full border">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">{day}</CardTitle>
+        <Card key={day} className="w-full border shadow-sm">
+          <CardHeader className="p-2">
+            <CardTitle className="text-lg font-bold">{day}</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {groupedTasks[day].map((task, index) => (
-              <TaskCard key={index} task={task} />
-            ))}
+          <CardContent className="p-2 pt-0">
+            <div className="flex flex-col gap-2">
+              {groupedTasks[day].map((task, index) => (
+                <TaskCard key={index} task={task} />
+              ))}
+            </div>
           </CardContent>
         </Card>
       ))}
