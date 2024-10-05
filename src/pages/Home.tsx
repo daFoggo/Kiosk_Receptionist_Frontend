@@ -15,6 +15,7 @@ import Webcam from "react-webcam";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import Contact from "@/components/Contact";
 import wavyLavender from "../assets/background_layer/lavender_wave.svg";
+import { useDisableScroll } from "../utils/disableScroll";
 
 const Home = () => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
@@ -36,6 +37,10 @@ const Home = () => {
 
   const wsRef = useRef<WebSocket | null>(null);
   const cameraRef = useRef<Webcam>(null);
+
+  const { enableScrollDisable, disableScrollDisable } = useDisableScroll({
+    excludeSelector: ".weekly-calendar",
+  });
 
   useEffect(() => {
     if (ipWebsocket) {
@@ -115,38 +120,9 @@ const Home = () => {
 
   // disable mot so thao tac
   useEffect(() => {
-    const disableZoom = (e: any) => {
-      if (e.ctrlKey && (e.key === "+" || e.key === "-")) {
-        e.preventDefault();
-      }
-    };
-
-    const disableRightClick = (e: any) => {
-      e.preventDefault();
-    };
-
-    const disableScroll = (e: any) => {
-      e.preventDefault();
-    };
-
-    const disableTouchScroll = (e: any) => {
-      e.preventDefault();
-    };
-
-
-
-    document.addEventListener("keydown", disableZoom);
-    document.addEventListener("contextmenu", disableRightClick);
-    document.addEventListener("wheel", disableScroll, { passive: false });
-    document.addEventListener("touchmove", disableTouchScroll, {
-      passive: false,
-    });
-
+    enableScrollDisable();
     return () => {
-      document.removeEventListener("keydown", disableZoom);
-      document.removeEventListener("contextmenu", disableRightClick);
-      document.removeEventListener("wheel", disableScroll);
-      document.removeEventListener("touchmove", disableTouchScroll);
+      disableScrollDisable();
     };
   }, []);
 
@@ -184,7 +160,7 @@ const Home = () => {
           backgroundPosition: "bottom",
           backgroundSize: "100% auto",
           height: "100%",
-          bottom: "50px"
+          bottom: "50px",
         }}
       />
 
@@ -204,7 +180,9 @@ const Home = () => {
           <EventBanner />
         </div>
         <div className="col-span-1">
-          <WeeklyCalendar />
+          <div className="weekly-calendar overflow-auto">
+            <WeeklyCalendar />
+          </div>
         </div>
       </div>
 

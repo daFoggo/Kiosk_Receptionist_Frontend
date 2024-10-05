@@ -32,9 +32,6 @@ const EventBanner = () => {
   const getEventData = async () => {
     try {
       const response = await axios.get(ipGetEvents, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
 
       const sortedEvents = response.data.sort(
