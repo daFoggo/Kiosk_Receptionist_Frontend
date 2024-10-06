@@ -56,6 +56,7 @@ export const useDisableScroll = (options: DisableScrollOptions = {}) => {
     if (disableRightClick) {
       document.addEventListener("contextmenu", handlers.handleRightClick);
     }
+    
     if (disableWheelScroll) {
       document.addEventListener("wheel", handlers.handleWheel, {
         passive: false,

@@ -6,7 +6,7 @@ import AIModel from "../components/AIModel";
 import AIChat from "../components/AIChat";
 import SelectOption from "../components/SelectOption";
 import { chatMockData } from "../sampleData/chatMockData";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { SelectOptionProps } from "../types/ChatMockData";
 import ScanCCCD from "../components/ScanCCCD";
 import "./pageRestrictions.css";
@@ -16,6 +16,13 @@ import WeeklyCalendar from "@/components/WeeklyCalendar";
 import Contact from "@/components/Contact";
 import wavyLavender from "../assets/background_layer/lavender_wave.svg";
 import { useDisableScroll } from "../utils/disableScroll";
+
+enum WebSocketState {
+  CONNECTING = 0,
+  OPEN = 1,
+  CLOSING = 2,
+  CLOSED = 3,
+}
 
 const Home = () => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
@@ -37,31 +44,48 @@ const Home = () => {
 
   const wsRef = useRef<WebSocket | null>(null);
   const cameraRef = useRef<Webcam>(null);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
+  const frameIntervalRef = useRef<NodeJS.Timeout>();
 
-  const { enableScrollDisable, disableScrollDisable } = useDisableScroll({
-    excludeSelector: ".weekly-calendar",
-  });
+  const connectWebSocket = useCallback(() => {
+    try {
+      if (wsRef.current?.readyState === WebSocketState.OPEN) {
+        console.log("WebSocket already connected");
+        return;
+      }
 
-  useEffect(() => {
-    if (ipWebsocket) {
       wsRef.current = new WebSocket(ipWebsocket);
 
-      // connect
       wsRef.current.onopen = () => {
-        console.log("WebSocket connected");
+        console.log("WebSocket connected successfully");
         setIsConnected(true);
       };
 
-      // disconnect
-      wsRef.current.onclose = () => {
-        console.log("WebSocket disconnected");
+      wsRef.current.onclose = (event) => {
+        console.error("WebSocket closed", {
+          code: event.code,
+          reason: event.reason,
+          wasClean: event.wasClean,
+        });
         setIsConnected(false);
+
+        // Clear existing timeout if any
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+        }
+
+        // Attempt to reconnect after 3 seconds
+        reconnectTimeoutRef.current = setTimeout(connectWebSocket, 3000);
       };
 
-      // receive data from server
+      wsRef.current.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+
       wsRef.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+
           if (data) {
             if (data.key === "webcam") {
               setWebcamData(data?.value);
@@ -81,8 +105,30 @@ const Home = () => {
           console.error("Error parsing WebSocket message:", error);
         }
       };
+    } catch (error) {
+      console.error("Error creating WebSocket connection:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (ipWebsocket) {
+      connectWebSocket();
+
+      // Implement ping mechanism
+      const pingInterval = setInterval(() => {
+        if (wsRef.current?.readyState === WebSocketState.OPEN) {
+          wsRef.current.send(JSON.stringify({ type: "ping" }));
+        }
+      }, 30000);
 
       return () => {
+        clearInterval(pingInterval);
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+        }
+        if (frameIntervalRef.current) {
+          clearInterval(frameIntervalRef.current);
+        }
         if (wsRef.current) {
           wsRef.current.close();
         }
@@ -90,12 +136,12 @@ const Home = () => {
     } else {
       console.error("WebSocket IP is not defined");
     }
-  }, []);
+  }, [connectWebSocket]);
 
   // gui frame moi 2s
   useEffect(() => {
     if (isConnected) {
-      const interval = setInterval(captureAndSendFrame, 1000);
+      const interval = setInterval(captureAndSendFrame, 1500);
       return () => clearInterval(interval);
     }
   }, [isConnected]);
@@ -116,14 +162,6 @@ const Home = () => {
     setCurrentMessage(chatMockData[0].initialMessage);
     setCurrentVideoPath(chatMockData[0].video_path);
     setCurrentSelect(chatMockData[0].select);
-  }, []);
-
-  // disable mot so thao tac
-  useEffect(() => {
-    enableScrollDisable();
-    return () => {
-      disableScrollDisable();
-    };
   }, []);
 
   const handleOptionSelect = (selectedValue: string) => {
@@ -149,8 +187,10 @@ const Home = () => {
     setCurrentMessage(value);
   };
 
+  // disable mot so thao tac
+
   return (
-    <div className="flex flex-col gap-6 px-6 py-3 page-restrictions relative overflow-hidden h-screen no-scrollbar">
+    <div className="flex flex-col gap-6 px-6 py-3 page-restrictions relative overflow-hidden h-screen">
       {/* background */}
       <div
         className="absolute inset-x-0 bottom-0 -z-10"
@@ -180,9 +220,7 @@ const Home = () => {
           <EventBanner />
         </div>
         <div className="col-span-1">
-          <div className="weekly-calendar overflow-auto">
-            <WeeklyCalendar />
-          </div>
+          <WeeklyCalendar />
         </div>
       </div>
 

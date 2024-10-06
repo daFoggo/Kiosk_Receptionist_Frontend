@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,6 @@ import {
   Users,
   FileText,
   X,
-  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { CalendarData } from "@/types/CalendarData";
@@ -38,6 +37,28 @@ const WeeklyCalendar = () => {
     preparation: "",
   });
   const [fullCalendar, setFullCalendar] = useState<CalendarData[]>([]);
+
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (calendarRef.current) {
+        e.preventDefault();
+        calendarRef.current.scrollTop += e.deltaY;
+      }
+    };
+
+    const calendar = calendarRef.current;
+    if (calendar) {
+      calendar.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      if (calendar) {
+        calendar.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     getCalendarData();
@@ -115,7 +136,7 @@ const WeeklyCalendar = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-base p-4 rounded-2xl border shadow-sm">
+    <div className="h-full flex flex-col bg-base p-4 rounded-2xl border shadow-sm" ref={calendarRef}>
       <div className="flex items-center gap-2 mb-4 text-xl font-semibold">
         <BriefcaseBusiness className="text-heading" />
         <h1>Lịch công tác hôm nay</h1>
@@ -150,7 +171,7 @@ const WeeklyCalendar = () => {
               <ArrowUpRight className="ml-2 h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent className="sm:max-w-4xl [&>button]:hidden">
+          <SheetContent className="sm:max-w-4xl [&>button]:hidden overflow-y-hidden h-dvh">
             <SheetHeader>
               <div className="flex justify-between items-center text-center mb-6">
                 <SheetTitle className="text-3xl text-heading">

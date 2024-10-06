@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { MdLocationOn } from "react-icons/md";
 import { Badge } from "./ui/badge";
-import { toast } from "sonner";
 import { ipGetEvents } from "@/utils/ip";
-import axios from "axios";
-import { tempToken } from "@/utils/ip";
+import axiosInstance from "@/utils/axiosInstance";
 import { CalendarHeart, Clock, ClockArrowDown, ClockArrowUp } from "lucide-react";
 
 type Event = {
@@ -31,9 +29,8 @@ const EventBanner = () => {
 
   const getEventData = async () => {
     try {
-      const response = await axios.get(ipGetEvents, {
-      });
-
+      const response = await axiosInstance.get(ipGetEvents);
+      
       const sortedEvents = response.data.sort(
         (a: { start_time: string }, b: { start_time: string }) =>
           new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
@@ -41,10 +38,10 @@ const EventBanner = () => {
 
       setEvent(sortedEvents[0]);
     } catch (error) {
-      toast.error("Tải sự kiện thất bại");
       console.error("Error getting event data:", error);
     }
   };
+
 
   const formatDate = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
