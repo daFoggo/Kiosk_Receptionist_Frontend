@@ -1,50 +1,36 @@
-# React + TypeScript + Vite
+# Kiosk AI Receptionist
+- An innovative virtual receptionist system utilizing Metahuman technology to create a lifelike, interactive digital assistant. 
+This AI-powered kiosk provides natural conversation capabilities while offering various utilities including weather updates, calendar tracking, faculty schedules, and student laboratory timetables,.. Designed to enhance user experience and streamline information access at the Research Institute of Posts and Telecommunication
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# About the Repo 
+- This is the Frontend part of the project
 
-Currently, two official plugins are available:
+# Project structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
 ```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+└── 📁kiosk_frontend
+    └── 📁public
+    └── 📁src  // Main folder
+        └── 📁assets // Media item, icon,..
+        └── 📁components
+            └── 📁ui // Shadcn components and other reusable component that use shadcn 
+            └── AIChat.tsx // Normal component for pages
+            └── AIModel.tsx
+            ...
+        └── 📁context
+        └── 📁data
+        └── 📁hooks
+        └── 📁layouts // layout for different page type: root, admin,...
+        └── 📁lib
+        └── 📁pages // Single page where the components are imported
+        └── 📁router 
+        └── 📁sampleData 
+        └── 📁services
+        └── 📁types // Typescript type
+        └── 📁utils // utility function, variable,...
+        └── App.css
+        └── App.tsx
+        └── index.css
+        └── main.tsx
+        └── vite-env.d.ts
 ```
