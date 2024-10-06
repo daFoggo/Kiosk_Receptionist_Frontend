@@ -32,7 +32,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-      <Card className="border-0 shadow-none">
+      <Card className="border border-gray-300 shadow-none">
         <CardHeader className="p-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-semibold">{task.name}</CardTitle>

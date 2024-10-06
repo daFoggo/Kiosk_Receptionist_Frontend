@@ -10,7 +10,7 @@ const Header = () => {
         <h1 className="text-[#c94a46]">
           Học viện Công nghệ Bưu chính Viễn thông
         </h1>
-        <h1 className="tracking-wider">
+        <h1 className="tracking-wider text-heading">
           Viện Khoa học Kỹ thuật Bưu điện
         </h1>
       </div>

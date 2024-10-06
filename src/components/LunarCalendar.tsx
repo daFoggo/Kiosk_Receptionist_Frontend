@@ -20,7 +20,9 @@ const LunarCalendar = () => {
 
   useEffect(() => {
     const updatedStartOfWeek = new Date(date);
-    updatedStartOfWeek.setDate(date?.getDate() - date?.getDay() + 1);
+    const dayOfWeek = date.getDay();
+    const offset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; 
+    updatedStartOfWeek.setDate(date.getDate() + offset);
     setStartOfWeek(updatedStartOfWeek);
   }, [date]);
 
@@ -50,20 +52,24 @@ const LunarCalendar = () => {
         <div
           key={index}
           className={`flex flex-col items-center gap-2 py-2 font-sans ${
-            isToday ? "bg-[#e2e6fd]" : ""
+            isToday ? "bg-lavender" : "b"
           } bg-base rounded-3xl`}
         >
-          <div className="text-2xl font-semibold pb-2 border-b-4 border-gray-300">
+          <div className={`text-2xl font-semibold pb-2 border-b-4 border-gray-300 ${
+            isToday ? "text-white" : ""
+          }`}>
             {day}
           </div>
           <div
             className={`text-2xl font-bold px-2 py-1 text-center ${
-              isToday ? "text-white bg-lavender rounded-full" : ""
+              isToday ? "text-white" : ""
             }`}
           >
             {currentDate.getDate()}
           </div>
-          <div className="text-xs font-semibold text-overlay">
+          <div className={`text-xs font-semibold ${
+            isToday ? "text-crust" : "text-sub-text1"
+          }`}>
             {lunarDate.day} AL
           </div>
         </div>
@@ -72,7 +78,7 @@ const LunarCalendar = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-3xl font-sans border shadow-sm ">
+    <div className="bg-white p-4 rounded-3xl font-sans border shadow-sm h-full ">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-heading">Lịch</h2>
         <div className="flex items-center justify-between">
@@ -81,7 +87,7 @@ const LunarCalendar = () => {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-fit justify-start text-left font-sans font-semibold ",
+                  "w-fit justify-start text-left font-sans font-semibold rounded-xl ",
                   !date && "text-muted-foreground",
                 )
               }

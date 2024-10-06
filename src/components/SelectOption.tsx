@@ -1,26 +1,32 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { SelectOptionProps } from "../types/ChatMockData";
 import { Button } from "./ui/button";
+
+interface SelectOptionProps {
+  select: {
+    question: string;
+    options: Array<{
+      label: string;
+      value: string;
+    }>;
+  };
+  onOptionSelect: (value: string) => void;
+}
 
 const SelectOption = ({
   select,
   onOptionSelect,
-  setIsScanning,
-}: {
-  select: SelectOptionProps;
-  onOptionSelect: (value: string) => void;
-  setIsScanning: (value: boolean) => void;
-}) => {
+}: SelectOptionProps
+) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  useEffect(() => {
-    setSelectedOption(null);
-  }, [select]);
-
-  const handleOptionClick = (value: string) => {
-    setSelectedOption(value);
+  const handleConfirm = () => {
+    if (selectedOption) {
+      onOptionSelect(selectedOption);
+    }
   };
+  
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -65,9 +71,9 @@ const SelectOption = ({
               className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm border  ${
                 selectedOption === option.value
                   ? "bg-lavender text-white"
-                  : "bg-base text-primary-text hover:bg-surface0"
+                  : "bg-crust text-primary-text hover:bg-surface0"
               }`}
-              onClick={() => handleOptionClick(option.value)}
+              onClick={() => setSelectedOption(option.value)}
               variants={itemVariants}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
@@ -84,12 +90,7 @@ const SelectOption = ({
       >
         <Button
           disabled={!selectedOption}
-          onClick={() => {
-            onOptionSelect(selectedOption as string);
-            if (selectedOption === "khach") {
-              setIsScanning(true);
-            }
-          }}
+          onClick={() => handleConfirm()}
           className="bg-lavender text-white py-6 px-8 text-xl border shadow-sm rounded-xl font-semibold cursor-pointer hover:bg-lavender/90"
         >Xác nhận</Button>
       </motion.div>

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Cake, IdCardIcon } from "lucide-react";
-import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { Cake, IdCard } from "lucide-react";
 import { TbGenderBigender } from "react-icons/tb";
 import axios from "axios";
 import {
@@ -27,16 +26,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ipChatTele } from "@/utils/ip";
-import { TimePickerInput } from "@/components/ui/time-picker-input";
 import { MORNING_HOURS, AFTERNOON_HOURS, MINUTES } from "@/data/TimeSelect";
+import { CCCDData } from "@/hooks/useWebsocket";
 
-const timeZone = "Asia/Ho_Chi_Minh";
-
-interface CCCDInfo {
-  identityCode: string;
-  name: string;
-  dob: string;
-  gender: string;
+interface ContactProps {
+  cccdData: CCCDData | null;
+  onContactingComplete: () => void;
 }
 
 interface FormData {
@@ -46,7 +41,6 @@ interface FormData {
   department: string;
   phoneNumber: string;
   note: string;
-  cccdInfo: CCCDInfo;
 }
 
 const DEPARTMENTS = [
@@ -72,39 +66,8 @@ const DEPARTMENTS = [
   { value: "phongNcptcns", label: "Phòng nghiên cứu phát triển công nghệ số" },
 ];
 
-const Contact = ({
-  cccdData,
-  setIsScanning,
-  setIsContacting,
-  setCurrentMessage,
-}: {
-  cccdData: Record<string, string> | null;
-  setIsScanning: (value: boolean) => void;
-  setIsContacting: (value: boolean) => void;
-  setCurrentMessage: (value: string) => void;
-}) => {
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [countdown, setCountdown] = useState(5);
 
-  const navigateBack = () => {
-    setCurrentMessage(
-      "Thông tin của quý khách đã được tiếp nhận. Quý khách vui lòng chờ trong vài phút"
-    );
-    setIsNavigating(true);
-    const timer = setInterval(() => {
-      setCountdown((prevCount) => {
-        if (prevCount <= 1) {
-          clearInterval(timer);
-          setIsScanning(false);
-          setIsContacting(false);
-          setIsNavigating(false);
-          return 0;
-        }
-        return prevCount - 1;
-      });
-    }, 1000);
-  };
-
+const Contact = ({ cccdData, onContactingComplete }: ContactProps) => {
   const form = useForm<FormData>({
     defaultValues: {
       isAppointment: false,
@@ -113,35 +76,38 @@ const Contact = ({
       department: "",
       phoneNumber: "",
       note: "",
-      cccdInfo: {
-        identityCode: cccdData?.["Identity Code"] || "",
-        name: cccdData?.["Name"] || "",
-        dob: cccdData?.["DOB"] || "",
-        gender: cccdData?.["Gender"] || "",
-      },
     },
   });
 
-  const onSubmit = async (
-    data: FormData,
-  ) => {
+  const handleSubmit = async (data: FormData) => {
     try {
       const { appointmentHour, appointmentMinute, ...restData } = data;
       const appointmentTime = `${appointmentHour}:${appointmentMinute}`;
       const formDataToSubmit = {
         ...restData,
         appointmentTime,
+        cccdInfo: {
+          identityCode: cccdData?.["Identity Code"] || "",
+          name: cccdData?.["Name"] || "",
+          dob: cccdData?.["DOB"] || "",
+          gender: cccdData?.["Gender"] || "",
+        },
       };
       const response = await axios.post(ipChatTele, formDataToSubmit);
       if (response.data) {
         toast.success("Đã gửi thông tin thành công!");
+        handleContactingComplete();
       }
-      navigateBack();
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Có lỗi xảy ra khi gửi thông tin!");
     }
   };
+
+  const handleContactingComplete = () => {
+    onContactingComplete();
+  }
+  
 
   const renderField = (
     icon: React.ReactNode,
@@ -160,7 +126,7 @@ const Contact = ({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-6 w-full"
       >
         <div className="bg-base shadow-sm border rounded-xl p-4 flex flex-col gap-2">
@@ -168,7 +134,7 @@ const Contact = ({
             Thông tin khách {cccdData?.["Name"] || ""}
           </h1>
           {renderField(
-            <IdCardIcon size={24} />,
+            <IdCard size={24} />,
             "Số CCCD",
             cccdData?.["Identity Code"]
           )}
@@ -361,9 +327,9 @@ const Contact = ({
           <Button
             type="submit"
             className="w-full text-lg font-semibold bg-lavender hover:bg-lavender/90"
-            disabled={isNavigating || !form.formState.isValid}
+            disabled={!form.formState.isValid}
           >
-            {isNavigating ? `Đang chuyển hướng (${countdown}s)` : "Liên hệ"}
+            Liên hệ
           </Button>
         </div>
       </form>

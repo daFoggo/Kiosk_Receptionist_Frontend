@@ -12,7 +12,7 @@ export default {
       },
       colors: {
         lavender: "#7287fd",
-        heading: "#262626",
+        heading: "#011440",
         primary: "#4c4f69",
         "sub-text1": "#4c4f69",
         "sub-text2": "#6c6f85",

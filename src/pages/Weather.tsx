@@ -10,6 +10,8 @@ import {
 import { apiOpenWeather } from "../utils/ip";
 import axios from "axios";
 
+import weather_blurry_bg from "../assets/background_layer/weather_blurry_bg.png";
+
 const Weather = () => {
   const [weatherData, setWeatherData] = useState({
     temperature: 0,
@@ -64,7 +66,9 @@ const Weather = () => {
   };
 
   return (
-    <div className="h-full rounded-3xl flex flex-col justify-center p-4  border shadow-sm aspect-square font-semibold bg-gradient-to-br from-white to-[#eff1fe]">
+    <div
+      className="h-full rounded-3xl flex flex-col justify-center p-4  border shadow-sm aspect-square font-semibold bg-white"
+    >
       <div className="flex flex-col items-start">
         <div className="flex justify-between items-center w-full font-bold">
           {weatherData.icon ? getWeatherIcon(weatherData.icon) : null}
@@ -78,9 +82,7 @@ const Weather = () => {
             °
           </p>
           <p className="text-xl text-overlay font-bold">
-            {weatherData.feels_like
-              ? Math.round(weatherData.feels_like)
-              : null}
+            {weatherData.feels_like ? Math.round(weatherData.feels_like) : null}
             °
           </p>
         </div>

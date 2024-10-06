@@ -5,18 +5,19 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { IoPersonSharp } from "react-icons/io5";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import { WebcamData } from "@/hooks/useWebsocket";
+
+interface CameraProps {
+  webcamData: WebcamData;
+  cameraRef: React.RefObject<Webcam>;
+  isConnected: boolean;
+}
 
 const Camera = ({
   isConnected,
   webcamData,
   cameraRef,
-}: {
-  setCurrentRole: (role: string) => void;
-  setIsScanning: (value: boolean) => void;
-  webcamData: any;
-  cameraRef: any;
-  isConnected: boolean;
-}) => {
+}: CameraProps) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   useEffect(() => {

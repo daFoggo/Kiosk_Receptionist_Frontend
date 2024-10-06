@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { chatMockData } from "@/sampleData/chatMockData";
 import iconCCCD from "../assets/icon/iconCCCD.png";
 import { ipUploadData } from "@/utils/ip";
 import {
@@ -26,26 +25,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CCCDData } from "@/hooks/useWebsocket";
+
+interface ScanCCCDProps {
+  cccdData: CCCDData;
+  currentRole: string;
+  onVerificationComplete: () => void;
+}
 
 const ScanCCCD = ({
-  setIsScanning,
-  setIsContacting,
-  setCurrentMessage,
   cccdData,
-  setCurrentVideoPath,
-}: {
-  setIsScanning: (value: boolean) => void;
-  setIsContacting: (value: boolean) => void;
-  setCurrentMessage: (value: string) => void;
-  cccdData: Record<string, string> | null;
-  setCurrentVideoPath: (value: string) => void;
-  currentRole: string;
-}) => {
+  currentRole,
+  onVerificationComplete,
+}: ScanCCCDProps) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState(currentRole);
   const webcamRef = useRef<Webcam>(null);
 
   const cccdFields = [
@@ -90,7 +87,7 @@ const ScanCCCD = ({
         setProcessProgress(100);
         toast.success("Đã xác nhận thông tin thành công");
 
-        handleConfirm();
+        handleVerificationComplete();
       }
     } catch (error) {
       console.error("Error processing and uploading data:", error);
@@ -101,19 +98,9 @@ const ScanCCCD = ({
     }
   };
 
-  const handleConfirm = () => {
-    setCurrentMessage(
-      // cccdData
-      //   ? `Cảm ơn ${cccdData?.Gender === "Nam" ? "ông" : "bà"} ${
-      //       cccdData?.Name
-      //     } đã xác nhận thông tin`
-      //   :
-      "Cảm ơn quý khách đã xác nhận thông tin"
-    );
-    setCurrentVideoPath("src/assets/videos/quetCCCD.mp4");
+  const handleVerificationComplete = () => {
     setIsConfirmed(true);
-    setIsScanning(false);
-    setIsContacting(true);
+    onVerificationComplete();
   };
 
   const isDataComplete =
