@@ -10,7 +10,6 @@ import WeeklyCalendarManage from "../pages/WeeklyCalendarManage";
 import ImageUpload from "../pages/ImageUpload";
 import routes from "./routerConfig";
 import EventManage from "../pages/EventManage";
-import TestCalendar from "../pages/StudentCalendar";
 
 const routeLayout: RouteObject[] = [
   {

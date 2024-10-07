@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
+import debounce from 'lodash/debounce';
 
 enum WebSocketState {
   CONNECTING = 0,
@@ -44,6 +45,22 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
   const [cccdData, setCccdData] = useState<CCCDData>({});
   const [currentRole, setCurrentRole] = useState<string>('');
 
+  // giảm tải lượt update webcamData
+  const debouncedSetWebcamData = useCallback(
+    debounce((data: WebcamData) => {
+      setWebcamData(data);
+    }, 500),
+    []
+  );
+
+  const debouncedSetRole = useCallback(
+    debounce((role: any) => {
+      setCurrentRole(role);
+    }, 500),
+    []
+  );
+
+  
   // connect ws
   const connectWebSocket = useCallback(() => {
     try {
@@ -85,9 +102,13 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
 
           if (data) {
             if (data.key === "webcam") {
-              console.log(data.value)
-              setWebcamData(data.value);
-              setCurrentRole(data.value?.person_datas[0]?.role);
+              const newWebcamData = data.value as WebcamData;
+              debouncedSetWebcamData(newWebcamData);
+              
+              const newRole = newWebcamData?.person_datas[0]?.role || '';
+              if (newRole !== currentRole) {
+                debouncedSetRole(newRole);
+              }
             }
 
             if (data.key === "cccd") {
@@ -101,7 +122,7 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
     } catch (error) {
       console.error("Error creating WebSocket connection:", error);
     }
-  }, [webSocketUrl]);
+  }, [webSocketUrl, currentRole, debouncedSetWebcamData, debouncedSetRole]);
 
 
   const captureAndSendFrame = useCallback(() => {
