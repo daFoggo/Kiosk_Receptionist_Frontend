@@ -47,12 +47,12 @@ const DEPARTMENTS = [
   { value: "bld", label: "Ban lãnh đạo" },
   { value: "phongTh", label: "Phòng tổng hợp" },
   {
-    value: "phongKhcnvkhcd",
+    value: "phongKhcnvkhkd",
     label: "Phòng Khoa học công nghệ và Kế hoạch kinh doanh",
   },
   { value: "phongTvtk", label: "Phòng tư vấn thiết kế" },
   {
-    value: "phongNckyvdvvt",
+    value: "phongNcktvdvvt",
     label: "Phòng nghiên cứu kỹ thuật và dịch vụ viễn thông",
   },
   {

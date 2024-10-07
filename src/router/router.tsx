@@ -10,7 +10,7 @@ import WeeklyCalendarManage from "../pages/WeeklyCalendarManage";
 import ImageUpload from "../pages/ImageUpload";
 import routes from "./routerConfig";
 import EventManage from "../pages/EventManage";
-import TestCalendar from "../pages/TestCalendar";
+import TestCalendar from "../pages/StudentCalendar";
 
 const routeLayout: RouteObject[] = [
   {
@@ -57,10 +57,6 @@ const routeLayout: RouteObject[] = [
     path: routes.imageUpload,
     element: <ImageUpload />
   },
-  {
-    path: "/test-calendar",
-    element: <TestCalendar />
-  }
 ];
 
 const router = createBrowserRouter(routeLayout);

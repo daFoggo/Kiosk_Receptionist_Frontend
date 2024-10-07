@@ -42,14 +42,16 @@ const Camera = ({
 
   const convertRole = (role: string) => {
     switch (role) {
-      case "sinhVien":
+      case "GUEST":
+        return "Khách";
+      case "EVENT_GUEST":
+        return "Khách mời sự kiện"
+      case "STUDENT":
         return "Sinh viên";
-      case "canbo":
+      case "STAFF":
         return "Cán bộ";
-      case "khach":
-        return "Khách";
       default:
-        return "Khách";
+        return "Không xác định";
     }
   };
 

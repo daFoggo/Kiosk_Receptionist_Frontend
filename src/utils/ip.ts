@@ -10,6 +10,7 @@ export const ipIdentifyData = ipHTTP + "get-all-data";
 export const ipLogin = ipHTTP + "login";
 export const ipPostCalendar = ipHTTP + "post-lich-tuan";
 export const ipGetCalendar = ipHTTP + "get-lich-tuan";
+export const ipGetStudentCalendar = ipHTTP + "get-lich-hoc/001205020978"
 export const ipCreateEvent = ipHTTP + "create-event";
 export const ipGetEvents = ipHTTP + "get-events";
 export const ipPutEvent = ipHTTP + "put-event";

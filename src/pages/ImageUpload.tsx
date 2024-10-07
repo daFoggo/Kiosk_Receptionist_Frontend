@@ -203,10 +203,10 @@ const InfoFormStep = ({
                   <SelectValue placeholder="Chọn vai trò" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sinhVien">Sinh viên</SelectItem>
-                  <SelectItem value="canBo">Cán bộ</SelectItem>
-                  <SelectItem value="khachMoi">Khách mời</SelectItem>
-                  <SelectItem value="khac">Khác</SelectItem>
+                  <SelectItem value="STUDENT">Sinh viên</SelectItem>
+                  <SelectItem value="STAFF">Cán bộ</SelectItem>
+                  <SelectItem value="EVENT_GUEST">Khách mời sự kiện</SelectItem>
+                  <SelectItem value="GUEST">Khách</SelectItem>
                 </SelectContent>
               </Select>
             )}

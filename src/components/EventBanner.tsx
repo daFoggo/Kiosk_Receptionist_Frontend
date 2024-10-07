@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { MdEvent, MdLocationOn } from "react-icons/md";
 import { Badge } from "./ui/badge";
-import { ipGetEvents } from "@/utils/ip";
-import axiosInstance from "@/utils/axiosInstance";
 import {
   CalendarHeart,
   Clock,
@@ -13,7 +11,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-type Event = {
+export type Event = {
   id: number;
   name: string;
   start_time: string;
@@ -21,51 +19,27 @@ type Event = {
   location: string;
 };
 
-const EventBanner = () => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+interface EventBannerProps {
+  evenData: Event[];
+}
 
-  useEffect(() => {
-    getEventData();
-  }, []);
+const EventBanner = ({
+  evenData
+} : EventBannerProps) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // event carousel
   useEffect(() => {
     const timer = setInterval(() => {
-      if (events.length > 1) {
+      if (evenData.length > 1) {
         setCurrentIndex((prevIndex) =>
-          prevIndex === events.length - 1 ? 0 : prevIndex + 1
+          prevIndex === evenData.length - 1 ? 0 : prevIndex + 1
         );
       }
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [events.length]);
-
-  const getEventData = async () => {
-    try {
-      const response = await axiosInstance.get(ipGetEvents);
-      const sortedEvents = response.data.sort(
-        (a: { start_time: string }, b: { start_time: string }) =>
-          new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
-      );
-      const currentWeekEvents = filterEventsInWeek(sortedEvents);
-      setEvents(currentWeekEvents);
-    } catch (error) {
-      console.error("Error getting event data:", error);
-    }
-  };
-  
-  const filterEventsInWeek = (events: Event[]) => {
-    const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-    const endOfWeek = new Date(now.setDate(now.getDate() + (6 - now.getDay())));
-    const filteredEvents = events.filter((event) => {
-      const eventDate = new Date(event.start_time);
-      return eventDate >= startOfWeek && eventDate <= endOfWeek;
-    });
-    return filteredEvents.length > 0 ? filteredEvents : [events[0]];
-  };
+  }, [evenData.length]);
 
   // conver to dd/mm/yyyy
   const formatDate = (dateTimeString: string) => {
@@ -103,18 +77,18 @@ const EventBanner = () => {
   // carousel action
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? events.length - 1 : prevIndex - 1
+      prevIndex === 0 ? evenData.length - 1 : prevIndex - 1
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === events.length - 1 ? 0 : prevIndex + 1
+      prevIndex === evenData.length - 1 ? 0 : prevIndex + 1
     );
   };
 
 
-  const currentEvent = events?.[currentIndex];
+  const currentEvent = evenData?.[currentIndex];
 
   return (
     <div className="relative h-full flex flex-col bg-white p-4 rounded-2xl border shadow-sm overflow-hidden">
@@ -184,7 +158,7 @@ const EventBanner = () => {
         </div>
       </div>
 
-      {events.length > 1 && (
+      {evenData.length > 1 && (
         <>
           <button
             onClick={handlePrevious}

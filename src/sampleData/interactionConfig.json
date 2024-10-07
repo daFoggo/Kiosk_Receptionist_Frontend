@@ -5,44 +5,15 @@
         "videoPath": "src/assets/videos/default.mp4"
       },
       "GREETING": {
-        "message": "Chào mừng quý khách đến với Viện khoa học Kỹ thuật Bưu điện?",
+        "message": "Chào mừng quý khách đến với Viện khoa học Kỹ thuật Bưu điện",
         "videoPath": "src/assets/videos/greeting.mp4"
-      },
-      "ROLE_SELECTION": {
-        "message": "Quý khách là ?",
-        "videoPath": "src/assets/videos/selection.mp4",
-        "options": {
-          "question": "Quý khách là ?",
-          "choices": [
-            {
-              "label": "Khách vãng lai",
-              "value": "GUEST",
-              "nextState": "GUEST_VERIFICATION"
-            },
-            {
-              "label": "Khách mời sự kiện",
-              "value": "EVENT_GUEST",
-              "nextState": "EVENT_GUEST"
-            },
-            {
-              "label": "Sinh viên",
-              "value": "STUDENT",
-              "nextState": "STUDENT"
-            },
-            {
-              "label": "Cán bộ",
-              "value": "STAFF",
-              "nextState": "STAFF"
-            }
-          ]
-        }
       },
       "GUEST_VERIFICATION": {
         "message": "Quý khách vui lòng xuất trình Căn cước công dân vào máy đọc bên dưới để xác minh thông tin.",
         "videoPath": "src/assets/videos/guest_verification.mp4"
       },
       "CONTACT_DEPARTMENT": {
-        "message": "Yêu cầu iên hệ đã được gửi đi. Quý khách vui lòng chờ nhân viên ra tiếp đó.",
+        "message": "Yêu cầu liên hệ đã được gửi đi. Quý khách vui lòng chờ nhân viên ra tiếp đón.",
         "videoPath": "src/assets/videos/contact_department.mp4"
       },
       "EVENT_GUEST": {
@@ -65,7 +36,7 @@
           "videoPath": "src/assets/videos/no_schedule.mp4"
         },
         "noData": {
-            "message": "Ngày hôm nay sinh viên UDU có lịch học ",
+            "message": "Bạn chưa có lịch học trong cơ sở dữ liệu ",
             "videoPath": "src/assets/videos/no_data.mp4"
         }
       },

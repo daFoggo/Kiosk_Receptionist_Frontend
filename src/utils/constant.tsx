@@ -34,14 +34,16 @@ export const identifyDataColumns: ColumnDef<IdentifyData>[] = [
       let role = row.getValue("role");
       console.log(role)
       switch (role) {
-        case "sinhVien":
+        case "GUEST":
+          return "Khách";
+        case "EVENT_GUEST":
+          return "Khách mời sự kiện"
+        case "STUDENT":
           return "Sinh viên";
-        case "canBo":
+        case "STAFF":
           return "Cán bộ";
-        case "khachMoi":
-          return "Khách mời";
         default:
-          return "Khác";
+          return "Không xác định";
       }
     },
   },

@@ -26,6 +26,7 @@ const AIModel = ({ videoPath }: { videoPath: string }) => {
         className="absolute inset-0 w-full h-full object-cover bg-center"
         autoPlay
         playsInline
+        muted
       />
       {isTransitioning && (
         <video
@@ -37,6 +38,7 @@ const AIModel = ({ videoPath }: { videoPath: string }) => {
           onCanPlay={(e) => {
             e.currentTarget.classList.remove("opacity-0");
           }}
+          muted
           onTransitionEnd={handleTransitionEnd}
         />
       )}

@@ -85,8 +85,9 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
 
           if (data) {
             if (data.key === "webcam") {
+              console.log(data.value)
               setWebcamData(data.value);
-              setCurrentRole(data.value?.person_datas[0]?.role || '');
+              setCurrentRole(data.value?.person_datas[0]?.role);
             }
 
             if (data.key === "cccd") {
@@ -108,6 +109,7 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
       const screenshot = cameraRef.current.getScreenshot();
       if (screenshot) {
         wsRef.current.send(screenshot);
+        console.log("Frame sent");
       }
     }
   }, [cameraRef, isConnected]);
