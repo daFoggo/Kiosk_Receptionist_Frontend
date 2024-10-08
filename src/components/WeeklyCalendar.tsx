@@ -130,7 +130,7 @@ const WeeklyCalendar = () => {
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 min-w-[150px] text-sub-text1">
           {icon}
-          <Label className="text-lg">{label}</Label>
+          <Label className="text-lg font-semibold">{label}</Label>
         </div>
         <Input value={value} readOnly className="text-lg" tabIndex={-1} />
       </div>
@@ -205,7 +205,7 @@ const WeeklyCalendar = () => {
                 }`}
               >
                 {renderField(
-                  <CalendarDays className="h-6 w-6" />,
+                  <CalendarDays className="h-6 w-6 text-lavender" />,
                   "Thời gian:",
                   calendar
                     ? new Date(
@@ -222,17 +222,17 @@ const WeeklyCalendar = () => {
                     : ""
                 )}
                 {renderField(
-                  <MapPin className="h-6 w-6" />,
+                  <MapPin className="h-6 w-6 text-lavender" />,
                   "Địa điểm:",
                   calendar?.location as string
                 )}
                 {renderField(
-                  <Users className="h-6 w-6" />,
+                  <Users className="h-6 w-6 text-lavender" />,
                   "Thành phần:",
                   calendar?.attendees as string
                 )}
                 {renderField(
-                  <FileText className="h-6 w-6" />,
+                  <FileText className="h-6 w-6 text-lavender" />,
                   "Chuẩn bị:",
                   calendar?.preparation as string
                 )}
@@ -243,7 +243,7 @@ const WeeklyCalendar = () => {
                 Toàn bộ lịch công tác
               </h1>
               <div className="overflow-auto h-[80%]">
-                <WeeklySchedule tasks={fullCalendar}></WeeklySchedule>
+                <WeeklySchedule works={fullCalendar}></WeeklySchedule>
               </div>
             </div>
           </SheetContent>

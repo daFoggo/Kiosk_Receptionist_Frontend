@@ -1,7 +1,8 @@
-export type CalendarData = {
-    iso_datetime: String,
-    name: String,
-    location: String,
-    attendees: String,
-    preparation: String,
+export interface CalendarData {
+  id: number;
+  name: string;
+  iso_datetime: Date;
+  location: string;
+  attendees: string;
+  preparation: string;
 }

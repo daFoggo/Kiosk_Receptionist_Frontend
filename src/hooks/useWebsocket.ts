@@ -186,7 +186,7 @@ export const useWebSocket = ({
   // gui frame moi 3s
   useEffect(() => {
     if (isConnected) {
-      const interval = setInterval(captureAndSendFrame, 3000);
+      const interval = setInterval(captureAndSendFrame, 1500);
       frameIntervalRef.current = interval;
       return () => clearInterval(interval);
     }
