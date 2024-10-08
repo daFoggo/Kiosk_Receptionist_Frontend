@@ -243,7 +243,7 @@ const WeeklyCalendar = () => {
                 Toàn bộ lịch công tác
               </h1>
               <div className="overflow-auto h-[80%]">
-                <WeeklySchedule works={fullCalendar}></WeeklySchedule>
+                <WeeklySchedule works={fullCalendar} ></WeeklySchedule>
               </div>
             </div>
           </SheetContent>

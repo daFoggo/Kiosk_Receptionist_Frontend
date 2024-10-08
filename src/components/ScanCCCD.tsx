@@ -1,9 +1,8 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import iconCCCD from "../assets/icon/iconCCCD.png";
-import { ipUploadData } from "@/utils/ip";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -24,8 +23,9 @@ import {
 import { CCCDData } from "@/hooks/useWebsocket";
 import axios from "axios";
 import { toast } from "sonner";
-import { useState } from "react";
 import Webcam from "react-webcam";
+import { ipUploadData } from "@/utils/ip";
+import iconCCCD from "../assets/icon/iconCCCD.png";
 
 interface ScanCCCDProps {
   cccdData: CCCDData;
@@ -40,10 +40,9 @@ const ScanCCCD = ({
   onVerificationComplete,
   webcamRef,
 }: ScanCCCDProps) => {
-  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState(currentRole);
 
   const cccdFields = [
@@ -53,7 +52,6 @@ const ScanCCCD = ({
     { key: "Gender", label: "Giới tính" },
   ];
 
-  // Capture images and upload data
   const captureAndUpload = async () => {
     setIsProcessing(true);
     setProcessProgress(0);
@@ -83,12 +81,9 @@ const ScanCCCD = ({
           role: selectedRole,
         };
 
-        const response = await axios.post(ipUploadData, formattedData);
-        console.log(response.data);
-        setProcessProgress(100);
+        await axios.post(ipUploadData, formattedData);
+        onVerificationComplete();
         toast.success("Đã xác nhận thông tin thành công");
-
-        handleVerificationComplete();
       }
     } catch (error) {
       console.error("Error processing and uploading data:", error);
@@ -99,11 +94,6 @@ const ScanCCCD = ({
     }
   };
 
-  const handleVerificationComplete = () => {
-    setIsConfirmed(true);
-    onVerificationComplete();
-  };
-
   const isDataComplete =
     cccdData && cccdFields.every((field) => cccdData[field.key]);
 
@@ -111,33 +101,23 @@ const ScanCCCD = ({
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto font-sans">
       <Card className="w-full rounded-2xl border shadow-sm flex flex-row items-center justify-between gap-2 p-4">
         <img src={iconCCCD} alt="" className="w-16 bg-base rounded-lg p-2" />
-        <h1 className=" font-semibold text-justify">
+        <h1 className="font-semibold text-justify">
           Quý khách vui lòng đưa Căn cước công dân vào khe máy đọc bên dưới
         </h1>
       </Card>
 
-      <Card className="w-full rounded-2xl border shadow-sm ">
+      <Card className="w-full rounded-2xl border shadow-sm">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-heading">
             Thông tin
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div
-            key="role"
-            className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 w-full"
-          >
-            <Label
-              htmlFor="role"
-              className="text-right font-semibold text-xl md:col-span-1"
-            >
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 w-full">
+            <Label htmlFor="role" className="text-right font-semibold text-xl md:col-span-1">
               Vai trò
             </Label>
-            <Select
-              value={selectedRole}
-              onValueChange={setSelectedRole}
-              required
-            >
+            <Select value={selectedRole} onValueChange={setSelectedRole}>
               <SelectTrigger className="md:col-span-2 bg-crust text-base-content">
                 <SelectValue placeholder="Chọn vai trò" />
               </SelectTrigger>
@@ -162,9 +142,8 @@ const ScanCCCD = ({
               </Label>
               <Input
                 id={field.key}
-                className="md:col-span-2 bg-crust text-base-content focus:ring-2 focus:ring-primary"
+                className="md:col-span-2 bg-crust text-base-content"
                 value={cccdData?.[field.key] || ""}
-                placeholder=""
                 readOnly
               />
             </div>
@@ -172,51 +151,43 @@ const ScanCCCD = ({
         </CardContent>
       </Card>
 
-      <div className="flex items-center gap-4 w-full">
-        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="default"
-              disabled={
-                selectedRole === "" ||
-                !isDataComplete ||
-                isConfirmed ||
-                isProcessing
-              }
-              className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              Xác nhận
-            </Button>
-          </AlertDialogTrigger>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <Button
+            className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
+            disabled={!isDataComplete || isProcessing || selectedRole === ""}
+            onClick={() => setIsDialogOpen(true)}
+          >
+            Xác nhận
+          </Button>
+        </AlertDialogTrigger>
 
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-heading text-3xl font-bold border-b-2 pb-4">
-                Lưu ý
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogDescription className="text-2xl font-semibold text-sub-text1">
-              Sau khi nhấn xác nhận, quý khách vui lòng nhìn thẳng vào camera và
-              hạn chế di chuyển.
-            </AlertDialogDescription>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
-                Hủy
-              </AlertDialogCancel>
-              <Button
-                onClick={captureAndUpload}
-                disabled={isConfirmed || isProcessing}
-                className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
-              >
-                {isProcessing
-                  ? `Đang xử lý thông tin ${processProgress}%`
-                  : "Xác nhận"}
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-heading text-3xl font-bold border-b-2 pb-4">
+              Lưu ý
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogDescription className="text-2xl font-semibold text-sub-text1">
+            Sau khi nhấn xác nhận, quý khách vui lòng nhìn thẳng vào camera và
+            hạn chế di chuyển.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              Hủy
+            </AlertDialogCancel>
+            <Button
+              onClick={captureAndUpload}
+              disabled={isProcessing}
+              className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
+            >
+              {isProcessing
+                ? `Đang xử lý thông tin ${processProgress}%`
+                : "Xác nhận"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

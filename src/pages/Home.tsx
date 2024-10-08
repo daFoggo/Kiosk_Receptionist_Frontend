@@ -19,6 +19,7 @@ import Contact from "@/components/Contact";
 import wavyLavender from "../assets/background_layer/lavender_wave.svg";
 import { useInteraction, InteractionState } from "../hooks/useInteraction";
 import { useWebSocket } from "../hooks/useWebsocket";
+import { useCCCDVerification } from "@/hooks/useCCCDVerification";
 import { Button } from "@/components/ui/button";
 import { Loader2, PanelLeftClose, PanelLeftOpen, ScanLine } from "lucide-react";
 import {
@@ -62,6 +63,14 @@ const Home = () => {
       schedule: scheduleData,
       eventData: events[0],
       resetCccdData,
+    });
+
+  const { isVerifying, currentStep, startVerification, completeVerification } =
+    useCCCDVerification({
+      webcamData,
+      currentRole,
+      resetCccdData,
+      transitionToState,
     });
 
   useEffect(() => {
@@ -144,16 +153,16 @@ const Home = () => {
     await getScheduleData(startDate);
   };
 
-  const handleVerificationComplete = () => {
-    transitionToState(InteractionState.CONTACT_DEPARTMENT);
-  };
-
   const handleContactComplete = () => {
     transitionToState(InteractionState.IDLE);
   };
 
   const handleVerificationButtonClick = () => {
-    transitionToState(InteractionState.GUEST_VERIFICATION);
+    startVerification();
+  };
+
+  const handleVerificationComplete = () => {
+    completeVerification();
   };
 
   const MemoizedCamera = useMemo(
