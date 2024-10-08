@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MdEvent, MdLocationOn } from "react-icons/md";
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   CalendarHeart,
   Clock,
@@ -10,6 +10,17 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 
 export type Event = {
   id: number;
@@ -23,10 +34,9 @@ interface EventBannerProps {
   evenData: Event[];
 }
 
-const EventBanner = ({
-  evenData
-} : EventBannerProps) => {
+export default function EventBanner({ evenData }: EventBannerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // event carousel
   useEffect(() => {
@@ -41,7 +51,7 @@ const EventBanner = ({
     return () => clearInterval(timer);
   }, [evenData.length]);
 
-  // conver to dd/mm/yyyy
+  // convert to dd/mm/yyyy
   const formatDate = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
     return date.toLocaleDateString("vi-VN", {
@@ -87,7 +97,6 @@ const EventBanner = ({
     );
   };
 
-
   const currentEvent = evenData?.[currentIndex];
 
   return (
@@ -106,8 +115,9 @@ const EventBanner = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.3 }}
-              className="text-2xl font-semibold text-lavender truncate absolute w-full"
+              className="text-2xl font-semibold text-lavender truncate absolute w-full cursor-pointer hover:underline"
               title={currentEvent?.name}
+              onClick={() => setIsDialogOpen(true)}
             >
               {currentEvent?.name}
             </motion.h1>
@@ -121,12 +131,12 @@ const EventBanner = ({
           areDatesSame(currentEvent.start_time, currentEvent.end_time) ? (
             <>
               <ResponsiveBadge
-                icon={<CalendarHeart />}
+                icon={<CalendarHeart className="w-5 h-5" />}
                 text={formatDate(currentEvent.start_time)}
               />
               {formatTime(currentEvent.start_time) && (
                 <ResponsiveBadge
-                  icon={<Clock />}
+                  icon={<Clock className="w-5 h-5"/>}
                   text={`${formatTime(currentEvent.start_time)} - ${formatTime(
                     currentEvent.end_time
                   )}`}
@@ -136,13 +146,13 @@ const EventBanner = ({
           ) : (
             <>
               <ResponsiveBadge
-                icon={<ClockArrowUp />}
+                icon={<ClockArrowUp className="w-5 h-5"/>}
                 text={`${formatDate(currentEvent?.start_time)} ${formatTime(
                   currentEvent?.start_time
                 )}`}
               />
               <ResponsiveBadge
-                icon={<ClockArrowDown />}
+                icon={<ClockArrowDown className="w-5 h-5"/>}
                 text={`${formatDate(currentEvent?.end_time)} ${formatTime(
                   currentEvent?.end_time
                 )}`}
@@ -174,9 +184,29 @@ const EventBanner = ({
           </button>
         </>
       )}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-[98%] rounded-xl sm:rounded-2xl sm:max-w-[70%]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-semibold text-lavender">
+              Chi tiết sự kiện
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-6 space-y-4">
+            {renderField(<MdEvent className="w-5 h-5"/>, "Tên sự kiện", currentEvent?.name || "")}
+            {renderField(<CalendarHeart className="w-5 h-5"/>, "Ngày diễn ra", formatDate(currentEvent?.start_time || ""))}
+            {renderField(<ClockArrowUp className="w-5 h-5" />, "Thời điểm bắt đầu", `${formatDate(currentEvent?.start_time || "")} ${formatTime(currentEvent?.start_time || "")}`)}
+            {renderField(<ClockArrowDown className="w-5 h-5"/>, "Thời điểm kết thúc", `${formatDate(currentEvent?.end_time || "")} ${formatTime(currentEvent?.end_time || "")}`)}
+            {currentEvent?.location && renderField(<MdLocationOn className="w-5 h-5"/>, "Địa điểm", currentEvent.location)}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsDialogOpen(false)} className="bg-lavender hover:bg-lavender/90 text-xl font-semibold">Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
+}
 
 interface ResponsiveBadgeProps {
   icon: React.ReactNode;
@@ -185,14 +215,20 @@ interface ResponsiveBadgeProps {
 
 const ResponsiveBadge = ({ icon, text }: ResponsiveBadgeProps) => (
   <Badge
-    className="bg-crust hover:bg-crust/50 px-2 py-1 max-w-[180px] text-sub-text1"
+    className="bg-crust hover:bg-crust/50 px-2 py-1 max-w-[180px] text-sub-text1 font-semibold"
     title={text}
   >
     <div className="flex items-center gap-1 w-full">
       <div className="shrink-0">{icon}</div>
-      <p className="text-sm font-medium truncate">{text}</p>
+      <p className="text-sm truncate">{text}</p>
     </div>
   </Badge>
 );
 
-export default EventBanner;
+const renderField = (icon: React.ReactNode, label: string, value: string) => (
+  <div className="flex items-center space-x-2 text-xl text-sub-text1">
+    <div className="text-lavender">{icon}</div>
+    <span className="font-semibold">{label}:</span>
+    <span>{value}</span>
+  </div>
+);

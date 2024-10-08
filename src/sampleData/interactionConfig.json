@@ -41,8 +41,18 @@
         }
       },
       "STAFF": {
-        "message": "Lịch công tác hôm nay của cán bộ bao gồm ",
-        "videoPath": "src/assets/videos/staff_schedule.mp4"
+        "hasSchedule": {
+          "message": "Lịch dạy của bạn hôm nay bao gồm ",
+          "videoPath": "src/assets/videos/student_schedule.mp4"
+        },
+        "noSchedule": {
+          "message": "Hôm nay bạn không có lịch dạy nào.",
+          "videoPath": "src/assets/videos/no_schedule.mp4"
+        },
+        "noData": {
+            "message": "Bạn chưa có lịch dạy trong cơ sở dữ liệu ",
+            "videoPath": "src/assets/videos/no_data.mp4"
+        }
       }
     }
   }

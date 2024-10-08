@@ -1,6 +1,6 @@
-import { useRef, useCallback, useEffect, useState } from 'react';
-import Webcam from 'react-webcam';
-import debounce from 'lodash/debounce';
+import { useRef, useCallback, useEffect, useState } from "react";
+import Webcam from "react-webcam";
+import debounce from "lodash/debounce";
 
 enum WebSocketState {
   CONNECTING = 0,
@@ -13,6 +13,7 @@ export interface WebcamData {
   nums_of_people: number;
   person_datas: Array<{
     role?: string;
+    cccd?: string;
   }>;
 }
 
@@ -30,9 +31,13 @@ interface UseWebSocketReturn {
   webcamData: WebcamData;
   cccdData: CCCDData;
   currentRole: string;
+  currentCccd: string;
 }
 
-export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): UseWebSocketReturn => {
+export const useWebSocket = ({
+  webSocketUrl,
+  cameraRef,
+}: UseWebSocketProps): UseWebSocketReturn => {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const frameIntervalRef = useRef<NodeJS.Timeout>();
@@ -43,7 +48,8 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
     person_datas: [],
   });
   const [cccdData, setCccdData] = useState<CCCDData>({});
-  const [currentRole, setCurrentRole] = useState<string>('');
+  const [currentRole, setCurrentRole] = useState<string>("");
+  const [currentCccd, setCurrentCccd] = useState<string>("");
 
   // giảm tải lượt update webcamData
   const debouncedSetWebcamData = useCallback(
@@ -60,7 +66,13 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
     []
   );
 
-  
+  const debouncedSetCccd = useCallback(
+    debounce((cccd: any) => {
+      setCurrentCccd(cccd);
+    }, 500),
+    []
+  );
+
   // connect ws
   const connectWebSocket = useCallback(() => {
     try {
@@ -104,14 +116,19 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
             if (data.key === "webcam") {
               const newWebcamData = data.value as WebcamData;
               debouncedSetWebcamData(newWebcamData);
-              
-              const newRole = newWebcamData?.person_datas[0]?.role || '';
+
+              const newRole = newWebcamData?.person_datas[0]?.role || "";
+              const newCccd = newWebcamData?.person_datas[0]?.cccd || "";
               if (newRole !== currentRole) {
                 debouncedSetRole(newRole);
+              }
+              if (newCccd !== currentCccd) {
+                debouncedSetCccd(newCccd);
               }
             }
 
             if (data.key === "cccd") {
+              console.log(data.value)
               setCccdData(JSON.parse(data.value));
             }
           }
@@ -122,8 +139,7 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
     } catch (error) {
       console.error("Error creating WebSocket connection:", error);
     }
-  }, [webSocketUrl, currentRole, debouncedSetWebcamData, debouncedSetRole]);
-
+  }, [webSocketUrl, currentRole, currentCccd, debouncedSetWebcamData, debouncedSetRole, debouncedSetCccd]);
 
   const captureAndSendFrame = useCallback(() => {
     if (cameraRef.current && isConnected && wsRef.current) {
@@ -134,7 +150,7 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
       }
     }
   }, [cameraRef, isConnected]);
-  
+
   useEffect(() => {
     if (webSocketUrl) {
       connectWebSocket();
@@ -160,12 +176,12 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
     } else {
       console.error("WebSocket URL is not defined");
     }
-  }, [webSocketUrl, connectWebSocket]);
+  }, []);
 
   // gui frame moi 1s
   useEffect(() => {
     if (isConnected) {
-      const interval = setInterval(captureAndSendFrame, 1000);
+      const interval = setInterval(captureAndSendFrame, 3000);
       frameIntervalRef.current = interval;
       return () => clearInterval(interval);
     }
@@ -176,5 +192,6 @@ export const useWebSocket = ({ webSocketUrl, cameraRef }: UseWebSocketProps): Us
     webcamData,
     cccdData,
     currentRole,
+    currentCccd,
   };
 };

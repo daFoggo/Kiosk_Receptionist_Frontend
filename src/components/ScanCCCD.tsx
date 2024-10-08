@@ -1,7 +1,3 @@
-import { useState, useRef } from "react";
-import Webcam from "react-webcam";
-import axios from "axios";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -26,24 +22,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CCCDData } from "@/hooks/useWebsocket";
+import axios from "axios";
+import { toast } from "sonner";
+import { useState } from "react";
+import Webcam from "react-webcam";
 
 interface ScanCCCDProps {
   cccdData: CCCDData;
   currentRole: string;
   onVerificationComplete: () => void;
+  webcamRef: React.RefObject<Webcam>;
 }
 
 const ScanCCCD = ({
   cccdData,
   currentRole,
   onVerificationComplete,
+  webcamRef,
 }: ScanCCCDProps) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState(currentRole);
-  const webcamRef = useRef<Webcam>(null);
 
   const cccdFields = [
     { key: "Identity Code", label: "Mã số CCCD" },
@@ -52,7 +53,7 @@ const ScanCCCD = ({
     { key: "Gender", label: "Giới tính" },
   ];
 
-  // chup anh trong 3s va gui data
+  // Capture images and upload data
   const captureAndUpload = async () => {
     setIsProcessing(true);
     setProcessProgress(0);
@@ -108,16 +109,6 @@ const ScanCCCD = ({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto font-sans">
-      <div className="w-full aspect-video relative">
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          className="w-full h-full object-cover rounded-3xl"
-          mirrored
-          screenshotQuality={1}
-        />
-      </div>
       <Card className="w-full rounded-2xl border shadow-sm flex flex-row items-center justify-between gap-2 p-4">
         <img src={iconCCCD} alt="" className="w-16 bg-base rounded-lg p-2" />
         <h1 className=" font-semibold text-justify">

@@ -8,6 +8,7 @@ import {
   Clock,
   Calendar as CalendarIcon,
   User,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,9 @@ export interface Course {
 }
 
 interface StudentCalendarProps {
-  calendarData: Course[]
+  calendarData: Course[];
+  onWeekChange: (startDate: Date) => void;
+  isLoading: boolean;
 }
 
 export const getCoursesForToday = ({ calendarData }: StudentCalendarProps) => {
@@ -85,7 +88,20 @@ const parseDate = (dateString: string) => {
   );
 };
 
-const StudentCalendar = ({calendarData}: StudentCalendarProps) => {
+const getWeekStartDate = (date: Date): Date => {
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(date);
+  monday.setDate(diff);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+};
+
+const StudentCalendar = ({
+  calendarData,
+  onWeekChange,
+  isLoading,
+}: StudentCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -100,14 +116,25 @@ const StudentCalendar = ({calendarData}: StudentCalendarProps) => {
     }
   }, [viewMode]);
 
-  const navigateCalendar = (days: number) => {
+  const navigateCalendar = async (days: number) => {
     const newDate = new Date(currentDate);
     newDate.setDate(newDate.getDate() + days);
     setCurrentDate(newDate);
+
+    if (viewMode === "week") {
+      const weekStart = getWeekStartDate(newDate);
+      await onWeekChange(weekStart);
+    }
   };
 
-  const goToday = () => {
-    setCurrentDate(new Date());
+  const goToday = async () => {
+    const today = new Date();
+    setCurrentDate(today);
+
+    if (viewMode === "week") {
+      const weekStart = getWeekStartDate(today);
+      await onWeekChange(weekStart);
+    }
   };
 
   const handleEventClick = (event: any) => {
@@ -131,13 +158,13 @@ const StudentCalendar = ({calendarData}: StudentCalendarProps) => {
 
   const convertColor = (value: string, type: string) => {
     if (type === "badge") {
-      if (value === "Lịch học") {
+      if (value === "Lịch học" || value === "Lịch giảng dạy") {
         return "bg-lavender hover:bg-lavender/90";
       } else if (value === "Lịch thực hành") {
         return "bg-sand hover:bg-sand/90 text-sub-text1";
       }
     } else if (type === "div") {
-      if (value === "Lịch học") {
+      if (value === "Lịch học" || value === "Lịch giảng dạy") {
         return "bg-[#dfe8ff]  border-[#7287fd] hover:bg-[#c5d4ff]";
       } else if (value === "Lịch thực hành") {
         return "bg-[#f9f3a7]  border-[#efd020] hover:bg-[#f4e065]";
@@ -166,81 +193,93 @@ const StudentCalendar = ({calendarData}: StudentCalendarProps) => {
 
   const renderDayView = () => (
     <ScrollArea ref={scrollRef} className="h-[calc(100vh-12rem)] w-full">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="pr-4"
-      >
-        {hours.map((hour) => (
-          <motion.div
-            key={hour}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.3, delay: parseInt(hour) * 0.02 }}
-            className={`flex items-stretch text-xl ${
-              hour === hours[0] ? "" : "border-t-2"
-            } border-gray-300 h-20`}
-          >
-            <span
-              className={`w-24 text-sub-text1 py-2 sticky left-0  z-20 ${
-                isCurrentHour(hour) ? "bg-lavender/10" : "bg-white"
-              }`}
-            >
-              {hour}
-            </span>
-            <div className={`flex-1 relative`}>
-              {isCurrentHour(hour) && (
-                <div className="absolute inset-0 bg-lavender/10 z-0"></div>
-              )}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-full">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-lavender" />
+            {
 
-              {calendarData
-                .filter((course) => {
-                  const startDate = parseDate(course.startTime);
-                  return (
-                    startDate.getHours() === parseInt(hour) &&
-                    startDate.getDate() === currentDate.getDate() &&
-                    startDate.getMonth() === currentDate.getMonth() &&
-                    startDate.getFullYear() === currentDate.getFullYear()
-                  );
-                })
-                .map((course, index) => {
-                  const startDate = parseDate(course.startTime);
-                  const endDate = parseDate(course.endTime);
-                  const duration =
-                    (endDate.getTime() - startDate.getTime()) /
-                    (1000 * 60 * 60);
-                  return (
-                    <div
-                      key={index}
-                      className={`absolute left-0 right-0  border-l-8  p-2 rounded-md cursor-pointer  transition-colors overflow-hidden z-10 ${convertColor(
-                        course?.eventType,
-                        "div"
-                      )}`}
-                      style={{
-                        top: "0px",
-                        height: `${duration * 80}px`,
-                      }}
-                      onClick={() => handleEventClick(course)}
-                    >
-                      <p className="text-lg font-semibold truncate">
-                        {course.courseName}
-                      </p>
-                      <p className="text-md text-sub-text1 truncate">{`${startDate.getHours()}:${startDate
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")} - ${endDate.getHours()}:${endDate
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")}`}</p>
-                    </div>
-                  );
-                })}
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+            }
+            <p className="text-lg text-sub-text1">Đang tải lịch...</p>
+          </div>
+        </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="pr-4"
+        >
+          {hours.map((hour) => (
+            <motion.div
+              key={hour}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3, delay: parseInt(hour) * 0.02 }}
+              className={`flex items-stretch text-xl ${
+                hour === hours[0] ? "" : "border-t-2"
+              } border-gray-300 h-20`}
+            >
+              <span
+                className={`w-24 text-sub-text1 py-2 sticky left-0  z-20 ${
+                  isCurrentHour(hour) ? "bg-lavender/10" : "bg-white"
+                }`}
+              >
+                {hour}
+              </span>
+              <div className={`flex-1 relative`}>
+                {isCurrentHour(hour) && (
+                  <div className="absolute inset-0 bg-lavender/10 z-0"></div>
+                )}
+
+                {calendarData
+                  .filter((course) => {
+                    const startDate = parseDate(course.startTime);
+                    return (
+                      startDate.getHours() === parseInt(hour) &&
+                      startDate.getDate() === currentDate.getDate() &&
+                      startDate.getMonth() === currentDate.getMonth() &&
+                      startDate.getFullYear() === currentDate.getFullYear()
+                    );
+                  })
+                  .map((course, index) => {
+                    const startDate = parseDate(course.startTime);
+                    const endDate = parseDate(course.endTime);
+                    const duration =
+                      (endDate.getTime() - startDate.getTime()) /
+                      (1000 * 60 * 60);
+                    return (
+                      <div
+                        key={index}
+                        className={`absolute left-0 right-0  border-l-8  p-2 rounded-md cursor-pointer  transition-colors overflow-hidden z-10 ${convertColor(
+                          course?.eventType,
+                          "div"
+                        )}`}
+                        style={{
+                          top: "0px",
+                          height: `${duration * 80}px`,
+                        }}
+                        onClick={() => handleEventClick(course)}
+                      >
+                        <p className="text-lg font-semibold truncate">
+                          {course.courseName}
+                        </p>
+                        <p className="text-md text-sub-text1 truncate">{`${startDate.getHours()}:${startDate
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0")} - ${endDate.getHours()}:${endDate
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0")}`}</p>
+                      </div>
+                    );
+                  })}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
@@ -364,19 +403,31 @@ const StudentCalendar = ({calendarData}: StudentCalendarProps) => {
             className="bg-base text-sub-text1 hover:bg-base/75 font-semibold"
             size="icon"
             onClick={() => navigateCalendar(viewMode === "day" ? -1 : -7)}
+            disabled={isLoading}
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
           <Button
             className="bg-base text-sub-text1 hover:bg-base/75 font-semibold text-lg"
             onClick={goToday}
+            disabled={isLoading}
           >
-            {viewMode === "day" ? "Hôm nay" : "Tuần này"}
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Đang tải...
+              </div>
+            ) : viewMode === "day" ? (
+              "Hôm nay"
+            ) : (
+              "Tuần này"
+            )}
           </Button>
           <Button
             className="bg-base text-sub-text1 hover:bg-base/75 font-semibold"
             size="icon"
             onClick={() => navigateCalendar(viewMode === "day" ? 1 : 7)}
+            disabled={isLoading}
           >
             <ChevronRight className="h-6 w-6" />
           </Button>

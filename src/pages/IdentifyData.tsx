@@ -31,7 +31,7 @@ const IdentifyData = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`, 
         },
       });
-      setIdentifyData(response.data[0]);
+      setIdentifyData(response.data);
       toast.success("Lấy dữ liệu thành công");
     } catch (error) {
       toast.error("Lấy dữ liệu thất bại");

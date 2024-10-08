@@ -24,7 +24,8 @@ interface WebcamData {
 interface UseInteractionProps {
   webcamData: WebcamData;
   currentRole: string;
-  studentSchedule?: Course[];
+  currentCccd: string;
+  schedule?: Course[];
   eventData?: Event;
 }
 
@@ -40,18 +41,26 @@ interface InteractionContextType {
 export const useInteraction = ({
   webcamData,
   currentRole,
-  studentSchedule,
+  currentCccd,
+  schedule,
   eventData,
 }: UseInteractionProps): InteractionContextType => {
-  const [currentState, setCurrentState] = useState<InteractionState>(InteractionState.IDLE);
+  const [currentState, setCurrentState] = useState<InteractionState>(
+    InteractionState.IDLE
+  );
   const [message, setMessage] = useState(interactionConfig.states.IDLE.message);
-  const [videoPath, setVideoPath] = useState(interactionConfig.states.IDLE.videoPath);
+  const [videoPath, setVideoPath] = useState(
+    interactionConfig.states.IDLE.videoPath
+  );
   const [isScanning, setIsScanning] = useState(false);
   const [isContacting, setIsContacting] = useState(false);
+  const [fixedRole, setFixedRole] = useState<string | null>(null);
 
   const lastTransitionTimeRef = useRef<number>(Date.now());
   const transitionTimeoutRef = useRef<NodeJS.Timeout>();
+  const roleTimeoutRef = useRef<NodeJS.Timeout>();
   const TRANSITION_COOLDOWN = 2000;
+  const ROLE_FIXATION_TIME = 3000;
 
   // filter lich ngay hom nay
   const getTodaySchedule = useCallback((schedule: Course[]): string[] => {
@@ -61,7 +70,11 @@ export const useInteraction = ({
     const todayCourses = schedule.filter((course) => {
       const [, datePart] = course.startTime.split(" ");
       const [day, month, year] = datePart.split("/");
-      const courseDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      const courseDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day)
+      );
       courseDate.setHours(0, 0, 0, 0);
       return courseDate.getTime() === today.getTime();
     });
@@ -86,67 +99,90 @@ export const useInteraction = ({
   }, []);
 
   // update thong tin tuy theo state moi
-  const updateStateConfig = useCallback((newState: InteractionState) => {
-    const stateConfig = interactionConfig.states[newState];
+  const updateStateConfig = useCallback(
+    (newState: InteractionState) => {
+      const stateConfig = interactionConfig.states[newState];
 
-    if (newState === InteractionState.STUDENT && studentSchedule) {
-      const todaySchedule = getTodaySchedule(studentSchedule);
-      if (todaySchedule.length > 0 && "hasSchedule" in stateConfig) {
-        setMessage(stateConfig.hasSchedule.message + todaySchedule.join(", "));
-        // setVideoPath(stateConfig.hasSchedule.videoPath);
-      } else if (todaySchedule.length === 0 && "noSchedule" in stateConfig) {
-        setMessage(stateConfig.noSchedule.message);
-        // setVideoPath(stateConfig.noSchedule.videoPath);
-      } else if ("noData" in stateConfig) {
-        setMessage(stateConfig.noData.message);
-        // setVideoPath(stateConfig.noData.videoPath);
+      if (newState === InteractionState.STUDENT && schedule) {
+        const todaySchedule = getTodaySchedule(schedule);
+        if (todaySchedule.length > 0 && "hasSchedule" in stateConfig) {
+          setMessage(
+            stateConfig.hasSchedule.message + todaySchedule.join(", ")
+          );
+          // setVideoPath(stateConfig.hasSchedule.videoPath);
+        } else if (todaySchedule.length === 0 && "noSchedule" in stateConfig) {
+          setMessage(stateConfig.noSchedule.message);
+          // setVideoPath(stateConfig.noSchedule.videoPath);
+        } else if ("noData" in stateConfig) {
+          setMessage(stateConfig.noData.message);
+          // setVideoPath(stateConfig.noData.videoPath);
+        }
+      } else if (newState === InteractionState.STAFF && schedule) {
+        const todaySchedule = getTodaySchedule(schedule);
+        if (todaySchedule.length > 0 && "hasSchedule" in stateConfig) {
+          setMessage(
+            stateConfig.hasSchedule.message + todaySchedule.join(", ")
+          );
+          // setVideoPath(stateConfig.hasSchedule.videoPath);
+        } else if (todaySchedule.length === 0 && "noSchedule" in stateConfig) {
+          setMessage(stateConfig.noSchedule.message);
+          // setVideoPath(stateConfig.noSchedule.videoPath);
+        } else if ("noData" in stateConfig) {
+          setMessage(stateConfig.noData.message);
+          // setVideoPath(stateConfig.noData.videoPath);
+        }
+      } else if (newState === InteractionState.EVENT_GUEST) {
+        if (eventData && isEventToday(eventData) && "hasEvent" in stateConfig) {
+          setMessage(
+            stateConfig.hasEvent.message + formatEventMessage(eventData)
+          );
+          // setVideoPath(stateConfig.hasEvent.videoPath);
+        } else if ("noEvent" in stateConfig) {
+          setMessage(stateConfig.noEvent.message);
+          // setVideoPath(stateConfig.noEvent.videoPath);
+        }
+      } else if ("message" in stateConfig) {
+        setMessage(stateConfig.message);
+        // setVideoPath(stateConfig.videoPath);
       }
-    } else if (newState === InteractionState.EVENT_GUEST) {
-      if (eventData && isEventToday(eventData) && "hasEvent" in stateConfig) {
-        setMessage(stateConfig.hasEvent.message + formatEventMessage(eventData));
-        // setVideoPath(stateConfig.hasEvent.videoPath);
-      } else if ("noEvent" in stateConfig) {
-        setMessage(stateConfig.noEvent.message);
-        // setVideoPath(stateConfig.noEvent.videoPath);
-      }
-    } else if ("message" in stateConfig) {
-      setMessage(stateConfig.message);
-      // setVideoPath(stateConfig.videoPath);
-    }
 
-    setIsScanning(newState === InteractionState.GUEST_VERIFICATION);
-    setIsContacting(newState === InteractionState.CONTACT_DEPARTMENT);
-  }, [studentSchedule, eventData, getTodaySchedule, isEventToday, formatEventMessage]);
+      setIsScanning(newState === InteractionState.GUEST_VERIFICATION);
+      setIsContacting(newState === InteractionState.CONTACT_DEPARTMENT);
+    },
+    [schedule, eventData, getTodaySchedule, isEventToday, formatEventMessage]
+  );
 
   // xu ly chuyen state
-  const transitionToState = useCallback((newState: InteractionState) => {
-    const now = Date.now();
-    if (now - lastTransitionTimeRef.current < TRANSITION_COOLDOWN) {
-      console.log('Transition blocked: cooldown period');
-      return;
-    }
-
-    // toi uu chuyen state
-    setCurrentState((prevState) => {
-      // block neu state truoc = state sau
-      if (prevState === newState) {
-        console.log('Transition blocked: same state');
-        return prevState;
+  const transitionToState = useCallback(
+    (newState: InteractionState) => {
+      const now = Date.now();
+      if (now - lastTransitionTimeRef.current < TRANSITION_COOLDOWN) {
+        console.log("Transition blocked: cooldown period");
+        return;
       }
 
-      // block neu state idle ma van con nguoi
-      if (newState === InteractionState.IDLE && webcamData.nums_of_people > 0) {
-        console.log('Transition blocked: people still present');
-        return prevState;
-      }
+      setCurrentState((prevState) => {
+        if (prevState === newState) {
+          console.log("Transition blocked: same state");
+          return prevState;
+        }
 
-      // block neu state idle ma van con role
-      console.log(`Transitioning from ${prevState} to ${newState}`);
-      lastTransitionTimeRef.current = now;
-      updateStateConfig(newState);
-      return newState;
-    });
-  }, [webcamData.nums_of_people, updateStateConfig]);
+        if (
+          newState === InteractionState.IDLE &&
+          webcamData.nums_of_people > 0
+        ) {
+          console.log("Transition blocked: people still present");
+          return prevState;
+        }
+
+        console.log(`Transitioning from ${prevState} to ${newState}`);
+        lastTransitionTimeRef.current = now;
+        updateStateConfig(newState);
+        return newState;
+      });
+    },
+    [webcamData.nums_of_people, updateStateConfig]
+  );
 
   // xu ly chuyen state tu webcam data va role
   useEffect(() => {
@@ -154,20 +190,37 @@ export const useInteraction = ({
       clearTimeout(transitionTimeoutRef.current);
     }
 
+    if (roleTimeoutRef.current) {
+      clearTimeout(roleTimeoutRef.current);
+    }
+
+    if (webcamData.nums_of_people === 0) {
+      transitionToState(InteractionState.IDLE);
+      setFixedRole(null);
+    } else if (currentRole && !fixedRole) {
+      roleTimeoutRef.current = setTimeout(() => {
+        setFixedRole(currentRole);
+      }, ROLE_FIXATION_TIME);
+    }
+
     transitionTimeoutRef.current = setTimeout(() => {
-      if (webcamData.nums_of_people === 0) {
-        transitionToState(InteractionState.IDLE);
-      } else if (currentRole && currentRole !== currentState) {
-        const roleStateMap = {
-          STUDENT: InteractionState.STUDENT,
-          STAFF: InteractionState.STAFF,
-          EVENT_GUEST: InteractionState.EVENT_GUEST,
-          GUEST: InteractionState.GUEST_VERIFICATION,
-        };
-        
-        const nextState = roleStateMap[currentRole.toUpperCase() as keyof typeof roleStateMap];
-        if (nextState) {
-          transitionToState(nextState);
+      if (webcamData.nums_of_people > 0) {
+        const roleToUse = fixedRole || currentRole;
+        if (roleToUse) {
+          const roleStateMap = {
+            STUDENT: InteractionState.STUDENT,
+            STAFF: InteractionState.STAFF,
+            EVENT_GUEST: InteractionState.EVENT_GUEST,
+            GUEST: InteractionState.GUEST_VERIFICATION,
+          };
+
+          const nextState =
+            roleStateMap[roleToUse.toUpperCase() as keyof typeof roleStateMap];
+          if (nextState) {
+            transitionToState(nextState);
+          } else {
+            transitionToState(InteractionState.GREETING);
+          }
         } else {
           transitionToState(InteractionState.GREETING);
         }
@@ -178,8 +231,11 @@ export const useInteraction = ({
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
+      if (roleTimeoutRef.current) {
+        clearTimeout(roleTimeoutRef.current);
+      }
     };
-  }, [webcamData.nums_of_people, currentRole, currentState, transitionToState]);
+  }, [webcamData.nums_of_people, currentRole, fixedRole, transitionToState]);
 
   return {
     message,

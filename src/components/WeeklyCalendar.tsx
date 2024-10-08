@@ -65,7 +65,7 @@ const WeeklyCalendar = () => {
   const getCalendarData = async () => {
     try {
       const response = await axios.get(ipGetCalendar);
-      const calendarData = response.data[0];
+      const calendarData = response.data;
       setFullCalendar(calendarData);
       const nextWork = findUpcomingWork(calendarData);
       setCalendar(nextWork);
