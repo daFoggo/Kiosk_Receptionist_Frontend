@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { IdentifyData } from "@/types/IdentifyData";
+import { IdentifyData } from "@/pages/IdentifyData";
 import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

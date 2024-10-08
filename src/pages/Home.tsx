@@ -172,6 +172,7 @@ const Home = () => {
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetTrigger asChild>
           <motion.div
+            className="container-btn"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
@@ -263,6 +264,7 @@ const Home = () => {
                 MemoizedScheduleSheet}
               {currentState === InteractionState.GREETING && (
                 <motion.div
+                  className="container-btn"
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -50 }}

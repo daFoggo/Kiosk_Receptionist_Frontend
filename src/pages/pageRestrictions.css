@@ -1,0 +1,14 @@
+@keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0px rgb(114 135 253);
+    }
+    100% {
+      box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+    }
+}
+
+.container-btn button {
+    position: relative;
+    animation: pulse-animation 2s infinite;
+}
+

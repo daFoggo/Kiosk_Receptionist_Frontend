@@ -272,7 +272,7 @@ const Contact = ({ cccdData, onContactingComplete, resetCccdData }: ContactProps
                       <SelectValue placeholder="Chọn phòng ban" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent side="top" align="start" sideOffset={4}> 
                     <SelectGroup>
                       {DEPARTMENTS.map((dept) => (
                         <SelectItem

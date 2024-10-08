@@ -4,7 +4,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import CCCD from "../pages/CCCD";
-import IdentifyData from "../pages/IdentifyData";
+import IdentifyData from "@/pages/IdentifyData";
 import Login from "../pages/Login";
 import WeeklyCalendarManage from "../pages/WeeklyCalendarManage";
 import ImageUpload from "../pages/ImageUpload";

@@ -109,13 +109,13 @@ export const useInteraction = ({
           setMessage(
             stateConfig.hasSchedule.message + todaySchedule.join(", ")
           );
-          // setVideoPath(stateConfig.hasSchedule.videoPath);
+          setVideoPath(stateConfig.hasSchedule.videoPath);
         } else if (todaySchedule.length === 0 && "noSchedule" in stateConfig) {
           setMessage(stateConfig.noSchedule.message);
-          // setVideoPath(stateConfig.noSchedule.videoPath);
+          setVideoPath(stateConfig.noSchedule.videoPath);
         } else if ("noData" in stateConfig) {
           setMessage(stateConfig.noData.message);
-          // setVideoPath(stateConfig.noData.videoPath);
+          setVideoPath(stateConfig.noData.videoPath);
         }
       } else if (newState === InteractionState.STAFF && schedule) {
         const todaySchedule = getTodaySchedule(schedule);
@@ -123,27 +123,27 @@ export const useInteraction = ({
           setMessage(
             stateConfig.hasSchedule.message + todaySchedule.join(", ")
           );
-          // setVideoPath(stateConfig.hasSchedule.videoPath);
+          setVideoPath(stateConfig.hasSchedule.videoPath);
         } else if (todaySchedule.length === 0 && "noSchedule" in stateConfig) {
           setMessage(stateConfig.noSchedule.message);
-          // setVideoPath(stateConfig.noSchedule.videoPath);
+          setVideoPath(stateConfig.noSchedule.videoPath);
         } else if ("noData" in stateConfig) {
           setMessage(stateConfig.noData.message);
-          // setVideoPath(stateConfig.noData.videoPath);
+          setVideoPath(stateConfig.noData.videoPath);
         }
       } else if (newState === InteractionState.EVENT_GUEST) {
         if (eventData && isEventToday(eventData) && "hasEvent" in stateConfig) {
           setMessage(
             stateConfig.hasEvent.message + formatEventMessage(eventData)
           );
-          // setVideoPath(stateConfig.hasEvent.videoPath);
+          setVideoPath(stateConfig.hasEvent.videoPath);
         } else if ("noEvent" in stateConfig) {
           setMessage(stateConfig.noEvent.message);
-          // setVideoPath(stateConfig.noEvent.videoPath);
+          setVideoPath(stateConfig.noEvent.videoPath);
         }
       } else if ("message" in stateConfig) {
         setMessage(stateConfig.message);
-        // setVideoPath(stateConfig.videoPath);
+        setVideoPath(stateConfig.videoPath);
       }
 
       setIsScanning(newState === InteractionState.GUEST_VERIFICATION);
