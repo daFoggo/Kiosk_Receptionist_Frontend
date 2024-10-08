@@ -186,9 +186,7 @@ const ScanCCCD = ({
               className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
               onClick={() => setIsDialogOpen(true)}
             >
-              {isProcessing
-                ? `Đang xử lý thông tin ${processProgress}%`
-                : "Xác nhận"}
+              Xác nhận
             </Button>
           </AlertDialogTrigger>
 
@@ -211,7 +209,9 @@ const ScanCCCD = ({
                 disabled={isConfirmed || isProcessing}
                 className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
               >
-                Xác nhận
+                {isProcessing
+                  ? `Đang xử lý thông tin ${processProgress}%`
+                  : "Xác nhận"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

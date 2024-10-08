@@ -24,9 +24,9 @@ interface WebcamData {
 interface UseInteractionProps {
   webcamData: WebcamData;
   currentRole: string;
-  currentCccd: string;
   schedule?: Course[];
   eventData?: Event;
+  resetCccdData: () => void
 }
 
 interface InteractionContextType {
@@ -41,9 +41,9 @@ interface InteractionContextType {
 export const useInteraction = ({
   webcamData,
   currentRole,
-  currentCccd,
   schedule,
   eventData,
+  resetCccdData
 }: UseInteractionProps): InteractionContextType => {
   const [currentState, setCurrentState] = useState<InteractionState>(
     InteractionState.IDLE
@@ -197,6 +197,7 @@ export const useInteraction = ({
     if (webcamData.nums_of_people === 0) {
       transitionToState(InteractionState.IDLE);
       setFixedRole(null);
+      resetCccdData();
     } else if (currentRole && !fixedRole) {
       roleTimeoutRef.current = setTimeout(() => {
         setFixedRole(currentRole);
@@ -211,9 +212,7 @@ export const useInteraction = ({
             STUDENT: InteractionState.STUDENT,
             STAFF: InteractionState.STAFF,
             EVENT_GUEST: InteractionState.EVENT_GUEST,
-            GUEST: InteractionState.GUEST_VERIFICATION,
           };
-
           const nextState =
             roleStateMap[roleToUse.toUpperCase() as keyof typeof roleStateMap];
           if (nextState) {
@@ -244,5 +243,6 @@ export const useInteraction = ({
     isScanning,
     isContacting,
     transitionToState,
+    
   };
 };

@@ -115,7 +115,7 @@ export default function EventBanner({ evenData }: EventBannerProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.3 }}
-              className="text-2xl font-semibold text-lavender truncate absolute w-full cursor-pointer hover:underline"
+              className="text-2xl font-semibold text-lavender absolute w-full cursor-pointer hover:underline"
               title={currentEvent?.name}
               onClick={() => setIsDialogOpen(true)}
             >

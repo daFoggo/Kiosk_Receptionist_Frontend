@@ -53,8 +53,6 @@ const WeeklyCalendarManage = () => {
   const getCalendarData = async () => {
     try {
       const response = await axios.get(ipGetCalendar);
-
-      console.log(response.data);
       setCalendarData(response.data);
       toast.success("Lấy dữ liệu lịch tuần thành công");
     } catch (error) {

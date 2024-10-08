@@ -32,6 +32,7 @@ interface UseWebSocketReturn {
   cccdData: CCCDData;
   currentRole: string;
   currentCccd: string;
+  resetCccdData: () => void;
 }
 
 export const useWebSocket = ({
@@ -51,7 +52,6 @@ export const useWebSocket = ({
   const [currentRole, setCurrentRole] = useState<string>("");
   const [currentCccd, setCurrentCccd] = useState<string>("");
 
-  // giảm tải lượt update webcamData
   const debouncedSetWebcamData = useCallback(
     debounce((data: WebcamData) => {
       setWebcamData(data);
@@ -155,14 +155,14 @@ export const useWebSocket = ({
     if (webSocketUrl) {
       connectWebSocket();
 
-      const pingInterval = setInterval(() => {
-        if (wsRef.current?.readyState === WebSocketState.OPEN) {
-          wsRef.current.send(JSON.stringify({ type: "ping" }));
-        }
-      }, 30000);
+      // const pingInterval = setInterval(() => {
+      //   if (wsRef.current?.readyState === WebSocketState.OPEN) {
+      //     wsRef.current.send(JSON.stringify({ type: "ping" }));
+      //   }
+      // }, 30000);
 
       return () => {
-        clearInterval(pingInterval);
+        // clearInterval(pingInterval);
         if (reconnectTimeoutRef.current) {
           clearTimeout(reconnectTimeoutRef.current);
         }
@@ -178,7 +178,12 @@ export const useWebSocket = ({
     }
   }, []);
 
-  // gui frame moi 1s
+  const resetCccdData = useCallback(() => {
+    setCccdData({});
+    setCurrentCccd("");
+  }, []);
+
+  // gui frame moi 3s
   useEffect(() => {
     if (isConnected) {
       const interval = setInterval(captureAndSendFrame, 3000);
@@ -193,5 +198,6 @@ export const useWebSocket = ({
     cccdData,
     currentRole,
     currentCccd,
+    resetCccdData,
   };
 };

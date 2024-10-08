@@ -29,12 +29,14 @@ import { Label } from "./ui/label";
 import WeeklySchedule from "./WeeklySchedule";
 import axios from "axios";
 import { ipGetCalendar } from "@/utils/ip";
+import { truncateText } from "@/utils/truncateText";
 
 const WeeklyCalendar = () => {
   const [calendar, setCalendar] = useState<CalendarData | null>(null);
   const [fullCalendar, setFullCalendar] = useState<CalendarData[]>([]);
 
   const calendarRef = useRef<HTMLDivElement>(null);
+
 
   // enable scroll
   useEffect(() => {
@@ -145,8 +147,8 @@ const WeeklyCalendar = () => {
         <h1>Lịch công tác hôm nay</h1>
       </div>
       {calendar ? (
-        <h1 className="text-2xl font-semibold text-lavender mb-4">
-          {calendar?.name}
+        <h1 className="text-xl font-semibold text-lavender mb-4">
+          { truncateText(calendar?.name as string, 40)}
         </h1>
       ) : (
         <p className="text-xl text-left text-sub-text1 font-semibold">

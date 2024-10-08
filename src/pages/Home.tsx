@@ -43,19 +43,25 @@ const Home = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { isConnected, webcamData, cccdData, currentRole, currentCccd } =
-    useWebSocket({
-      webSocketUrl: ipWebsocket,
-      cameraRef: webcamRef,
-    });
+  const {
+    isConnected,
+    webcamData,
+    cccdData,
+    currentRole,
+    currentCccd,
+    resetCccdData,
+  } = useWebSocket({
+    webSocketUrl: ipWebsocket,
+    cameraRef: webcamRef,
+  });
 
   const { message, videoPath, currentState, transitionToState } =
     useInteraction({
       webcamData,
       currentRole,
-      currentCccd,
       schedule: scheduleData,
       eventData: events[0],
+      resetCccdData,
     });
 
   useEffect(() => {
@@ -171,14 +177,17 @@ const Home = () => {
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
           >
-            <Button className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
-              <p>
-                {currentRole === "STUDENT"
-                  ? "Hiển thị lịch học chi tiết"
-                  : "Hiển thị lịch giảng dạy chi tiết"}
-              </p>
-              <PanelLeftOpen className="font-semibold w-6 h-6" />
-            </Button>
+            {currentRole === "STUDENT" ? (
+              <Button className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
+                <p>Hiển thị lịch học chi tiết</p>
+                <PanelLeftOpen className="font-semibold w-6 h-6" />
+              </Button>
+            ) : currentRole === "STAFF" ? (
+              <Button className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
+                <p>Hiển thị lịch giảng dạy chi tiết</p>
+                <PanelLeftOpen className="font-semibold w-6 h-6" />
+              </Button>
+            ) : null}
           </motion.div>
         </SheetTrigger>
         <SheetContent side="left" className="sm:max-w-7xl">
@@ -186,7 +195,9 @@ const Home = () => {
             <SheetTitle className="text-2xl font-bold">
               {currentRole === "STUDENT"
                 ? "Chi tiết lịch học"
-                : "Chi tiết lịch giảng dạy"}
+                : currentRole === "STAFF"
+                ? "Chi tiết lịch giảng dạy"
+                : ""}
             </SheetTitle>
           </SheetHeader>
           <div className="mt-6 h-[calc(100vh-100px)]">
@@ -243,6 +254,7 @@ const Home = () => {
             <Contact
               cccdData={cccdData}
               onContactingComplete={handleContactComplete}
+              resetCccdData={resetCccdData}
             />
           ) : (
             <div className="flex flex-col items-center gap-6">

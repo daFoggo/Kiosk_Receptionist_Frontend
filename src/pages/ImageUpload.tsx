@@ -271,7 +271,7 @@ const InfoFormStep = ({
             rules={{ required: "Năm sinh là bắt buộc" }}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger> 
+                <SelectTrigger>
                   <SelectValue placeholder="Năm" />
                 </SelectTrigger>
                 <SelectContent>
@@ -304,7 +304,7 @@ const InfoFormStep = ({
             rules={{ required: "Giới tính là bắt buộc" }}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger> 
+                <SelectTrigger>
                   <SelectValue placeholder="Chọn giới tính" />
                 </SelectTrigger>
                 <SelectContent>
@@ -348,7 +348,6 @@ export default function ImageUpload() {
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [userName, setUserName] = useState("");
 
   const {
     control,
@@ -418,7 +417,6 @@ export default function ImageUpload() {
           uploadedImages.map(convertToBase64)
         );
 
-
         const formattedData = {
           b64_img: base64Images,
           cccd: {
@@ -433,10 +431,10 @@ export default function ImageUpload() {
         try {
           setIsSubmitting(true);
           const response = await axios.post(ipUploadData, formattedData);
-          setUserName(formattedData.cccd.Name);
           toast.success("Đã tải ảnh thành công");
           localStorage.setItem("isUploaded", "true");
           localStorage.setItem("userName", formattedData.cccd.Name);
+          localStorage.setItem("gender", formattedData.cccd.Gender);
         } catch (error) {
           console.error("Error submitting form:", error);
           toast.error("Đã xảy ra lỗi khi tải ảnh");
@@ -467,7 +465,13 @@ export default function ImageUpload() {
             className="bg-white rounded-lg p-4 sm:p-8 flex flex-col items-center gap-4"
           >
             <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center">
-              Cảm ơn {localStorage.getItem("userName")} đã đóng góp 
+              Cảm ơn
+              {localStorage.getItem("gender") === "nam"
+                ? " ông"
+                : localStorage.getItem("gender") === "nu"
+                ? " bà"
+                : ""}{" "}
+              {localStorage.getItem("userName")} đã đóng góp
             </h1>
             <p className="font-medium text-sm sm:text-lg text-center">
               Sự giúp đỡ của bạn sẽ giúp chúng mình hoàn thiện sản phẩm tốt hơn

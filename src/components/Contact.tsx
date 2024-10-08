@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Cake, IdCard } from "lucide-react";
@@ -32,6 +32,7 @@ import { CCCDData } from "@/hooks/useWebsocket";
 interface ContactProps {
   cccdData: CCCDData | null;
   onContactingComplete: () => void;
+  resetCccdData: () => void;
 }
 
 interface FormData {
@@ -66,8 +67,9 @@ const DEPARTMENTS = [
   { value: "phongNcptcns", label: "Phòng nghiên cứu phát triển công nghệ số" },
 ];
 
+const Contact = ({ cccdData, onContactingComplete, resetCccdData }: ContactProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-const Contact = ({ cccdData, onContactingComplete }: ContactProps) => {
   const form = useForm<FormData>({
     defaultValues: {
       isAppointment: false,
@@ -80,6 +82,7 @@ const Contact = ({ cccdData, onContactingComplete }: ContactProps) => {
   });
 
   const handleSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
     try {
       const { appointmentHour, appointmentMinute, ...restData } = data;
       const appointmentTime = `${appointmentHour}:${appointmentMinute}`;
@@ -97,17 +100,19 @@ const Contact = ({ cccdData, onContactingComplete }: ContactProps) => {
       if (response.data) {
         toast.success("Đã gửi thông tin thành công!");
         handleContactingComplete();
+        resetCccdData();
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Có lỗi xảy ra khi gửi thông tin!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleContactingComplete = () => {
     onContactingComplete();
-  }
-  
+  };
 
   const renderField = (
     icon: React.ReactNode,
@@ -146,7 +151,7 @@ const Contact = ({ cccdData, onContactingComplete }: ContactProps) => {
           )}
         </div>
 
-        <div className="shadow-sm border rounded-xl p-4">
+        <div className="shadow-sm border rounded-xl p-4 bg-white">
           <h1 className="text-2xl font-bold mb-4">Liên hệ với phòng ban</h1>
 
           <div className="flex justify-between items-center">
@@ -327,9 +332,9 @@ const Contact = ({ cccdData, onContactingComplete }: ContactProps) => {
           <Button
             type="submit"
             className="w-full text-lg font-semibold bg-lavender hover:bg-lavender/90"
-            disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid || isSubmitting}
           >
-            Liên hệ
+            {isSubmitting ? "Đang gửi..." : "Liên hệ"}
           </Button>
         </div>
       </form>
