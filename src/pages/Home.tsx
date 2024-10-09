@@ -56,14 +56,20 @@ const Home = () => {
     cameraRef: webcamRef,
   });
 
-  const { message, videoPath, currentState, transitionToState } =
-    useInteraction({
-      webcamData,
-      currentRole,
-      schedule: scheduleData,
-      eventData: events[0],
-      resetCccdData,
-    });
+  const {
+    message,
+    videoPath,
+    currentState,
+    transitionToState,
+    isScanning,
+    isContacting
+  } = useInteraction({
+    webcamData,
+    currentRole,
+    schedule: scheduleData,
+    eventData: events[0],
+    resetCccdData,
+  });
 
   const { isVerifying, currentStep, startVerification, completeVerification } =
     useCCCDVerification({
@@ -186,7 +192,7 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
-          >
+          > 
             {currentRole === "STUDENT" ? (
               <Button className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
                 <p>Hiển thị lịch học chi tiết</p>
@@ -268,6 +274,8 @@ const Home = () => {
             />
           ) : (
             <div className="flex flex-col items-center gap-6">
+              {"currentRole "  +  currentRole}
+              {"currentState " + currentState}
               {(currentState === InteractionState.STUDENT ||
                 currentState === InteractionState.STAFF) &&
                 MemoizedScheduleSheet}

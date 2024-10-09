@@ -13,7 +13,7 @@
         "videoPath": "src/assets/videos/guest_verification.mp4"
       },
       "CONTACT_DEPARTMENT": {
-        "message": "",
+        "message": "QUý khách vui lòng nhập các thông tin bên cần liên hệ.",
         "videoPath": "src/assets/videos/contact_department.mp4"
       },
       "EVENT_GUEST": {

@@ -52,27 +52,6 @@ export const useWebSocket = ({
   const [currentRole, setCurrentRole] = useState<string>("");
   const [currentCccd, setCurrentCccd] = useState<string>("");
 
-  const debouncedSetWebcamData = useCallback(
-    debounce((data: WebcamData) => {
-      setWebcamData(data);
-    }, 500),
-    []
-  );
-
-  const debouncedSetRole = useCallback(
-    debounce((role: any) => {
-      setCurrentRole(role);
-    }, 500),
-    []
-  );
-
-  const debouncedSetCccd = useCallback(
-    debounce((cccd: any) => {
-      setCurrentCccd(cccd);
-    }, 500),
-    []
-  );
-
   // connect ws
   const connectWebSocket = useCallback(() => {
     try {
@@ -115,20 +94,22 @@ export const useWebSocket = ({
           if (data) {
             if (data.key === "webcam") {
               const newWebcamData = data.value as WebcamData;
-              debouncedSetWebcamData(newWebcamData);
+              if (newWebcamData) {
+                setWebcamData(newWebcamData);
+              }
 
               const newRole = newWebcamData?.person_datas[0]?.role || "";
               const newCccd = newWebcamData?.person_datas[0]?.cccd || "";
-              if (newRole !== currentRole) {
-                debouncedSetRole(newRole);
+              if (newRole !== currentRole || currentRole === null) {
+                setCurrentRole(newRole);
               }
-              if (newCccd !== currentCccd) {
-                debouncedSetCccd(newCccd);
+              if (newCccd !== currentCccd || currentCccd === null) {
+                setCurrentCccd(newCccd);
               }
             }
 
             if (data.key === "cccd") {
-              console.log(data.value)
+              console.log(data.value);
               setCccdData(JSON.parse(data.value));
             }
           }
@@ -139,7 +120,7 @@ export const useWebSocket = ({
     } catch (error) {
       console.error("Error creating WebSocket connection:", error);
     }
-  }, [webSocketUrl, currentRole, currentCccd, debouncedSetWebcamData, debouncedSetRole, debouncedSetCccd]);
+  }, [webSocketUrl, currentRole, currentCccd]);
 
   const captureAndSendFrame = useCallback(() => {
     if (cameraRef.current && isConnected && wsRef.current) {

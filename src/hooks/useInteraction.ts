@@ -26,7 +26,7 @@ interface UseInteractionProps {
   currentRole: string;
   schedule?: Course[];
   eventData?: Event;
-  resetCccdData: () => void
+  resetCccdData: () => void;
 }
 
 interface InteractionContextType {
@@ -43,7 +43,7 @@ export const useInteraction = ({
   currentRole,
   schedule,
   eventData,
-  resetCccdData
+  resetCccdData,
 }: UseInteractionProps): InteractionContextType => {
   const [currentState, setCurrentState] = useState<InteractionState>(
     InteractionState.IDLE
@@ -54,15 +54,35 @@ export const useInteraction = ({
   );
   const [isScanning, setIsScanning] = useState(false);
   const [isContacting, setIsContacting] = useState(false);
+
   const [fixedRole, setFixedRole] = useState<string | null>(null);
+  const roleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTransitionTimeRef = useRef<number>(0);
+  const peopleCountTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const lastTransitionTimeRef = useRef<number>(Date.now());
-  const transitionTimeoutRef = useRef<NodeJS.Timeout>();
-  const roleTimeoutRef = useRef<NodeJS.Timeout>();
   const TRANSITION_COOLDOWN = 2000;
-  const ROLE_FIXATION_TIME = 3000;
+  const ROLE_FIX_DELAY = 3000;
+  const PEOPLE_COUNT_DELAY = 500;
 
-  // filter lich ngay hom nay
+  // dem thoi gian co dinh role
+  const startRoleTimer = useCallback((role: string) => {
+    if (roleTimerRef.current) {
+      clearTimeout(roleTimerRef.current);
+    }
+    roleTimerRef.current = setTimeout(() => {
+      setFixedRole(role);
+    }, ROLE_FIX_DELAY);
+  }, []);
+
+  // clear thoi gian
+  const clearRoleTimer = useCallback(() => {
+    if (roleTimerRef.current) {
+      clearTimeout(roleTimerRef.current);
+      roleTimerRef.current = null;
+    }
+  }, []);
+
+  
   const getTodaySchedule = useCallback((schedule: Course[]): string[] => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -82,7 +102,6 @@ export const useInteraction = ({
     return [...new Set(todayCourses.map((course) => course.courseName))];
   }, []);
 
-  // kiem tra xem event co phai la hom nay khong
   const isEventToday = useCallback((event: Event): boolean => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -91,14 +110,13 @@ export const useInteraction = ({
     return eventDate.getTime() === today.getTime();
   }, []);
 
-  // format message cho event
   const formatEventMessage = useCallback((event: Event): string => {
     const startTime = new Date(event.start_time).toLocaleTimeString();
     const endTime = new Date(event.end_time).toLocaleTimeString();
     return `${event.name} diễn ra tại ${event.location} từ ${startTime} đến ${endTime}`;
   }, []);
 
-  // update thong tin tuy theo state moi
+  // update data tuy theo state
   const updateStateConfig = useCallback(
     (newState: InteractionState) => {
       const stateConfig = interactionConfig.states[newState];
@@ -152,7 +170,7 @@ export const useInteraction = ({
     [schedule, eventData, getTodaySchedule, isEventToday, formatEventMessage]
   );
 
-  // xu ly chuyen state
+  // chuyen trang thai
   const transitionToState = useCallback(
     (newState: InteractionState) => {
       const now = Date.now();
@@ -184,57 +202,60 @@ export const useInteraction = ({
     [webcamData.nums_of_people, updateStateConfig]
   );
 
-  // xu ly chuyen state tu webcam data va role
+  // luong thay doi trang thai
   useEffect(() => {
-    if (transitionTimeoutRef.current) {
-      clearTimeout(transitionTimeoutRef.current);
-    }
-
-    if (roleTimeoutRef.current) {
-      clearTimeout(roleTimeoutRef.current);
-    }
-
-    if (webcamData.nums_of_people === 0) {
-      transitionToState(InteractionState.IDLE);
+    if (webcamData.nums_of_people > 0 && currentRole) {
+      if (currentRole !== fixedRole) {
+        startRoleTimer(currentRole);
+      }
+    } else {
+      clearRoleTimer();
       setFixedRole(null);
-      resetCccdData();
-    } else if (currentRole && !fixedRole) {
-      roleTimeoutRef.current = setTimeout(() => {
-        setFixedRole(currentRole);
-      }, ROLE_FIXATION_TIME);
     }
+  }, [webcamData.nums_of_people, currentRole, fixedRole, startRoleTimer, clearRoleTimer]);
 
-    transitionTimeoutRef.current = setTimeout(() => {
-      if (webcamData.nums_of_people > 0) {
-        const roleToUse = fixedRole || currentRole;
-        if (roleToUse) {
-          const roleStateMap = {
-            STUDENT: InteractionState.STUDENT,
-            STAFF: InteractionState.STAFF,
-            EVENT_GUEST: InteractionState.EVENT_GUEST,
-          };
-          const nextState =
-            roleStateMap[roleToUse.toUpperCase() as keyof typeof roleStateMap];
-          if (nextState) {
-            transitionToState(nextState);
-          } else {
-            transitionToState(InteractionState.GREETING);
-          }
+
+  useEffect(() => {
+    if (webcamData.nums_of_people > 0) {
+      const roleToUse = fixedRole || currentRole;
+      if (roleToUse) {
+        let nextState;
+        if (roleToUse === "STUDENT") {
+          nextState = InteractionState.STUDENT;
+        } else if (roleToUse === "STAFF") {
+          nextState = InteractionState.STAFF;
+        } else if (roleToUse === "EVENT_GUEST") {
+          nextState = InteractionState.EVENT_GUEST;
+        }
+      
+        if (nextState) {
+          transitionToState(nextState);
         } else {
           transitionToState(InteractionState.GREETING);
         }
+      } else {
+        transitionToState(InteractionState.GREETING);
       }
-    }, 1000);
+    } else {
+      // Reset logic when no people are detected
+      if (peopleCountTimeoutRef.current) {
+        clearTimeout(peopleCountTimeoutRef.current);
+      }
+      peopleCountTimeoutRef.current = setTimeout(() => {
+        transitionToState(InteractionState.IDLE);
+        setFixedRole(null);
+        clearRoleTimer();
+        resetCccdData();
+      }, PEOPLE_COUNT_DELAY);
+    }
 
     return () => {
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-      }
-      if (roleTimeoutRef.current) {
-        clearTimeout(roleTimeoutRef.current);
+      if (peopleCountTimeoutRef.current) {
+        clearTimeout(peopleCountTimeoutRef.current);
       }
     };
-  }, [webcamData.nums_of_people, currentRole, fixedRole, transitionToState]);
+  }, [webcamData.nums_of_people, currentRole, fixedRole, transitionToState, clearRoleTimer, resetCccdData]);
+
 
   return {
     message,
@@ -243,6 +264,75 @@ export const useInteraction = ({
     isScanning,
     isContacting,
     transitionToState,
-    
   };
 };
+
+// Giải thích Luồng Tương tác
+// Các Trạng thái
+// Hệ thống tương tác có các trạng thái sau được định nghĩa trong enum InteractionState:
+
+// IDLE (Nghỉ)
+// GREETING (Chào hỏi)
+// GUEST_VERIFICATION (Xác minh khách)
+// CONTACT_DEPARTMENT (Liên hệ phòng ban)
+// EVENT_GUEST (Khách sự kiện)
+// STUDENT (Sinh viên)
+// STAFF (Nhân viên)
+
+// Luồng Chính
+
+// Trạng thái Ban đầu: Hệ thống bắt đầu ở trạng thái IDLE.
+// Phát hiện Người:
+
+// Khi phát hiện có người (webcamData.nums_of_people > 0), hệ thống chuyển khỏi trạng thái IDLE.
+// Nếu không phát hiện người trong một khoảng thời gian ngắn (PEOPLE_COUNT_DELAY = 500ms), hệ thống trở về IDLE.
+
+
+// Xác định và Cố định Vai trò:
+
+// Hệ thống sử dụng vai trò hiện tại từ dữ liệu webcam (currentRole).
+// Khi phát hiện vai trò mới, một bộ đếm thời gian bắt đầu.
+// Nếu cùng một vai trò tồn tại trong khoảng 3 giây (ROLE_FIX_DELAY), nó trở thành "vai trò cố định" (fixedRole).
+// Khi vai trò đã được cố định, nó sẽ được sử dụng trong suốt quá trình tương tác, ngay cả khi currentRole thay đổi tạm thời.
+
+
+// Chuyển đổi Trạng thái:
+
+// Dựa trên vai trò (cố định hoặc hiện tại), hệ thống chuyển đến trạng thái thích hợp:
+
+// STUDENT cho vai trò "STUDENT"
+// STAFF cho vai trò "STAFF"
+// EVENT_GUEST cho vai trò "EVENT_GUEST"
+
+
+// Nếu không xác định được vai trò cụ thể, hệ thống chuyển đến trạng thái GREETING.
+
+
+// Hành vi Cụ thể cho Từng Trạng thái:
+
+// Trong trạng thái STUDENT hoặc STAFF:
+
+// Nếu có lịch học/làm việc hôm nay, hiển thị lịch.
+// Nếu không có lịch, hiển thị thông báo khác.
+
+
+// Trong trạng thái EVENT_GUEST:
+
+// Nếu có sự kiện hôm nay, hiển thị thông tin sự kiện.
+// Nếu không có sự kiện, hiển thị thông báo khác.
+
+
+// Các trạng thái khác (GUEST_VERIFICATION, CONTACT_DEPARTMENT) có hành vi cụ thể như kích hoạt quét hoặc liên hệ.
+
+
+// Quy tắc Chuyển đổi:
+
+// Có một khoảng thời gian chờ (TRANSITION_COOLDOWN = 2000ms) giữa các lần chuyển đổi trạng thái để tránh chuyển đổi quá nhanh.
+// Chuyển đổi đến cùng một trạng thái bị chặn.
+// Chuyển đổi về IDLE bị chặn nếu vẫn còn người hiện diện.
+
+
+// Đặt lại:
+
+// Khi không phát hiện người trong một khoảng thời gian nhất định, vai trò cố định và bộ đếm thời gian được đặt lại.
+// Hệ thống trở về trạng thái IDLE và sẵn sàng cho một tương tác mới.
