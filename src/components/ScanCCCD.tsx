@@ -173,7 +173,7 @@ const ScanCCCD = ({
             hạn chế di chuyển.
           </AlertDialogDescription>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)} className="h-auto">
               Hủy
             </AlertDialogCancel>
             <Button

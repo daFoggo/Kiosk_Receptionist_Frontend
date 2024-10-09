@@ -13,7 +13,7 @@
         "videoPath": "src/assets/videos/guest_verification.mp4"
       },
       "CONTACT_DEPARTMENT": {
-        "message": "Yêu cầu liên hệ đã được gửi đi. Quý khách vui lòng chờ nhân viên ra tiếp đón.",
+        "message": "",
         "videoPath": "src/assets/videos/contact_department.mp4"
       },
       "EVENT_GUEST": {
