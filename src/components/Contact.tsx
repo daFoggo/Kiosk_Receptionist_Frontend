@@ -164,7 +164,7 @@ const Contact = ({ cccdData, onContactingComplete, resetCccdData }: ContactProps
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-lavender data-[state=checked]:border-lavender"
+                      className="data-[state=checked]:bg-indigo-500 data-[state=checked]:border-indigo-500"
                     />
                   </FormControl>
                   <FormLabel className="font-semibold text-lg">
@@ -331,7 +331,7 @@ const Contact = ({ cccdData, onContactingComplete, resetCccdData }: ContactProps
 
           <Button
             type="submit"
-            className="w-full text-lg font-semibold bg-lavender hover:bg-lavender/90"
+            className="w-full text-lg font-semibold bg-indigo-500 hover:bg-indigo-500/90"
             disabled={!form.formState.isValid || isSubmitting}
           >
             {isSubmitting ? "Đang gửi..." : "Liên hệ"}

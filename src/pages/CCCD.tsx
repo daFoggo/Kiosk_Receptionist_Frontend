@@ -7,7 +7,7 @@ const CCCD = () => {
   return (
     <div className="p-6 font-sans w-full gap-6">
       <div className="bg-base rounded-3xl p-4 gap-5">
-        <h1 className="text-3xl font-bold text-heading  flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-indigo-950  flex items-center gap-2">
           <FaAddressCard className="inline-block text-4xl text-primary" />
           Hướng dẫn cách scan Căn cước công dân ( CCCD )
         </h1>

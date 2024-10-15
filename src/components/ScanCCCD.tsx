@@ -108,7 +108,7 @@ const ScanCCCD = ({
 
       <Card className="w-full rounded-2xl border shadow-sm">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold text-heading">
+          <CardTitle className="text-3xl font-bold text-indigo-950">
             Thông tin
           </CardTitle>
         </CardHeader>
@@ -154,7 +154,7 @@ const ScanCCCD = ({
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogTrigger asChild>
           <Button
-            className="w-full bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
+            className="w-full bg-indigo-500 text-white font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
             disabled={!isDataComplete || isProcessing || selectedRole === ""}
             onClick={() => setIsDialogOpen(true)}
           >
@@ -164,7 +164,7 @@ const ScanCCCD = ({
 
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-heading text-3xl font-bold border-b-2 pb-4">
+            <AlertDialogTitle className="text-indigo-950 text-3xl font-bold border-b-2 pb-4">
               Lưu ý
             </AlertDialogTitle>
           </AlertDialogHeader>
@@ -179,7 +179,7 @@ const ScanCCCD = ({
             <Button
               onClick={captureAndUpload}
               disabled={isProcessing}
-              className="bg-lavender text-white font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
+              className="bg-indigo-500 text-white font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl"
             >
               {isProcessing
                 ? `Đang xử lý thông tin ${processProgress}%`

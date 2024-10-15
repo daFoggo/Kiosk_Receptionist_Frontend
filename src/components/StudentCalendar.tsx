@@ -159,7 +159,7 @@ const StudentCalendar = ({
   const convertColor = (value: string, type: string) => {
     if (type === "badge") {
       if (value === "Lịch học" || value === "Lịch giảng dạy") {
-        return "bg-lavender hover:bg-lavender/90";
+        return "bg-indigo-500 hover:bg-indigo-500/90";
       } else if (value === "Lịch thực hành") {
         return "bg-sand hover:bg-sand/90 text-sub-text1";
       }
@@ -174,7 +174,7 @@ const StudentCalendar = ({
 
   const renderField = (icon: React.ReactNode, label: string, value: string) => (
     <div className="flex items-center space-x-2">
-      <div className="text-lavender">{icon}</div>
+      <div className="text-indigo-500">{icon}</div>
       <span className="font-semibold">{label}:</span>
       {label === "Loại lịch" ? (
         <Badge
@@ -196,7 +196,7 @@ const StudentCalendar = ({
       {isLoading ? (
         <div className="flex justify-center items-center h-full">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-lavender" />
+            <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
             {
 
             }
@@ -223,14 +223,14 @@ const StudentCalendar = ({
             >
               <span
                 className={`w-24 text-sub-text1 py-2 sticky left-0  z-20 ${
-                  isCurrentHour(hour) ? "bg-lavender/10" : "bg-white"
+                  isCurrentHour(hour) ? "bg-indigo-500/10" : "bg-white"
                 }`}
               >
                 {hour}
               </span>
               <div className={`flex-1 relative`}>
                 {isCurrentHour(hour) && (
-                  <div className="absolute inset-0 bg-lavender/10 z-0"></div>
+                  <div className="absolute inset-0 bg-indigo-500/10 z-0"></div>
                 )}
 
                 {calendarData
@@ -293,7 +293,7 @@ const StudentCalendar = ({
             <div
               key={index}
               className={`flex-1 text-center p-2 text-lg font-semibold border-gray-200 min-w-[150px]
-              ${isCurrentDate(day) ? "bg-lavender text-white rounded-md" : ""}`}
+              ${isCurrentDate(day) ? "bg-indigo-500 text-white rounded-md" : ""}`}
             >
               <div>{day.toLocaleDateString("vi-VN", { weekday: "short" })}</div>
               <div>{day.getDate()}</div>
@@ -314,7 +314,7 @@ const StudentCalendar = ({
                 className="flex-1 relative border-l-2 border-gray-100 min-w-[150px]"
               >
                 {isCurrentDate(day) && (
-                  <div className="absolute inset-0 bg-lavender/10 z-0"></div>
+                  <div className="absolute inset-0 bg-indigo-500/10 z-0"></div>
                 )}
                 {calendarData
                   .filter((course) => {
@@ -490,7 +490,7 @@ const StudentCalendar = ({
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <DialogTitle className="text-lavender text-3xl">
+                  <DialogTitle className="text-indigo-500 text-3xl">
                     {selectedEvent?.courseName}
                   </DialogTitle>
                 </motion.div>
@@ -538,7 +538,7 @@ const StudentCalendar = ({
                 >
                   <Button
                     onClick={() => setIsDialogOpen(false)}
-                    className="font-semibold bg-lavender hover:bg-lavender/90 text-xl p-4"
+                    className="font-semibold bg-indigo-500 hover:bg-indigo-500/90 text-xl p-4"
                   >
                     Đóng
                   </Button>

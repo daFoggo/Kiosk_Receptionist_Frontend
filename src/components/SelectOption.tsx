@@ -70,7 +70,7 @@ const SelectOption = ({
               key={option.value}
               className={`p-3 rounded-lg cursor-pointer transition-colors font-semibold shadow-sm border  ${
                 selectedOption === option.value
-                  ? "bg-lavender text-white"
+                  ? "bg-indigo-500 text-white"
                   : "bg-crust text-primary-text hover:bg-surface0"
               }`}
               onClick={() => setSelectedOption(option.value)}
@@ -91,7 +91,7 @@ const SelectOption = ({
         <Button
           disabled={!selectedOption}
           onClick={() => handleConfirm()}
-          className="bg-lavender text-white py-6 px-8 text-xl border shadow-sm rounded-xl font-semibold cursor-pointer hover:bg-lavender/90"
+          className="bg-indigo-500 text-white py-6 px-8 text-xl border shadow-sm rounded-xl font-semibold cursor-pointer hover:bg-indigo-500/90"
         >Xác nhận</Button>
       </motion.div>
     </div>

@@ -52,7 +52,7 @@ const LunarCalendar = () => {
         <div
           key={index}
           className={`flex flex-col items-center gap-2 py-2 font-sans ${
-            isToday ? "bg-lavender" : "b"
+            isToday ? "bg-indigo-500" : "b"
           } bg-base rounded-3xl`}
         >
           <div className={`text-2xl font-semibold pb-2 border-b-4 border-gray-300 ${
@@ -78,9 +78,9 @@ const LunarCalendar = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-3xl font-sans border shadow-sm h-full ">
+    <div className="bg-white p-4 rounded-3xl font-sans border border-slate-300 shadow-sm h-full ">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-heading">Lịch</h2>
+        <h2 className="text-3xl font-bold text-indigo-950">Lịch</h2>
         <div className="flex items-center justify-between">
           <Popover>
             <PopoverTrigger>
@@ -107,7 +107,7 @@ const LunarCalendar = () => {
                 className="text-3xl"
                 locale={vi}
                 classNames={{
-                  day_selected: "bg-lavender text-white hover:bg-lavender hover:text-white",
+                  day_selected: "bg-indigo-500 text-white hover:bg-indigo-500 hover:text-white",
                 }}
               />
             </PopoverContent>

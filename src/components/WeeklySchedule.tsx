@@ -85,7 +85,7 @@ const WeeklySchedule = ({ works }: WeeklyScheduleProps) => {
 
   const renderField = (icon: React.ReactNode, label: string, value: string) => (
     <div className="flex items-center space-x-2">
-      <div className="text-lavender">{icon}</div>
+      <div className="text-indigo-500">{icon}</div>
       <span className="font-semibold">{label}:</span>
       <span>{value}</span>
     </div>
@@ -112,14 +112,14 @@ const WeeklySchedule = ({ works }: WeeklyScheduleProps) => {
           >
             <span
               className={`w-24 text-sub-text1 py-2 sticky left-0 z-20 ${
-                isCurrentHour(hour) ? "bg-lavender/10" : "bg-white"
+                isCurrentHour(hour) ? "bg-indigo-500/10" : "bg-white"
               }`}
             >
               {hour}
             </span>
             <div className={`flex-1 relative`}>
               {isCurrentHour(hour) && (
-                <div className="absolute inset-0 bg-lavender/10 z-0"></div>
+                <div className="absolute inset-0 bg-indigo-500/10 z-0"></div>
               )}
 
               {works
@@ -137,7 +137,7 @@ const WeeklySchedule = ({ works }: WeeklyScheduleProps) => {
                   return (
                     <div
                       key={index}
-                      className="absolute left-0 right-0 border-l-8 border-lavender p-2 rounded-md cursor-pointer bg-[#dfe8ff] hover:bg-[#c5d4ff] transition-colors overflow-hidden z-10"
+                      className="absolute left-0 right-0 border-l-8 border-indigo-500 p-2 rounded-md cursor-pointer bg-[#dfe8ff] hover:bg-[#c5d4ff] transition-colors overflow-hidden z-10"
                       style={{
                         top: "0px",
                         height: "80px", // Assuming 1 hour duration for simplicity
@@ -230,7 +230,7 @@ const WeeklySchedule = ({ works }: WeeklyScheduleProps) => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <DialogTitle className="text-lavender text-3xl">
+                  <DialogTitle className="text-indigo-500 text-3xl">
                     {selectedWork?.name}
                   </DialogTitle>
                 </motion.div>
@@ -275,7 +275,7 @@ const WeeklySchedule = ({ works }: WeeklyScheduleProps) => {
                 >
                   <Button
                     onClick={() => setIsDialogOpen(false)}
-                    className="font-semibold bg-lavender hover:bg-lavender/90 text-xl p-4"
+                    className="font-semibold bg-indigo-500 hover:bg-indigo-500/90 text-xl p-4"
                   >
                     Đóng
                   </Button>

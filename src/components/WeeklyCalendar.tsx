@@ -139,15 +139,15 @@ const WeeklyCalendar = () => {
 
   return (
     <div
-      className="h-full flex flex-col bg-white p-4 rounded-2xl border shadow-sm"
+      className="h-full flex flex-col bg-white p-4 rounded-2xl border border-slate-300 shadow-sm"
       ref={calendarRef}
     >
-      <div className="flex items-center gap-2 mb-4 text-xl font-semibold">
-        <BriefcaseBusiness className="text-heading" />
+      <div className="flex items-center gap-2 mb-4 text-xl font-semibold text-indigo-950">
+        <BriefcaseBusiness />
         <h1>Lịch công tác hôm nay</h1>
       </div>
       {calendar ? (
-        <h1 className="text-xl font-semibold text-lavender mb-4">
+        <h1 className="text-xl font-semibold text-indigo-500 mb-4">
           { truncateText(calendar?.name as string, 40)}
         </h1>
       ) : (
@@ -190,7 +190,7 @@ const WeeklyCalendar = () => {
           <SheetContent className="sm:max-w-4xl [&>button]:hidden overflow-y-hidden h-dvh">
             <SheetHeader>
               <div className="flex justify-between items-center text-center mb-6">
-                <SheetTitle className="text-3xl text-heading">
+                <SheetTitle className="text-3xl text-indigo-950">
                   Chi tiết công tác
                 </SheetTitle>
                 <SheetClose>
@@ -205,7 +205,7 @@ const WeeklyCalendar = () => {
                 }`}
               >
                 {renderField(
-                  <CalendarDays className="h-6 w-6 text-lavender" />,
+                  <CalendarDays className="h-6 w-6 text-indigo-500" />,
                   "Thời gian:",
                   calendar
                     ? new Date(
@@ -222,24 +222,24 @@ const WeeklyCalendar = () => {
                     : ""
                 )}
                 {renderField(
-                  <MapPin className="h-6 w-6 text-lavender" />,
+                  <MapPin className="h-6 w-6 text-indigo-500" />,
                   "Địa điểm:",
                   calendar?.location as string
                 )}
                 {renderField(
-                  <Users className="h-6 w-6 text-lavender" />,
+                  <Users className="h-6 w-6 text-indigo-500" />,
                   "Thành phần:",
                   calendar?.attendees as string
                 )}
                 {renderField(
-                  <FileText className="h-6 w-6 text-lavender" />,
+                  <FileText className="h-6 w-6 text-indigo-500" />,
                   "Chuẩn bị:",
                   calendar?.preparation as string
                 )}
               </SheetDescription>
             </SheetHeader>
             <div className="mt-6 h-full">
-              <h1 className="text-2xl font-bold text-heading mb-4">
+              <h1 className="text-2xl font-bold text-indigo-950 mb-4">
                 Toàn bộ lịch công tác
               </h1>
               <div className="overflow-auto h-[80%]">

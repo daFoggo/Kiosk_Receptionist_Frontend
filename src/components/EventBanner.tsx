@@ -100,10 +100,10 @@ export default function EventBanner({ evenData }: EventBannerProps) {
   const currentEvent = evenData?.[currentIndex];
 
   return (
-    <div className="relative h-full flex flex-col bg-white p-4 rounded-2xl border shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2 mb-4 text-xl font-bold">
-        <MdEvent className="text-primary-text shrink-0" />
-        <h1 className="text-heading">Sự kiện</h1>
+    <div className="relative h-full flex flex-col bg-white p-4 rounded-2xl border border-slate-300 shadow-sm overflow-hidden">
+      <div className="flex items-center gap-2 mb-4 text-xl font-bold text-indigo-950">
+        <CalendarHeart className="text-primary-text shrink-0" />
+        <h1 className="">Sự kiện</h1>
       </div>
 
       <div className="flex-grow flex flex-col px-4">
@@ -115,7 +115,7 @@ export default function EventBanner({ evenData }: EventBannerProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.3 }}
-              className="text-2xl font-semibold text-lavender absolute w-full cursor-pointer hover:underline"
+              className="text-2xl font-semibold text-indigo-500 absolute w-full cursor-pointer hover:underline"
               title={currentEvent?.name}
               onClick={() => setIsDialogOpen(true)}
             >
@@ -188,7 +188,7 @@ export default function EventBanner({ evenData }: EventBannerProps) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-[98%] rounded-xl sm:rounded-2xl sm:max-w-[70%]">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-lavender">
+            <DialogTitle className="text-2xl font-semibold text-indigo-500">
               Chi tiết sự kiện
             </DialogTitle>
           </DialogHeader>
@@ -200,7 +200,7 @@ export default function EventBanner({ evenData }: EventBannerProps) {
             {currentEvent?.location && renderField(<MdLocationOn className="w-5 h-5"/>, "Địa điểm", currentEvent.location)}
           </div>
           <DialogFooter>
-            <Button onClick={() => setIsDialogOpen(false)} className="bg-lavender hover:bg-lavender/90 text-xl font-semibold">Đóng</Button>
+            <Button onClick={() => setIsDialogOpen(false)} className="bg-indigo-500 hover:bg-indigo-500/90 text-xl font-semibold">Đóng</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -227,7 +227,7 @@ const ResponsiveBadge = ({ icon, text }: ResponsiveBadgeProps) => (
 
 const renderField = (icon: React.ReactNode, label: string, value: string) => (
   <div className="flex items-center space-x-2 text-xl text-sub-text1">
-    <div className="text-lavender">{icon}</div>
+    <div className="text-indigo-500">{icon}</div>
     <span className="font-semibold">{label}:</span>
     <span>{value}</span>
   </div>

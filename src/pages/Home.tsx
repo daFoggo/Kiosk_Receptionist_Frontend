@@ -194,12 +194,12 @@ const Home = () => {
             transition={{ duration: 0.5 }}
           > 
             {currentRole === "STUDENT" ? (
-              <Button className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
+              <Button className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
                 <p>Hiển thị lịch học chi tiết</p>
                 <PanelLeftOpen className="font-semibold w-6 h-6" />
               </Button>
             ) : currentRole === "STAFF" ? (
-              <Button className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
+              <Button className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
                 <p>Hiển thị lịch giảng dạy chi tiết</p>
                 <PanelLeftOpen className="font-semibold w-6 h-6" />
               </Button>
@@ -224,7 +224,7 @@ const Home = () => {
             />
           </div>
           <Button
-            className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 bg-lavender hover:bg-lavender/90 p-2 rounded-full"
+            className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 bg-indigo-500 hover:bg-indigo-500/90 p-2 rounded-full"
             onClick={() => setIsSheetOpen(false)}
           >
             <PanelLeftClose className="font-semibold w-6 h-6" />
@@ -274,8 +274,6 @@ const Home = () => {
             />
           ) : (
             <div className="flex flex-col items-center gap-6">
-              {"currentRole "  +  currentRole}
-              {"currentState " + currentState}
               {(currentState === InteractionState.STUDENT ||
                 currentState === InteractionState.STAFF) &&
                 MemoizedScheduleSheet}
@@ -288,7 +286,7 @@ const Home = () => {
                   transition={{ duration: 0.5 }}
                 >
                   <Button
-                    className="bg-lavender font-semibold hover:bg-lavender/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2"
+                    className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2"
                     onClick={handleVerificationButtonClick}
                   >
                     <p>Xác thực thông tin khách</p>
