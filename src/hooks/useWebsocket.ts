@@ -1,6 +1,10 @@
+import {
+  ICCCDData,
+  IUseWebSocketProps,
+  IUseWebSocketReturn,
+  IWebcamData,
+} from "@/models/Home/Home";
 import { useRef, useCallback, useEffect, useState } from "react";
-import Webcam from "react-webcam";
-import debounce from "lodash/debounce";
 
 enum WebSocketState {
   CONNECTING = 0,
@@ -9,46 +13,20 @@ enum WebSocketState {
   CLOSED = 3,
 }
 
-export interface WebcamData {
-  nums_of_people: number;
-  person_datas: Array<{
-    role?: string;
-    cccd?: string;
-  }>;
-}
-
-export interface CCCDData {
-  [key: string]: string;
-}
-
-interface UseWebSocketProps {
-  webSocketUrl: string;
-  cameraRef: React.RefObject<Webcam>;
-}
-
-interface UseWebSocketReturn {
-  isConnected: boolean;
-  webcamData: WebcamData;
-  cccdData: CCCDData;
-  currentRole: string;
-  currentCccd: string;
-  resetCccdData: () => void;
-}
-
 export const useWebSocket = ({
   webSocketUrl,
   cameraRef,
-}: UseWebSocketProps): UseWebSocketReturn => {
+}: IUseWebSocketProps): IUseWebSocketReturn => {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const frameIntervalRef = useRef<NodeJS.Timeout>();
 
   const [isConnected, setIsConnected] = useState(false);
-  const [webcamData, setWebcamData] = useState<WebcamData>({
+  const [webcamData, setWebcamData] = useState<IWebcamData>({
     nums_of_people: 0,
     person_datas: [],
   });
-  const [cccdData, setCccdData] = useState<CCCDData>({});
+  const [cccdData, setCccdData] = useState<ICCCDData>({});
   const [currentRole, setCurrentRole] = useState<string>("");
   const [currentCccd, setCurrentCccd] = useState<string>("");
 
@@ -93,7 +71,7 @@ export const useWebSocket = ({
 
           if (data) {
             if (data.key === "webcam") {
-              const newWebcamData = data.value as WebcamData;
+              const newWebcamData = data.value as IWebcamData;
               if (newWebcamData) {
                 setWebcamData(newWebcamData);
               }

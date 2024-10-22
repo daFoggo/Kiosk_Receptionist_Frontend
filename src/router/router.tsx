@@ -1,15 +1,14 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
-import RootLayout from "../layouts/RootLayout";
-import DashboardLayout from "../layouts/DashboardLayout";
-import Home from "../pages/Home";
-import About from "../pages/About";
-import CCCD from "../pages/CCCD";
-import IdentifyData from "@/pages/IdentifyData";
-import Login from "../pages/Login";
-import WeeklyCalendarManage from "../pages/WeeklyCalendarManage";
-import ImageUpload from "../pages/ImageUpload";
+import RootLayout from "@/layouts/RootLayout/RootLayout";
+import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
+import Home from "@/pages/Home/Home";
+import About from "@/pages/About/About";
+import IdentifyData from "@/pages/IdentifyData/IdentifyData";
+import Login from "@/pages/Login/Login";
+import WeeklyCalendarManage from "@/pages/WeeklyCalendarManage/WeeklyCalendarManage";
+import ImageUpload from "@/pages/ImageUpload/ImageUpload";
 import routes from "./routerConfig";
-import EventManage from "../pages/EventManage";
+import EventManage from "@/pages/EventManage/EventManage";
 
 const routeLayout: RouteObject[] = [
   {
@@ -24,37 +23,33 @@ const routeLayout: RouteObject[] = [
         path: routes.about,
         element: <About />,
       },
-      {
-        path: routes.cccd,
-        element: <CCCD />,
-      },
     ],
   },
   {
     path: "/admin",
     element: <DashboardLayout />,
     children: [
-        {
-            path: routes.identifyData,
-            element: <IdentifyData />,
-        },
-        {
-          path: routes.weekCalendar,
-          element: <WeeklyCalendarManage />
-        },
-        {
-          path: routes.eventManage,
-          element: <EventManage />
-        },
-    ]
+      {
+        path: routes.identifyData,
+        element: <IdentifyData />,
+      },
+      {
+        path: routes.weekCalendar,
+        element: <WeeklyCalendarManage />,
+      },
+      {
+        path: routes.eventManage,
+        element: <EventManage />,
+      },
+    ],
   },
   {
     path: "/admin/" + routes.login,
-    element: <Login/>
+    element: <Login />,
   },
   {
     path: routes.imageUpload,
-    element: <ImageUpload />
+    element: <ImageUpload />,
   },
 ];
 

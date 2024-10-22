@@ -1,24 +1,12 @@
 import { useState, useEffect } from "react";
 import { InteractionState } from "./useInteraction";
-
-interface UseCCCDVerificationProps {
-  webcamData: {
-    nums_of_people: number;
-    person_datas: Array<{
-      role?: string;
-    }>;
-  };
-  currentRole: string;
-  resetCccdData: () => void;
-  transitionToState: (state: InteractionState) => void;
-}
+import { IUseCCCDVerificationProps } from "@/models/Home/Home";
 
 export const useCCCDVerification = ({
   webcamData,
-  currentRole,
   resetCccdData,
   transitionToState,
-}: UseCCCDVerificationProps) => {
+}: IUseCCCDVerificationProps) => {
   const [verificationState, setVerificationState] = useState<{
     isVerifying: boolean;
     currentStep: 'idle' | 'verifying' | 'completed';

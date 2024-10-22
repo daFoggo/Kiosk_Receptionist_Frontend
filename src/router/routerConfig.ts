@@ -1,9 +1,8 @@
 const routes = {
     home: '',
     about: 'about',
-    cccd: 'cccd',
-    identifyData: 'identify-data',
     login: 'login',
+    identifyData: 'identify-data',
     weekCalendar: 'weekly-calendar-manage',
     imageUpload: 'image-upload',
     eventManage: 'event-manage',

@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import interactionConfig from "../sampleData/interactionConfig.json";
-import { Course } from "@/components/StudentCalendar";
-import { Event } from "@/components/EventBanner";
+import interactionConfig from "@/sample_data/interactionConfig.json";
+import { ICourse } from "@/models/StudentCalendar/StudentCalendar";
+import {
+  InteractionContextType,
+  IUseInteractionProps,
+  IEvent,
+} from "@/models/Home/Home";
 
 export enum InteractionState {
   IDLE = "IDLE",
@@ -13,38 +17,13 @@ export enum InteractionState {
   STAFF = "STAFF",
 }
 
-interface WebcamData {
-  nums_of_people: number;
-  person_datas: Array<{
-    name?: string;
-    role?: string;
-  }>;
-}
-
-interface UseInteractionProps {
-  webcamData: WebcamData;
-  currentRole: string;
-  schedule?: Course[];
-  eventData?: Event;
-  resetCccdData: () => void;
-}
-
-interface InteractionContextType {
-  message: string;
-  videoPath: string;
-  currentState: InteractionState;
-  isScanning: boolean;
-  isContacting: boolean;
-  transitionToState: (newState: InteractionState) => void;
-}
-
 export const useInteraction = ({
   webcamData,
   currentRole,
   schedule,
   eventData,
   resetCccdData,
-}: UseInteractionProps): InteractionContextType => {
+}: IUseInteractionProps): InteractionContextType => {
   const [currentState, setCurrentState] = useState<InteractionState>(
     InteractionState.IDLE
   );
@@ -82,8 +61,7 @@ export const useInteraction = ({
     }
   }, []);
 
-  
-  const getTodaySchedule = useCallback((schedule: Course[]): string[] => {
+  const getTodaySchedule = useCallback((schedule: ICourse[]): string[] => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -102,7 +80,7 @@ export const useInteraction = ({
     return [...new Set(todayCourses.map((course) => course.courseName))];
   }, []);
 
-  const isEventToday = useCallback((event: Event): boolean => {
+  const isEventToday = useCallback((event: IEvent): boolean => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const eventDate = new Date(event.start_time);
@@ -110,7 +88,7 @@ export const useInteraction = ({
     return eventDate.getTime() === today.getTime();
   }, []);
 
-  const formatEventMessage = useCallback((event: Event): string => {
+  const formatEventMessage = useCallback((event: IEvent): string => {
     const startTime = new Date(event.start_time).toLocaleTimeString();
     const endTime = new Date(event.end_time).toLocaleTimeString();
     return `${event.name} diễn ra tại ${event.location} từ ${startTime} đến ${endTime}`;
@@ -212,8 +190,13 @@ export const useInteraction = ({
       clearRoleTimer();
       setFixedRole(null);
     }
-  }, [webcamData.nums_of_people, currentRole, fixedRole, startRoleTimer, clearRoleTimer]);
-
+  }, [
+    webcamData.nums_of_people,
+    currentRole,
+    fixedRole,
+    startRoleTimer,
+    clearRoleTimer,
+  ]);
 
   useEffect(() => {
     if (webcamData.nums_of_people > 0) {
@@ -227,7 +210,7 @@ export const useInteraction = ({
         } else if (roleToUse === "EVENT_GUEST") {
           nextState = InteractionState.EVENT_GUEST;
         }
-      
+
         if (nextState) {
           transitionToState(nextState);
         } else {
@@ -254,8 +237,14 @@ export const useInteraction = ({
         clearTimeout(peopleCountTimeoutRef.current);
       }
     };
-  }, [webcamData.nums_of_people, currentRole, fixedRole, transitionToState, clearRoleTimer, resetCccdData]);
-
+  }, [
+    webcamData.nums_of_people,
+    currentRole,
+    fixedRole,
+    transitionToState,
+    clearRoleTimer,
+    resetCccdData,
+  ]);
 
   return {
     message,
@@ -287,14 +276,12 @@ export const useInteraction = ({
 // Khi phát hiện có người (webcamData.nums_of_people > 0), hệ thống chuyển khỏi trạng thái IDLE.
 // Nếu không phát hiện người trong một khoảng thời gian ngắn (PEOPLE_COUNT_DELAY = 500ms), hệ thống trở về IDLE.
 
-
 // Xác định và Cố định Vai trò:
 
 // Hệ thống sử dụng vai trò hiện tại từ dữ liệu webcam (currentRole).
 // Khi phát hiện vai trò mới, một bộ đếm thời gian bắt đầu.
 // Nếu cùng một vai trò tồn tại trong khoảng 3 giây (ROLE_FIX_DELAY), nó trở thành "vai trò cố định" (fixedRole).
 // Khi vai trò đã được cố định, nó sẽ được sử dụng trong suốt quá trình tương tác, ngay cả khi currentRole thay đổi tạm thời.
-
 
 // Chuyển đổi Trạng thái:
 
@@ -304,9 +291,7 @@ export const useInteraction = ({
 // STAFF cho vai trò "STAFF"
 // EVENT_GUEST cho vai trò "EVENT_GUEST"
 
-
 // Nếu không xác định được vai trò cụ thể, hệ thống chuyển đến trạng thái GREETING.
-
 
 // Hành vi Cụ thể cho Từng Trạng thái:
 
@@ -315,22 +300,18 @@ export const useInteraction = ({
 // Nếu có lịch học/làm việc hôm nay, hiển thị lịch.
 // Nếu không có lịch, hiển thị thông báo khác.
 
-
 // Trong trạng thái EVENT_GUEST:
 
 // Nếu có sự kiện hôm nay, hiển thị thông tin sự kiện.
 // Nếu không có sự kiện, hiển thị thông báo khác.
 
-
 // Các trạng thái khác (GUEST_VERIFICATION, CONTACT_DEPARTMENT) có hành vi cụ thể như kích hoạt quét hoặc liên hệ.
-
 
 // Quy tắc Chuyển đổi:
 
 // Có một khoảng thời gian chờ (TRANSITION_COOLDOWN = 2000ms) giữa các lần chuyển đổi trạng thái để tránh chuyển đổi quá nhanh.
 // Chuyển đổi đến cùng một trạng thái bị chặn.
 // Chuyển đổi về IDLE bị chặn nếu vẫn còn người hiện diện.
-
 
 // Đặt lại:
 

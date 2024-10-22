@@ -1,0 +1,58 @@
+{
+  "states": {
+    "IDLE": {
+      "message": "",
+      "videoPath": "src/assets/videos/default.mp4"
+    },
+    "GREETING": {
+      "message": "Chào mừng quý khách đến với Viện khoa học Kỹ thuật Bưu điện",
+      "videoPath": "src/assets/videos/greeting.mp4"
+    },
+    "GUEST_VERIFICATION": {
+      "message": "Quý khách vui lòng xuất trình Căn cước công dân vào máy đọc bên dưới để xác minh thông tin.",
+      "videoPath": "src/assets/videos/guest_verification.mp4"
+    },
+    "CONTACT_DEPARTMENT": {
+      "message": "QUý khách vui lòng nhập các thông tin bên cần liên hệ.",
+      "videoPath": "src/assets/videos/contact_department.mp4"
+    },
+    "EVENT_GUEST": {
+      "hasEvent": {
+        "message": "Ngày hôm nay có sự kiện ",
+        "videoPath": "src/assets/videos/event_info.mp4"
+      },
+      "noEvent": {
+        "message": "Ngày hôm nay không có sự kiện nào diễn ra",
+        "videoPath": "src/assets/videos/no_event.mp4"
+      }
+    },
+    "STUDENT": {
+      "hasSchedule": {
+        "message": "Lịch học của bạn hôm nay bao gồm ",
+        "videoPath": "src/assets/videos/student_schedule.mp4"
+      },
+      "noSchedule": {
+        "message": "Hôm nay bạn không có lịch học nào.",
+        "videoPath": "src/assets/videos/no_student_schedule.mp4"
+      },
+      "noData": {
+        "message": "Bạn chưa có lịch học trong cơ sở dữ liệu ",
+        "videoPath": "src/assets/videos/no_student_data.mp4"
+      }
+    },
+    "STAFF": {
+      "hasSchedule": {
+        "message": "Lịch dạy của bạn hôm nay bao gồm ",
+        "videoPath": "src/assets/videos/instructor_schedule.mp4"
+      },
+      "noSchedule": {
+        "message": "Hôm nay bạn không có lịch dạy nào.",
+        "videoPath": "src/assets/videos/no_instructor_chedule.mp4"
+      },
+      "noData": {
+        "message": "Bạn chưa có lịch dạy trong cơ sở dữ liệu ",
+        "videoPath": "src/assets/videos/no_instructor_data.mp4"
+      }
+    }
+  }
+}
