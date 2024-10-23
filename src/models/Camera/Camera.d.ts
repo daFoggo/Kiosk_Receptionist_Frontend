@@ -9,3 +9,8 @@ export interface IPersonData {
   name: string;
   role: string;
 }
+
+export interface IWebcamData {
+  nums_of_people: number;
+  person_datas: IPersonData[];
+}

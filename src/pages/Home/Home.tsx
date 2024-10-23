@@ -1,20 +1,12 @@
 // Library
-import { useEffect, useRef, useState, useMemo, useContext } from "react";
+import { useEffect, useRef, useState, useMemo, useContext, useCallback } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 // Components and Icons
-import { Loader2, PanelLeftClose, PanelLeftOpen, ScanLine } from "lucide-react";
+import { Loader2, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import Camera from "@/components/Camera/Camera";
 import Contact from "@/components/Contact/Contact";
 import AIChat from "@/components/AIChat/AIChat";
@@ -22,18 +14,16 @@ import AIModel from "@/components/AIModel/AIModel";
 import EventBanner from "@/components/EventBanner/EventBanner";
 import LunarCalendar from "@/components/LunarCalendar/LunarCalendar";
 import ScanCCCD from "@/components/ScanCCCD/ScanCCCD";
-import StudentCalendar from "@/components/StudentCalendar/StudentCalendar";
 import WeeklyCalendar from "@/components/WeeklyCalendar/WeeklyCalendar";
-import Weather from "../Weather/Weather";
+import Weather from "@/components/Weather/Weather";
+import ScheduleSheet from "@/components/ScheduleSheet/SheduleSheet";
 
 // Contexts and Hooks
-import {
-  useInteraction,
-} from "@/context/InteractionContext";
-import { InteractionState } from "@/models/InteractionContext/InteractionContext";
+import { useInteraction } from "@/context/InteractionContext";
 import { WebSocketContext } from "@/context/WebSocketContext";
 
 // Interfaces and utils
+import { InteractionState } from "@/models/InteractionContext/InteractionContext";
 import { IEvent } from "@/models/Home/Home";
 import { ICourse } from "@/models/StudentCalendar/StudentCalendar";
 import {
@@ -49,6 +39,7 @@ import lavenderWave from "@/assets/Home/lavender_wave.svg";
 const Home = () => {
   // Refs
   const webcamRef = useRef<Webcam>(null);
+  const initialLoadCompleted = useRef<{[key: string]: boolean}>({});
 
   // States
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -56,6 +47,8 @@ const Home = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [scheduleLoaded, setScheduleLoaded] = useState(false);
 
   // Context
   const { cccdData, currentRole, currentCccd, webcamData, resetCccdData } =
@@ -64,45 +57,89 @@ const Home = () => {
 
   // Effects
   useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        await getEventData();
+        setIsInitialLoading(false);
+      } catch (error) {
+        console.error("Error loading initial data:", error);
+        setIsInitialLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, []);
+
+  useEffect(() => {
     if (currentRole) {
+      initialLoadCompleted.current = {};
       handleRoleChange();
+    } else {
+      transitionTo(InteractionState.IDLE);
     }
+
+    return () => {
+      initialLoadCompleted.current = {};
+    };
   }, [currentRole]);
 
   useEffect(() => {
-    getEventData();
-    if (currentRole === "STUDENT" || currentRole === "STAFF") {
-      getScheduleData();
+    const loadSchedule = async () => {
+      if (currentRole === "STUDENT" || currentRole === "STAFF") {
+        setScheduleLoaded(false);
+        await getScheduleData();
+        setScheduleLoaded(true);
+      }
+    };
+
+    if (currentRole) {
+      loadSchedule();
     }
   }, [currentRole, currentCccd]);
+
+  useEffect(() => {
+    if (!scheduleLoaded || !currentRole) return;
+
+    if (["STUDENT", "STAFF", "INSTRUCTOR"].includes(currentRole)) {
+      const roleKey = `${currentRole}-${currentCccd}`;
+      
+      if (!initialLoadCompleted.current[roleKey]) {
+        const hasSchedule = scheduleData.length > 0;
+        const hasData = Boolean(scheduleData);
+        const newState = getScheduleStateForRole(
+          currentRole,
+          hasSchedule,
+          hasData
+        );
+        
+        // Add small delay to ensure proper state transition
+        setTimeout(() => {
+          transitionTo(newState);
+          initialLoadCompleted.current[roleKey] = true;
+        }, 100);
+      }
+    }
+  }, [scheduleLoaded, currentRole, scheduleData, currentCccd]);
+
+  useEffect(() => {
+    handlePresenceChange();
+  }, [webcamData]);
 
   useEffect(() => {
     handleTransitionAnimation();
   }, [currentState]);
 
   // Handlers
-  const handleRoleChange = async () => {
-    if (!currentRole) return;
+  const handleRoleChange = () => {
+    if (!currentRole) {
+      transitionTo(InteractionState.IDLE);
+      return;
+    }
 
-    try {
-      if (["STUDENT", "STAFF", "INSTRUCTOR"].includes(currentRole)) {
-        await getScheduleData();
-        const hasSchedule = scheduleData.length > 0;
-        const hasData = Boolean(scheduleData); 
-        const newState = getScheduleStateForRole(
-          currentRole,
-          hasSchedule,
-          hasData
-        );
-        transitionTo(newState);
-      } else if (currentRole === "GUEST") {
-        transitionTo(InteractionState.GUEST);
-      } else {
-        transitionTo(InteractionState.IDLE);
-      }
-    } catch (error) {
-      console.error("Error handling role change:", error);
-      transitionTo(InteractionState.ERROR);
+    if (currentRole === "GUEST") {
+      transitionTo(InteractionState.GUEST);
+    } else if (!["STUDENT", "STAFF", "INSTRUCTOR"].includes(currentRole)) {
+      transitionTo(InteractionState.IDLE);
     }
   };
 
@@ -114,6 +151,13 @@ const Home = () => {
     return () => clearTimeout(timer);
   };
 
+  const handlePresenceChange = useCallback(() => {
+    if (!currentRole) {
+      initialLoadCompleted.current = {};
+    }
+  }, [currentRole]);
+
+  
   const handleVerificationStart = () => {
     transitionTo(InteractionState.SCAN_CCCD_REQUEST);
   };
@@ -200,56 +244,28 @@ const Home = () => {
   // Memoized Components
   const MemoizedScheduleSheet = useMemo(
     () => (
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <motion.div
-            className="container-btn"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.5 }}
-          >
-            {currentRole === "STUDENT" || currentRole === "STAFF" ? (
-              <Button className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
-                <p>
-                  {currentRole === "STUDENT"
-                    ? "Hiển thị lịch học chi tiết"
-                    : "Hiển thị lịch giảng dạy chi tiết"}
-                </p>
-                <PanelLeftOpen className="font-semibold w-6 h-6" />
-              </Button>
-            ) : null}
-          </motion.div>
-        </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-7xl">
-          <SheetHeader>
-            <SheetTitle className="text-2xl font-bold">
-              {currentRole === "STUDENT"
-                ? "Chi tiết lịch học"
-                : "Chi tiết lịch giảng dạy"}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="mt-6 h-[calc(100vh-100px)]">
-            <StudentCalendar
-              calendarData={scheduleData}
-              onWeekChange={getScheduleData}
-              isLoading={isLoading}
-            />
-          </div>
-          <Button
-            className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 bg-indigo-500 hover:bg-indigo-500/90 p-2 rounded-full"
-            onClick={() => setIsSheetOpen(false)}
-          >
-            <PanelLeftClose className="font-semibold w-6 h-6" />
-          </Button>
-        </SheetContent>
-      </Sheet>
+      <ScheduleSheet
+        isSheetOpen={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
+        currentRole={currentRole}
+        scheduleData={scheduleData}
+        getScheduleData={getScheduleData}
+        isLoading={isLoading}
+      />
     ),
     [isSheetOpen, scheduleData, currentRole, isLoading]
   );
 
   // Render components based on State
   const renderInteractionArea = () => {
+    if (isInitialLoading || (shouldLoadSchedule && !scheduleLoaded)) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="h-16 w-16 animate-spin text-sub-text1/10" />
+        </div>
+      );
+    }
+
     if (isTransitioning) {
       return (
         <div className="flex items-center justify-center h-full">
@@ -313,6 +329,18 @@ const Home = () => {
       </AnimatePresence>
     );
   };
+
+  const shouldLoadSchedule = ["STUDENT", "STAFF", "INSTRUCTOR"].includes(
+    currentRole
+  );
+
+  if (isInitialLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-16 w-16 animate-spin text-sub-text1/10" />
+      </div>
+    );
+  }
 
   // Main render
   return (

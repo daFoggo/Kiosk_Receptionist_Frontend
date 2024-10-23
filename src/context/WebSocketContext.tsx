@@ -6,6 +6,7 @@ import {
   IWebSocketContext,
   IWebSocketProviderProps,
 } from "@/models/WebSocketContext/WebSocketContext";
+import { IWebcamData } from "@/models/Camera/Camera";
 
 // WebSocket connection states
 enum WebSocketState {
@@ -29,11 +30,13 @@ export const WebSocketProvider = ({
   children,
   webSocketUrl,
 }: IWebSocketProviderProps) => {
+  // Refs
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const reconnectAttempts = useRef(0);
   const MAX_RECONNECT_ATTEMPTS = 5;
 
+  // States
   const [isConnected, setIsConnected] = useState(false);
   const [webcamData, setWebcamData] = useState({
     nums_of_people: 0,
@@ -43,8 +46,9 @@ export const WebSocketProvider = ({
   const [currentRole, setCurrentRole] = useState<string>("");
   const [currentCccd, setCurrentCccd] = useState<string>("");
 
+  // Handlers
   // Update current role and cccd when new webcam data is received
-  const updatePersonData = useCallback((newWebcamData) => {
+  const updatePersonData = useCallback((newWebcamData: IWebcamData) => {
     const personData = newWebcamData?.person_datas || [];
     
     if (personData.length > 0) {
@@ -128,6 +132,7 @@ export const WebSocketProvider = ({
     }
   }, [webSocketUrl, updatePersonData]);
 
+  // Utilities
   // Send frame data to WebSocket server
   const sendFrame = useCallback((frameData: string) => {
     if (wsRef.current?.readyState === WebSocketState.OPEN) {
