@@ -1,14 +1,21 @@
 "use client"
+// Libraries
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { VolumeX, Volume2 } from "lucide-react";
+
+// Components and Icons
 import { Button } from "@/components/ui/button";
+
+// Interfaces and utils
 import { IAIChatProps } from "@/models/AIChat/AIChat";
 
 const AIChat = ({ message }: IAIChatProps) => {
+  // States
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
+  // Effects
   // Voice setup
   useEffect(() => {
     const setVietnameseVoice = () => {
@@ -35,6 +42,7 @@ const AIChat = ({ message }: IAIChatProps) => {
     };
   }, []);
 
+  // Utilities
   // Speech synthesis
   const speak = useCallback(() => {
     if (!voice || !message) return;

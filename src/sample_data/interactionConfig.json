@@ -4,7 +4,7 @@
       "message": "",
       "videoPath": "src/assets/videos/default.mp4"
     },
-    "GREETING": {
+    "GUEST": {
       "message": "Chào mừng quý khách đến với Viện khoa học Kỹ thuật Bưu điện",
       "videoPath": "src/assets/videos/greeting.mp4"
     },

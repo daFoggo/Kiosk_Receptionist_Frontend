@@ -1,11 +1,13 @@
 "use client"
+// Libraries
 import { SolarDate } from "@nghiavuive/lunar_date_vi";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
+
+// Components and Icons
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -15,10 +17,13 @@ import {
 } from "@/components/ui/popover";
 
 const LunarCalendar = () => {
+  // States and Variables
   const [date, setDate] = useState<Date>(new Date());
-  const today = new Date();
   const [startOfWeek, setStartOfWeek] = useState(new Date());
+  const today = new Date();
+  const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
+  // Effects
   useEffect(() => {
     const updatedStartOfWeek = new Date(date);
     const dayOfWeek = date.getDay();
@@ -27,8 +32,8 @@ const LunarCalendar = () => {
     setStartOfWeek(updatedStartOfWeek);
   }, [date]);
 
-  const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
+  // Handlers
   const handleSelectDate = (selectedDate: Date | undefined) => {
     const today = new Date();
 
@@ -39,6 +44,8 @@ const LunarCalendar = () => {
     }
   };
 
+
+  // Render Functions
   const renderCalendar = () => {
     return weekDays.map((day, index) => {
       const currentDate = new Date(startOfWeek);

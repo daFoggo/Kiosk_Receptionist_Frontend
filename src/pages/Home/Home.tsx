@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+// Library
+import { useEffect, useRef, useState, useMemo, useContext } from "react";
 import Webcam from "react-webcam";
-import "./pageRestrictions.css";
-import {
-  ipGetEvents,
-  ipGetStudentCalendar,
-  ipGetInstructorCalendar,
-  ipWebsocket,
-} from "../../utils/ip";
-import Contact from "@/components/Contact/Contact";
-import { Button } from "@/components/ui/button";
-import Camera from "@/components/Camera/Camera";
+import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+
+
+// Components and Icons
 import { Loader2, PanelLeftClose, PanelLeftOpen, ScanLine } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -18,11 +15,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
-import { useWebSocket } from "@/hooks/useWebsocket";
-import { InteractionState, useInteraction } from "@/hooks/useInteraction";
-import { useCCCDVerification } from "@/hooks/useCCCDVerification";
+import Camera from "@/components/Camera/Camera";
+import Contact from "@/components/Contact/Contact";
 import AIChat from "@/components/AIChat/AIChat";
 import AIModel from "@/components/AIModel/AIModel";
 import EventBanner from "@/components/EventBanner/EventBanner";
@@ -31,46 +25,49 @@ import ScanCCCD from "@/components/ScanCCCD/ScanCCCD";
 import StudentCalendar from "@/components/StudentCalendar/StudentCalendar";
 import WeeklyCalendar from "@/components/WeeklyCalendar/WeeklyCalendar";
 import Weather from "../Weather/Weather";
-import lavenderWave from "@/assets/Home/lavender_wave.svg";
+
+// Contexts and Hooks
+import {
+  useInteraction,
+} from "@/context/InteractionContext";
+import { InteractionState } from "@/models/InteractionContext/InteractionContext";
+import { WebSocketContext } from "@/context/WebSocketContext";
+
+// Interfaces and utils
 import { IEvent } from "@/models/Home/Home";
 import { ICourse } from "@/models/StudentCalendar/StudentCalendar";
+import {
+  ipGetEvents,
+  ipGetStudentCalendar,
+  ipGetInstructorCalendar,
+} from "@/utils/ip";
+import { getScheduleStateForRole } from "@/utils/helper/interactionHelper";
+
+// Assets
+import lavenderWave from "@/assets/Home/lavender_wave.svg";
 
 const Home = () => {
+  // Refs
   const webcamRef = useRef<Webcam>(null);
+
+  // States
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [scheduleData, setScheduleData] = useState<ICourse[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    isConnected,
-    webcamData,
-    cccdData,
-    currentRole,
-    currentCccd,
-    resetCccdData,
-  } = useWebSocket({
-    webSocketUrl: ipWebsocket,
-    cameraRef: webcamRef,
-  });
+  // Context
+  const { cccdData, currentRole, currentCccd, webcamData, resetCccdData } =
+    useContext(WebSocketContext);
+  const { currentState, message, videoPath, transitionTo } = useInteraction();
 
-  const { message, videoPath, currentState, transitionToState } =
-    useInteraction({
-      webcamData,
-      currentRole,
-      schedule: scheduleData,
-      eventData: events[0],
-      resetCccdData,
-    });
-
-  const {startVerification, completeVerification } =
-    useCCCDVerification({
-      webcamData,
-      currentRole,
-      resetCccdData,
-      transitionToState,
-    });
+  // Effects
+  useEffect(() => {
+    if (currentRole) {
+      handleRoleChange();
+    }
+  }, [currentRole]);
 
   useEffect(() => {
     getEventData();
@@ -80,29 +77,60 @@ const Home = () => {
   }, [currentRole, currentCccd]);
 
   useEffect(() => {
+    handleTransitionAnimation();
+  }, [currentState]);
+
+  // Handlers
+  const handleRoleChange = async () => {
+    if (!currentRole) return;
+
+    try {
+      if (["STUDENT", "STAFF", "INSTRUCTOR"].includes(currentRole)) {
+        await getScheduleData();
+        const hasSchedule = scheduleData.length > 0;
+        const hasData = Boolean(scheduleData); 
+        const newState = getScheduleStateForRole(
+          currentRole,
+          hasSchedule,
+          hasData
+        );
+        transitionTo(newState);
+      } else if (currentRole === "GUEST") {
+        transitionTo(InteractionState.GUEST);
+      } else {
+        transitionTo(InteractionState.IDLE);
+      }
+    } catch (error) {
+      console.error("Error handling role change:", error);
+      transitionTo(InteractionState.ERROR);
+    }
+  };
+
+  const handleTransitionAnimation = () => {
     setIsTransitioning(true);
     const timer = setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
     return () => clearTimeout(timer);
-  }, [currentState]);
+  };
 
-  const filterEventsInWeek = useMemo(
-    () => (events: IEvent[]) => {
-      const now = new Date();
-      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-      const endOfWeek = new Date(
-        now.setDate(now.getDate() + (6 - now.getDay()))
-      );
-      const filteredEvents = events.filter((event) => {
-        const eventDate = new Date(event.start_time);
-        return eventDate >= startOfWeek && eventDate <= endOfWeek;
-      });
-      return filteredEvents.length > 0 ? filteredEvents : [events[0]];
-    },
-    []
-  );
+  const handleVerificationStart = () => {
+    transitionTo(InteractionState.SCAN_CCCD_REQUEST);
+  };
 
+  const handleVerificationComplete = () => {
+    if (cccdData && Object.keys(cccdData).length > 0) {
+      transitionTo(InteractionState.SCAN_CCCD_SUCCESS);
+    } else {
+      transitionTo(InteractionState.SCAN_CCCD_FAIL);
+    }
+  };
+
+  const handleContactComplete = () => {
+    transitionTo(InteractionState.IDLE);
+  };
+
+  // API Calls
   const getEventData = async () => {
     try {
       const response = await axios.get(ipGetEvents);
@@ -114,6 +142,7 @@ const Home = () => {
       setEvents(currentWeekEvents);
     } catch (error) {
       console.error("Error getting event data:", error);
+      transitionTo(InteractionState.ERROR);
     }
   };
 
@@ -136,10 +165,30 @@ const Home = () => {
       setScheduleData(response.data);
     } catch (error) {
       console.error("Error getting schedule data:", error);
+      transitionTo(InteractionState.ERROR);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Utilities
+  const filterEventsInWeek = useMemo(
+    () => (events: IEvent[]) => {
+      const now = new Date();
+      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+      const endOfWeek = new Date(
+        now.setDate(now.getDate() + (6 - now.getDay()))
+      );
+
+      const filteredEvents = events.filter((event) => {
+        const eventDate = new Date(event.start_time);
+        return eventDate >= startOfWeek && eventDate <= endOfWeek;
+      });
+
+      return filteredEvents.length > 0 ? filteredEvents : [events[0]];
+    },
+    []
+  );
 
   const formatDateForApi = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, "0");
@@ -148,33 +197,7 @@ const Home = () => {
     return `${day}-${month}-${year}`;
   };
 
-  const handleWeekChange = async (startDate: Date) => {
-    await getScheduleData(startDate);
-  };
-
-  const handleContactComplete = () => {
-    transitionToState(InteractionState.IDLE);
-  };
-
-  const handleVerificationButtonClick = () => {
-    startVerification();
-  };
-
-  const handleVerificationComplete = () => {
-    completeVerification();
-  };
-
-  const MemoizedCamera = useMemo(
-    () => (
-      <Camera
-        webcamData={webcamData}
-        cameraRef={webcamRef}
-        isConnected={isConnected}
-      />
-    ),
-    [webcamData.nums_of_people, isConnected]
-  );
-
+  // Memoized Components
   const MemoizedScheduleSheet = useMemo(
     () => (
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -186,14 +209,13 @@ const Home = () => {
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
           >
-            {currentRole === "STUDENT" ? (
+            {currentRole === "STUDENT" || currentRole === "STAFF" ? (
               <Button className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
-                <p>Hiển thị lịch học chi tiết</p>
-                <PanelLeftOpen className="font-semibold w-6 h-6" />
-              </Button>
-            ) : currentRole === "STAFF" ? (
-              <Button className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2">
-                <p>Hiển thị lịch giảng dạy chi tiết</p>
+                <p>
+                  {currentRole === "STUDENT"
+                    ? "Hiển thị lịch học chi tiết"
+                    : "Hiển thị lịch giảng dạy chi tiết"}
+                </p>
                 <PanelLeftOpen className="font-semibold w-6 h-6" />
               </Button>
             ) : null}
@@ -204,15 +226,13 @@ const Home = () => {
             <SheetTitle className="text-2xl font-bold">
               {currentRole === "STUDENT"
                 ? "Chi tiết lịch học"
-                : currentRole === "STAFF"
-                ? "Chi tiết lịch giảng dạy"
-                : ""}
+                : "Chi tiết lịch giảng dạy"}
             </SheetTitle>
           </SheetHeader>
           <div className="mt-6 h-[calc(100vh-100px)]">
             <StudentCalendar
               calendarData={scheduleData}
-              onWeekChange={handleWeekChange}
+              onWeekChange={getScheduleData}
               isLoading={isLoading}
             />
           </div>
@@ -225,15 +245,10 @@ const Home = () => {
         </SheetContent>
       </Sheet>
     ),
-    [isSheetOpen, scheduleData, currentRole]
+    [isSheetOpen, scheduleData, currentRole, isLoading]
   );
 
-  const MemoizedAIModel = useMemo(
-    () => <AIModel videoPath={videoPath} />,
-    [videoPath]
-  );
-  const MemoizedAIChat = useMemo(() => <AIChat message={message} />, [message]);
-
+  // Render components based on State
   const renderInteractionArea = () => {
     if (isTransitioning) {
       return (
@@ -252,48 +267,54 @@ const Home = () => {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          {currentState === InteractionState.GUEST_VERIFICATION ? (
+          {currentState === InteractionState.SCAN_CCCD_REQUEST && (
             <ScanCCCD
               cccdData={cccdData}
               currentRole={currentRole}
               onVerificationComplete={handleVerificationComplete}
               webcamRef={webcamRef}
             />
-          ) : currentState === InteractionState.CONTACT_DEPARTMENT ? (
+          )}
+
+          {[
+            InteractionState.SCAN_QR_SUCCESS,
+            InteractionState.APPOINTMENT_SELECT_SUCCESS,
+          ].includes(currentState) && (
             <Contact
               cccdData={cccdData}
               onContactingComplete={handleContactComplete}
               resetCccdData={resetCccdData}
             />
-          ) : (
-            <div className="flex flex-col items-center gap-6">
-              {(currentState === InteractionState.STUDENT ||
-                currentState === InteractionState.STAFF) &&
-                MemoizedScheduleSheet}
-              {currentState === InteractionState.GREETING && (
-                <motion.div
-                  className="container-btn"
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -50 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <Button
-                    className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2"
-                    onClick={handleVerificationButtonClick}
-                  >
-                    <p>Xác thực thông tin khách</p>
-                    <ScanLine className="font-semibold w-6 h-6" />
-                  </Button>
-                </motion.div>
-              )}
-            </div>
+          )}
+
+          {[
+            InteractionState.STUDENT_HAS_SCHEDULE,
+            InteractionState.STAFF_HAS_SCHEDULE,
+          ].includes(currentState) && MemoizedScheduleSheet}
+
+          {currentState === InteractionState.GUEST && (
+            <motion.div
+              className="container-btn"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Button
+                className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2"
+                onClick={handleVerificationStart}
+              >
+                <p>Xác thực thông tin khách</p>
+                <ScanLine className="font-semibold w-6 h-6" />
+              </Button>
+            </motion.div>
           )}
         </motion.div>
       </AnimatePresence>
     );
   };
 
+  // Main render
   return (
     <div className="flex flex-col gap-6 px-6 py-3 page-restrictions relative overflow-hidden h-screen">
       <div
@@ -328,11 +349,11 @@ const Home = () => {
 
       <div className="flex flex-row gap-6 h-1/2">
         <div className="w-1/2 flex flex-col items-center aspect-video gap-6">
-          {MemoizedAIModel}
-          {MemoizedAIChat}
+          <AIModel videoPath={videoPath} />
+          <AIChat message={message} />
         </div>
         <div className="w-1/2 flex flex-col items-center gap-6">
-          {MemoizedCamera}
+          <Camera />
           {renderInteractionArea()}
         </div>
       </div>

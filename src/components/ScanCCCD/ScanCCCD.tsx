@@ -1,5 +1,10 @@
 "use client"
+// Libraries
 import { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+
+// Components and Icons
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -21,9 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios from "axios";
-import { toast } from "sonner";
+
+// Interfaces and utils
 import { ipUploadData } from "@/utils/ip";
+
+// Assets
 import iconCCCD from "@/assets/icons/iconCCCD.png";
 import { IScanCCCDProps } from "@/models/ScanCCCD/ScanCCCD";
 
@@ -33,6 +40,7 @@ const ScanCCCD = ({
   onVerificationComplete,
   webcamRef,
 }: IScanCCCDProps) => {
+  // States and Variables
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
@@ -44,7 +52,10 @@ const ScanCCCD = ({
     { key: "DOB", label: "Ngày sinh" },
     { key: "Gender", label: "Giới tính" },
   ];
+  const isDataComplete =
+    cccdData && cccdFields.every((field) => cccdData[field.key]);
 
+  // Handlers
   const captureAndUpload = async () => {
     setIsProcessing(true);
     setProcessProgress(0);
@@ -87,8 +98,6 @@ const ScanCCCD = ({
     }
   };
 
-  const isDataComplete =
-    cccdData && cccdFields.every((field) => cccdData[field.key]);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto font-sans">

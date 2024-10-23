@@ -1,4 +1,8 @@
 "use client"
+// Libraries
+import { motion } from "framer-motion";
+
+// Components and Icons
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -8,9 +12,10 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Menu } from "lucide-react";
+
+// Assets
 import logoPtit from "@/assets/logo/logo-ptit.png";
 import logoRipt from "@/assets/logo/logo-ript.png";
-import { motion } from "framer-motion";
 
 const MenuItems = () => (
   <>

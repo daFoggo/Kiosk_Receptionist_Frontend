@@ -1,5 +1,8 @@
 "use client"
+// Libraries
 import { Outlet } from "react-router-dom";
+
+// Components and Icons
 import SecondHeader from "@/components/SecondHeader/SecondHeader";
 
 const DashboardLayout = () => {

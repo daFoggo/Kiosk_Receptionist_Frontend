@@ -1,4 +1,5 @@
 "use client"
+// Assets
 import ptitLogo from "@/assets/logo/logo-ptit.png";
 import riptLogo from "@/assets/logo/logo-ript.png";
 

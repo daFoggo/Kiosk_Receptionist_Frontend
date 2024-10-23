@@ -3,3 +3,9 @@ export interface ICameraProps {
   cameraRef: React.RefObject<Webcam>;
   isConnected: boolean;
 }
+
+export interface IPersonData {
+  cccd: string;
+  name: string;
+  role: string;
+}

@@ -1,5 +1,9 @@
-import { BotMessageSquare } from "lucide-react";
+"use client"
+// Libraries
 import { motion } from "framer-motion";
+
+// Components and Icons
+import { BotMessageSquare } from "lucide-react";
 
 const ThirdHeader = ({
   title,

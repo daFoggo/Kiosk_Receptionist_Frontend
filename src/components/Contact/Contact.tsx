@@ -1,10 +1,13 @@
-"use client"
+"use client";
+// Libraries
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Cake, IdCard } from "lucide-react";
-import { TbGenderBigender } from "react-icons/tb";
 import axios from "axios";
+
+// Components and Icons
+import { TbGenderBigender } from "react-icons/tb";
 import {
   Form,
   FormField,
@@ -26,6 +29,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+
+// Interfaces and utils
 import { ipChatTele } from "@/utils/ip";
 import {
   AFTERNOON_HOURS,
@@ -40,6 +45,7 @@ const Contact = ({
   onContactingComplete,
   resetCccdData,
 }: IContactProps) => {
+  // States
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<IFormData>({
@@ -53,6 +59,11 @@ const Contact = ({
     },
   });
 
+  // Handlers
+  const handleContactingComplete = () => {
+    onContactingComplete();
+  };
+  // API Calls
   const handleSubmit = async (data: IFormData) => {
     setIsSubmitting(true);
     try {
@@ -82,10 +93,7 @@ const Contact = ({
     }
   };
 
-  const handleContactingComplete = () => {
-    onContactingComplete();
-  };
-
+  // Render functions
   const renderField = (
     icon: React.ReactNode,
     label: string,

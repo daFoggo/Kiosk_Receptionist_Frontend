@@ -1,6 +1,9 @@
 "use client";
-
+// Libraries
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Components and Icons
 import {
   ChevronLeft,
   ChevronRight,
@@ -22,10 +25,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+
+// Interfaces and utils
 import { IStudentCalendarProps } from "@/models/StudentCalendar/StudentCalendar";
 
+// Utilities
 export const getCoursesForToday = ({ calendarData }: IStudentCalendarProps) => {
   const today = new Date();
   return calendarData.filter((course) => {
@@ -87,6 +92,7 @@ const StudentCalendar = ({
   onWeekChange,
   isLoading,
 }: IStudentCalendarProps) => {
+  // States and Variables
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -95,12 +101,14 @@ const StudentCalendar = ({
   const weekDays = generateWeekDays(currentDate);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Effects
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo(0, 8 * 60);
     }
   }, [viewMode]);
 
+  // Handlers
   const navigateCalendar = async (days: number) => {
     const newDate = new Date(currentDate);
     newDate.setDate(newDate.getDate() + days);
@@ -127,6 +135,7 @@ const StudentCalendar = ({
     setIsDialogOpen(true);
   };
 
+  // Utilities
   const isCurrentHour = (hour: string) => {
     const currentHour = new Date().getHours();
     return parseInt(hour) === currentHour;
@@ -157,6 +166,7 @@ const StudentCalendar = ({
     }
   };
 
+  // Render Functions
   const renderField = (icon: React.ReactNode, label: string, value: string) => (
     <div className="flex items-center space-x-2">
       <div className="text-indigo-500">{icon}</div>

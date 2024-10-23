@@ -1,4 +1,9 @@
+"use client"
+// Libraries
 import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Components and Icons
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,7 +23,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { motion, AnimatePresence } from "framer-motion";
+
+// Interfaces and utils
 import { generateHours } from "@/utils/helper/generateHours";
 import {
   IWeeklyScheduleProps,
@@ -26,18 +32,29 @@ import {
 } from "@/models/WeeklySchedule/WeeklySchedule";
 
 const WeeklySchedule = ({ works }: IWeeklyScheduleProps) => {
+  // Refs
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  // States and Variables
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedWork, setSelectedWork] = useState<IWork | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const hours = generateHours();
 
+  // Effects
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo(0, 2 * 60); // Scroll to 9:00 AM
     }
   }, []);
 
+  // Handlers
+  const handleWorkClick = (work: IWork) => {
+    setSelectedWork(work);
+    setIsDialogOpen(true);
+  };
+
+  // Utilities
   const getWeekDates = (date: Date) => {
     const day = date.getDay();
     const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
@@ -59,16 +76,13 @@ const WeeklySchedule = ({ works }: IWeeklyScheduleProps) => {
     setCurrentDate(new Date());
   };
 
-  const handleWorkClick = (work: IWork) => {
-    setSelectedWork(work);
-    setIsDialogOpen(true);
-  };
 
   const isCurrentHour = (hour: string) => {
     const currentHour = new Date().getHours();
     return parseInt(hour) === currentHour;
   };
 
+  // Render Functions
   const renderField = (icon: React.ReactNode, label: string, value: string) => (
     <div className="flex items-center space-x-2">
       <div className="text-indigo-500">{icon}</div>

@@ -1,17 +1,17 @@
 "use client";
+// Libraries
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "../ui/button";
+
+// Components and Icons
+import { Button } from "@/components/ui/button";
+
+// Interfaces and utils
 import { ISelectOptionProps } from "@/models/SelectOption/SelectOption";
 
 const SelectOption = ({ select, onOptionSelect }: ISelectOptionProps) => {
+  // States and Variables
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-
-  const handleConfirm = () => {
-    if (selectedOption) {
-      onOptionSelect(selectedOption);
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -27,6 +27,13 @@ const SelectOption = ({ select, onOptionSelect }: ISelectOptionProps) => {
   const itemVariants = {
     hidden: { scale: 0, opacity: 0 },
     visible: { scale: 1, opacity: 1 },
+  };
+
+  // Handlers
+  const handleConfirm = () => {
+    if (selectedOption) {
+      onOptionSelect(selectedOption);
+    }
   };
 
   return (

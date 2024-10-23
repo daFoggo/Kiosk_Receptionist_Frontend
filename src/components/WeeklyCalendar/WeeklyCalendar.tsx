@@ -1,6 +1,10 @@
 "use client";
-
+// Libraries
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+
+// Components and Icons
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +17,6 @@ import {
   FileText,
   X,
 } from "lucide-react";
-import { toast } from "sonner";
 import { IWeeklyCalendarData} from "@/models/WeeklyCalendar/WeeklyCalendar";
 import {
   Sheet,
@@ -27,16 +30,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import WeeklySchedule from "@/components/WeeklySchedule/WeeklySchedule";
-import axios from "axios";
+
+// Interfaces and utils
 import { ipGetCalendar } from "@/utils/ip";
 import { truncateText } from "@/utils/helper/truncateText";
 
 const WeeklyCalendar = () => {
+  // Refs
+  const calendarRef = useRef<HTMLDivElement>(null);
+  
+  // States and Variables
   const [calendar, setCalendar] = useState<IWeeklyCalendarData | null>(null);
   const [fullCalendar, setFullCalendar] = useState<IWeeklyCalendarData[]>([]);
 
-  const calendarRef = useRef<HTMLDivElement>(null);
-
+  // Effects
   // enable scroll
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -62,6 +69,7 @@ const WeeklyCalendar = () => {
     getCalendarData();
   }, []);
 
+  // API calls
   // fetch data
   const getCalendarData = async () => {
     try {
@@ -76,6 +84,7 @@ const WeeklyCalendar = () => {
     }
   };
 
+  // Utilities
   // tim lich sap toi trong ngay
   const findUpcomingWork = (works: IWeeklyCalendarData[]): IWeeklyCalendarData | null => {
     const currentTime = new Date();
@@ -119,6 +128,7 @@ const WeeklyCalendar = () => {
     return upcomingEvent || todayEvents[todayEvents.length - 1];
   };
 
+  // Render functions
   const renderField = (
     icon: React.ReactNode,
     label: string,
@@ -147,7 +157,7 @@ const WeeklyCalendar = () => {
       </div>
       {calendar ? (
         <h1 className="text-xl font-semibold text-indigo-500 mb-4">
-          {truncateText(calendar?.name as string, 40)}
+          {truncateText(calendar?.name as string, 50)}
         </h1>
       ) : (
         <p className="text-xl text-left text-sub-text1 font-semibold">

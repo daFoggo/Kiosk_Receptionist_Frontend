@@ -1,6 +1,9 @@
 "use client"
+// Libraries
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Components and Icons
 import { MdEvent, MdLocationOn } from "react-icons/md";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,12 +22,17 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+
+// Interfaces and utils
 import { IEventBannerProps } from "@/models/EventBanner/EventBanner";
 
 const EventBanner = ({ evenData }: IEventBannerProps) => {
+  // States
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const currentEvent = evenData?.[currentIndex];
 
+  // Effects
   // event carousel
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,7 +45,22 @@ const EventBanner = ({ evenData }: IEventBannerProps) => {
 
     return () => clearInterval(timer);
   }, [evenData.length]);
+  
+  // handlers
+  // carousel action
+  const handlePrevious = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? evenData.length - 1 : prevIndex - 1
+    );
+  };
 
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === evenData.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+  
+  // Utilities
   // convert to dd/mm/yyyy
   const formatDate = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
@@ -71,20 +94,7 @@ const EventBanner = ({ evenData }: IEventBannerProps) => {
     return start === end;
   };
 
-  // carousel action
-  const handlePrevious = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? evenData.length - 1 : prevIndex - 1
-    );
-  };
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === evenData.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const currentEvent = evenData?.[currentIndex];
 
   return (
     <div className="relative h-full flex flex-col bg-white p-4 rounded-2xl border border-slate-300 shadow-sm overflow-hidden">

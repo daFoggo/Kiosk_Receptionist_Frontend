@@ -1,4 +1,5 @@
 "use client"
+// Libraries
 import { useState, useEffect } from "react";
 
 const AIModel = ({ videoPath }: { videoPath: string }) => {
