@@ -1,14 +1,19 @@
 // Library
-import { useEffect, useRef, useState, useMemo, useContext, useCallback } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+} from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Components and Icons
-import { Loader2, ScanLine } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2} from "lucide-react";
 import Camera from "@/components/Camera/Camera";
-import Contact from "@/components/Contact/Contact";
 import AIChat from "@/components/AIChat/AIChat";
 import AIModel from "@/components/AIModel/AIModel";
 import EventBanner from "@/components/EventBanner/EventBanner";
@@ -35,11 +40,12 @@ import { getScheduleStateForRole } from "@/utils/helper/interactionHelper";
 
 // Assets
 import lavenderWave from "@/assets/Home/lavender_wave.svg";
+import GuestInteraction from "@/components/GuestInteraction/GuestInteraction";
 
 const Home = () => {
   // Refs
   const webcamRef = useRef<Webcam>(null);
-  const initialLoadCompleted = useRef<{[key: string]: boolean}>({});
+  const initialLoadCompleted = useRef<{ [key: string]: boolean }>({});
 
   // States
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -102,7 +108,7 @@ const Home = () => {
 
     if (["STUDENT", "STAFF", "INSTRUCTOR"].includes(currentRole)) {
       const roleKey = `${currentRole}-${currentCccd}`;
-      
+
       if (!initialLoadCompleted.current[roleKey]) {
         const hasSchedule = scheduleData.length > 0;
         const hasData = Boolean(scheduleData);
@@ -111,7 +117,7 @@ const Home = () => {
           hasSchedule,
           hasData
         );
-        
+
         // Add small delay to ensure proper state transition
         setTimeout(() => {
           transitionTo(newState);
@@ -157,9 +163,12 @@ const Home = () => {
     }
   }, [currentRole]);
 
-  
   const handleVerificationStart = () => {
     transitionTo(InteractionState.SCAN_CCCD_REQUEST);
+  };
+
+  const handleScanQRStart = () => {
+    transitionTo(InteractionState.SCAN_QR_REQUEST);
   };
 
   const handleVerificationComplete = () => {
@@ -277,6 +286,7 @@ const Home = () => {
     return (
       <AnimatePresence mode="wait">
         <motion.div
+        className="w-full"
           key={currentState}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -293,37 +303,15 @@ const Home = () => {
           )}
 
           {[
-            InteractionState.SCAN_QR_SUCCESS,
-            InteractionState.APPOINTMENT_SELECT_SUCCESS,
-          ].includes(currentState) && (
-            <Contact
-              cccdData={cccdData}
-              onContactingComplete={handleContactComplete}
-              resetCccdData={resetCccdData}
-            />
-          )}
-
-          {[
             InteractionState.STUDENT_HAS_SCHEDULE,
             InteractionState.STAFF_HAS_SCHEDULE,
           ].includes(currentState) && MemoizedScheduleSheet}
 
           {currentState === InteractionState.GUEST && (
-            <motion.div
-              className="container-btn"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Button
-                className="bg-indigo-500 font-semibold hover:bg-indigo-500/90 py-6 px-8 text-xl border shadow-sm rounded-xl flex items-center justify-between gap-2"
-                onClick={handleVerificationStart}
-              >
-                <p>Xác thực thông tin khách</p>
-                <ScanLine className="font-semibold w-6 h-6" />
-              </Button>
-            </motion.div>
+            <GuestInteraction
+              handleVerificationStart={handleVerificationStart}
+              handleScanQRStart={handleScanQRStart}
+            />
           )}
         </motion.div>
       </AnimatePresence>

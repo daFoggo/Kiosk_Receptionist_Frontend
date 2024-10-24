@@ -187,7 +187,7 @@ const WeeklyCalendar = () => {
           <div></div>
         )}
         <Sheet>
-          <SheetTrigger>
+          <SheetTrigger asChild>
             <Button
               variant="ghost"
               className="font-semibold text-sub-text1 text-lg rounded-full hover:bg-crust/50 mt-auto flex items-center justify-between "

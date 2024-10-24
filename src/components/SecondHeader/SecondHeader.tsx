@@ -84,7 +84,7 @@ const SecondHeader = () => {
           </NavigationMenuList>
           <div className="md:hidden">
             <Sheet>
-              <SheetTrigger>
+              <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Menu className="h-[1.2rem] w-[1.2rem]" />
                   <span className="sr-only">Menu</span>

@@ -95,7 +95,7 @@ const LunarCalendar = () => {
         <h2 className="text-3xl font-bold text-indigo-950">Lịch</h2>
         <div className="flex items-center justify-between">
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
                 className={cn(
